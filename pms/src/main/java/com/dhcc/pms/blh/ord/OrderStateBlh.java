@@ -122,6 +122,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	 * 
 	 * @param res
 	 * @throws IOException
+	 * 1024
 	 */
 	public void OrderAndroid(BusinessRequest res) throws IOException{
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
