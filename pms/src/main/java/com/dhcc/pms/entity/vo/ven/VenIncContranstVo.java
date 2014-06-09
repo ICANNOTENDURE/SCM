@@ -1,0 +1,140 @@
+/**
+ * 
+ */
+package com.dhcc.pms.entity.vo.ven;
+
+
+public class VenIncContranstVo {
+	
+	private Long hopincid;
+	
+	private String hopincname;
+	
+	private String hopname;
+	
+	private Long hopincsysid;
+	
+	private Long venincid;
+	
+	private String venincname;
+	
+	private String venname;
+	
+	private Long vensysid;
+
+	/**
+	 * @return the hopincid
+	 */
+	public Long getHopincid() {
+		return hopincid;
+	}
+
+	/**
+	 * @param hopincid the hopincid to set
+	 */
+	public void setHopincid(Long hopincid) {
+		this.hopincid = hopincid;
+	}
+
+	/**
+	 * @return the hopincname
+	 */
+	public String getHopincname() {
+		return hopincname;
+	}
+
+	/**
+	 * @param hopincname the hopincname to set
+	 */
+	public void setHopincname(String hopincname) {
+		this.hopincname = hopincname;
+	}
+
+	/**
+	 * @return the hopname
+	 */
+	public String getHopname() {
+		return hopname;
+	}
+
+	/**
+	 * @param hopname the hopname to set
+	 */
+	public void setHopname(String hopname) {
+		this.hopname = hopname;
+	}
+
+	/**
+	 * @return the hopincsysid
+	 */
+	public Long getHopincsysid() {
+		return hopincsysid;
+	}
+
+	/**
+	 * @param hopincsysid the hopincsysid to set
+	 */
+	public void setHopincsysid(Long hopincsysid) {
+		this.hopincsysid = hopincsysid;
+	}
+
+	/**
+	 * @return the venincid
+	 */
+	public Long getVenincid() {
+		return venincid;
+	}
+
+	/**
+	 * @param venincid the venincid to set
+	 */
+	public void setVenincid(Long venincid) {
+		this.venincid = venincid;
+	}
+
+	/**
+	 * @return the venincname
+	 */
+	public String getVenincname() {
+		return venincname;
+	}
+
+	/**
+	 * @param venincname the venincname to set
+	 */
+	public void setVenincname(String venincname) {
+		this.venincname = venincname;
+	}
+
+	/**
+	 * @return the venname
+	 */
+	public String getVenname() {
+		return venname;
+	}
+
+	/**
+	 * @param venname the venname to set
+	 */
+	public void setVenname(String venname) {
+		this.venname = venname;
+	}
+
+	/**
+	 * @return the vensysid
+	 */
+	public Long getVensysid() {
+		return vensysid;
+	}
+
+	/**
+	 * @param vensysid the vensysid to set
+	 */
+	public void setVensysid(Long vensysid) {
+		this.vensysid = vensysid;
+	}
+
+	
+	
+	
+}

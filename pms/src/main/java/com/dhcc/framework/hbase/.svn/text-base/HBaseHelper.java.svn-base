@@ -1,0 +1,271 @@
+package com.dhcc.framework.hbase;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
+import java.util.Random;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.log4j.Logger;
+
+import com.dhcc.framework.common.entity.BusinessLog;
+
+/**
+ * <p>标题: HBaseHelper.java</p>
+ * <p>业务描述:日志文件信息插入hbase数据库</p>
+ * <p>公司:东华软件股份公司</p>
+ * <p>版权:dhcc2013</p>
+ * @author 姚凯
+ * @date 2013年8月26日
+ * @version V1.0 
+ */
+public class HBaseHelper
+{
+    private static Logger LOG = Logger.getLogger(HBaseHelper.class);
+    
+    private final static Properties PROPERTIES = new Properties();
+    
+    private static Configuration conf = null;
+    
+    private HBaseAdmin admin = null;
+    
+    private static Random randGen = new Random(100L);
+    /**
+     * 初始化操作
+     */
+	static {
+		initHBaseHelper("application.properties");
+		conf = HBaseConfiguration.create();
+		conf.set("hbase.zookeeper.quorum",
+				(String) PROPERTIES.getProperty("hbase.zookeeper.quorum"));
+		conf.set("hbase.zookeeper.property.clientPort",
+				(String) PROPERTIES
+						.getProperty("hbase.zookeeper.property.clientPort"));
+	}
+    
+	public static void initHBaseHelper(final String path) {
+		InputStream input = Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream(path);
+		try {
+			PROPERTIES.load(input);
+		} catch (IOException e) {
+			e.printStackTrace();
+			LOG.debug(e);
+		}
+	}
+	
+    /**
+     * 
+      * 创建一个新的实例 HBaseHelper.
+      *
+      * @param conf
+      * @throws IOException
+     */
+	protected HBaseHelper() throws IOException {
+		this.admin = new HBaseAdmin(conf);
+	}
+
+	public static HBaseHelper getHelper() throws IOException {
+		return new HBaseHelper();
+	}
+    
+    /**
+     * 判断表是否存在
+      * existsTable 
+      * @param table
+      * @return
+      * @throws IOException boolean
+      * @exception
+      * @since 1.0.0
+     */
+	public boolean existsTable(String table) throws IOException {
+		return admin.tableExists(table);
+	}
+    
+    /**
+     * 创建表
+      * createTable 
+      * @param table 表名称
+      * @param colfams 多个列簇集合
+      * @throws IOException void
+      * @exception
+      * @since 1.0.0
+     */
+	public void createTable(String table, int version, int ttl,
+			String... colfams) throws IOException {
+		createTable(table, null, version, ttl, colfams);
+	}
+    
+    /**
+     *  预创建region
+      * createTable 
+      * @param table 表名称
+      * @param splitKeys splitkey集合
+      * @param colfams 多个列簇集合
+      * @throws IOException void
+      * @exception
+      * @since 1.0.0
+     */
+	public void createTable(String table, byte[][] splitKeys, int version,
+			int ttl, String... colfams) throws IOException {
+		if (!existsTable(table)) {
+			HTableDescriptor desc = new HTableDescriptor(table);
+			for (String cf : colfams) {
+				HColumnDescriptor coldef = new HColumnDescriptor(cf);
+				coldef.setMaxVersions(version);
+				coldef.setTimeToLive(ttl * 24 * 60 * 60);
+				desc.addFamily(coldef);
+			}
+			if (splitKeys != null) {
+				admin.createTable(desc, splitKeys);
+			} else {
+				admin.createTable(desc);
+			}
+		}
+	}
+    
+    /**
+     * 将表变为不可以状态
+      * disableTable 
+      * @param table 表名称
+      * @throws IOException void
+      * @exception
+      * @since 1.0.0
+     */
+    public void disableTable(String table) throws IOException {
+      admin.disableTable(table);
+    }
+    
+    /**
+     * 删除表
+      * dropTable 
+      * @param table 表名称
+      * @throws IOException void
+      * @exception
+      * @since 1.0.0
+     */
+    public void dropTable(String table) throws IOException {
+      if (existsTable(table)) {
+         disableTable(table);
+        admin.deleteTable(table);
+      }
+    }
+    
+    /**
+     * 插入数据
+      * put 
+      * @param table 表名称
+      * @param row rowkey
+      * @param fam 列族
+      * @param qual 关键字
+      * @param val 具体的值
+      * @param isAuto 客户端是否带缓存，false表示客户端带缓存，true表示客户端不带缓存
+      * @param catchSize 客户端缓存的大小
+      * @throws IOException void
+      * @exception
+      * @since 1.0.0
+     */
+    public static void put(String table, String row, String fam, String qual,
+                    String val,boolean isAuto,int catchSize) throws IOException {
+      HTable tbl = new HTable(conf, table);
+      if (!isAuto)
+      {
+          tbl.setAutoFlush(isAuto);
+          tbl.setWriteBufferSize(1024 * 1024 * catchSize);
+         
+      }
+      Put put = new Put(Bytes.toBytes(row));
+      put.add(Bytes.toBytes(fam), Bytes.toBytes(qual), Bytes.toBytes(val));
+      System.out.println(" insert ok "+row);
+      tbl.put(put);
+      tbl.close();
+    }
+    
+    /**
+     * 插入数据，
+      * put 
+      * @param table 表名称
+      * @param row rowkey
+      * @param fam 列族
+      * @param qual 关键字
+      * @param ts 时间戳
+      * @param val 具体的值
+      * @param isAuto 客户端是否带缓存，false表示客户端带缓存，true表示客户端不带缓存
+      * @param catchSize 客户端缓存的大小 
+      * @throws IOException void
+      * @exception
+      * @since 1.0.0
+     */
+    public static void addData(String table, String row, String fam, String qual, long ts,
+                    String val,boolean isAuto,int catchSize) throws IOException {
+      HTable tbl = new HTable(conf, table);
+      if (!isAuto)
+      {
+          tbl.setAutoFlush(isAuto);
+          tbl.setWriteBufferSize(1024 * 1024 * catchSize);
+         
+      }
+      Put put = new Put(Bytes.toBytes(row));
+      put.add(Bytes.toBytes(fam), Bytes.toBytes(qual), ts,
+              Bytes.toBytes(val));
+      tbl.put(put);
+      tbl.close();
+    }
+    
+    public static String generateData(int numBytes)
+    {
+        String s = "";
+        byte[] buf = new byte[numBytes];
+        for (int i = 0; i < numBytes; ++i)
+        {
+            buf[i] = (byte) (97 + randGen.nextInt(27));
+        }
+        s = s + new String(buf);
+        return s;
+    }
+    
+    public static String formatDate(Date date){
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss"); 
+        String time = sdf.format(date);
+		return time; 
+    }
+    
+    @SuppressWarnings("unused")
+	public static void main(String[] args) throws IOException
+    {
+		BusinessLog log = new BusinessLog();
+		log.setLogId("11111111");
+		log.setAccountName("admin");
+		log.setOperDesc("insert");
+		log.setOperSummary("");
+		log.setTradeAccount(String.valueOf(System.currentTimeMillis()));
+		log.setInsertDate(new Date());
+		log.setUpdateDate(new Date());
+		log.setOperDate(new Date());
+        String [] cols = {"name"};
+//        hbasehelper.createTable("t_businesslog", 1, 31, cols);
+
+//        hbasehelper.disableTable("t_businesslog");
+//        hbasehelper.dropTable("t_businesslog");
+        
+        String dateStr = "";       
+        long start = System.currentTimeMillis(); 
+        for(int i=0;i<100000;i++){
+    	  
+    	  dateStr = formatDate(new Date());
+      	  HBaseHelper.put("t_businesslog", log.getAccountName() + String.format("%09d", 1+i) + dateStr + log.getOperDesc(), "name",
+  				"test",System.currentTimeMillis()+generateData(1024), false, 2);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("aaaa");
+    }
+}

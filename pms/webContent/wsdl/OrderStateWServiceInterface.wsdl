@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="OrderStateWServiceInterface" targetNamespace="http://ord.ws.pms.dhcc.com/" xmlns:ns2="http://common.framework.dhcc.com" xmlns:ns1="http://ord.ws.pms.dhcc.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xsd:schema xmlns:tns="http://cxf.apache.org/arrays" xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://cxf.apache.org/arrays">
+  <xsd:complexType name="ArrayOfAnyType">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="anyType" nillable="true" type="xsd:anyType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
+<xsd:schema xmlns:tns="http://ord.ws.pms.dhcc.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ord.ws.pms.dhcc.com/">
+  <xsd:complexType name="string2anyTypeMap">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="entry">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="key" type="xsd:string"/>
+            <xsd:element minOccurs="0" name="value" type="xsd:anyType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
+<xsd:schema xmlns:ns0="http://ord.ws.pms.dhcc.com/" xmlns:ns1="http://cxf.apache.org/arrays" xmlns:tns="http://common.framework.dhcc.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://common.framework.dhcc.com">
+  <xsd:import namespace="http://ord.ws.pms.dhcc.com/"/>
+  <xsd:import namespace="http://cxf.apache.org/arrays"/>
+  <xsd:complexType name="PagerModel">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="countProName" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="hqlParamMap" nillable="true" type="ns0:string2anyTypeMap"/>
+      <xsd:element minOccurs="0" name="pageData" nillable="true" type="ns1:ArrayOfAnyType"/>
+      <xsd:element minOccurs="0" name="pageDataJson" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="pageNo" type="xsd:int"/>
+      <xsd:element minOccurs="0" name="pageSize" type="xsd:int"/>
+      <xsd:element minOccurs="0" name="queryHql" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="totals" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="listResponse">
+    <wsdl:part name="return" type="ns2:PagerModel">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="list">
+    <wsdl:part name="arg0" type="xsd:string">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listOrdItm">
+    <wsdl:part name="arg0" type="xsd:int">
+    </wsdl:part>
+    <wsdl:part name="arg1" type="xsd:long">
+    </wsdl:part>
+    <wsdl:part name="arg2" type="xsd:int">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listOrdItmResponse">
+    <wsdl:part name="return" type="ns2:PagerModel">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="OrderStateWServiceInterface">
+    <wsdl:operation name="listOrdItm">
+      <wsdl:input name="listOrdItm" message="ns1:listOrdItm">
+    </wsdl:input>
+      <wsdl:output name="listOrdItmResponse" message="ns1:listOrdItmResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="list">
+      <wsdl:input name="list" message="ns1:list">
+    </wsdl:input>
+      <wsdl:output name="listResponse" message="ns1:listResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

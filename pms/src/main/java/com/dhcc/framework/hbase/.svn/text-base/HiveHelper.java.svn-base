@@ -1,0 +1,116 @@
+package com.dhcc.framework.hbase;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.apache.log4j.Logger;
+
+/**
+ * <p>标题: HiveHelper.java</p>
+ * <p>业务描述:hive操作hbase数据库</p>
+ * <p>公司:东华软件股份公司</p>
+ * <p>版权:dhcc2013</p>
+ * @author 姚凯
+ * @date 2013年9月4日
+ * @version V1.0 
+ */
+public class HiveHelper {
+	
+	 private static Logger log = Logger.getLogger(HiveJdbcClient.class);
+	
+	 private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
+	
+	 private static Connection con = null;
+	 
+	 private static Statement stmt = null;
+	 
+	 private static ResultSet res = null;
+	 
+	 public HiveHelper(){
+		 try {
+				Class.forName(driverName);
+				con = DriverManager.getConnection("jdbc:hive://192.168.5.9:10000/hive", "", "");
+				stmt = con.createStatement();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}catch (SQLException e) {
+				e.printStackTrace();
+		}		 
+	 }
+	 
+	 /** 
+	 * 方法名:          query
+	 * 方法功能描述:    获取汉字拼音首字母的字符串，生成健康档案信息
+	 * @param:         是包含汉字的字符串
+	 * @return:        其他非简体汉字返回 '0';
+	 * @throws         SQLException 
+	 * @Author:        姚凯
+	 * @Create Date:   2013年9月4日 下午2:06:42
+	 */
+	private void query(final String hiveQL) throws SQLException {
+		 res = stmt.executeQuery(hiveQL);
+		 while (res.next()) {
+			System.out.println(res.getString(1) + "\t" );
+		 }
+	}
+	
+	/** 
+	 * 方法名:          bathLoadData
+	 * 方法功能描述:    批量加载数据
+	 * @param:         filepath   要加载的文件路径
+	 * @param:         tableName  表名
+	 * @return:        1 成功，0 失败
+	 * @throws:        SQLException 
+	 * @Author:        姚凯
+	 * @Create Date:   2013年9月4日 下午2:24:39
+	 */
+	private int bathLoadData(String filepath,String tableName) {
+		String sql = "load data local inpath '" + filepath + "' into table " + tableName; 
+		log.info("Running: " + sql);
+		try {
+			res = stmt.executeQuery(sql);
+			return 1;
+		} catch (SQLException e) {
+			return 0;
+		} 
+	}
+	
+	/** 
+	 * 方法名:          showTables
+	 * 方法功能描述:    查询hive中所有的表
+	 * @param:         String   表名tableName
+	 * @return:        String   查询出来的表
+	 * @throws         SQLException 
+	 * @Author:        姚凯
+	 * @Create Date:   2013年9月4日 下午2:14:16
+	 */
+	private String showTables(String tableName) throws SQLException {
+		String sql = "show tables '" + tableName + "'";  
+        System.out.println("Running: " + sql);  
+        res = stmt.executeQuery(sql);  
+        if (res.next()) {  
+          System.out.println(res.getString(1));  
+        }
+        return res.getString(1);
+	} 
+
+	/** 
+	 * 方法名:          main
+	 * 方法功能描述:    获取汉字拼音首字母的字符串，生成健康档案信息
+	 * @param:         是包含汉字的字符串
+	 * @return:        其他非简体汉字返回 '0';
+	 * @throws SQLException 
+	 * @Author:        姚凯
+	 * @Create Date:   2013年9月4日 下午2:04:00
+	 */
+	public static void main(String[] args) throws SQLException {
+		HiveHelper hiveHelper = new HiveHelper();
+		String hiveQL = "select count(*) from hive_businesslog";
+		hiveHelper.query(hiveQL);
+//		hiveHelper.showTables("");
+//		hiveHelper.bathLoadData("", "");
+	}
+}

@@ -1,0 +1,533 @@
+// zxx 2014-04-19
+$(function (){
+//	$.extend($.fn.datagrid.methods, {
+//	    keyCtr : function (jq) {
+//	        return jq.each(function () {
+//	            var grid = $(this);
+//	            grid.datagrid('getPanel').panel('panel').attr('tabindex', 1).bind('keydown', function (e) {
+//	                switch (e.keyCode) {
+//	                case 38: // up
+//	                    var selected = grid.datagrid('getSelected');
+//	                    if (selected) {
+//	                        var index = grid.datagrid('getRowIndex', selected);
+//	                        grid.datagrid('selectRow', index - 1);
+//	                        $('#datagrid').datagrid('endEdit', index);
+//	                        $('#datagrid').datagrid('selectRow', index-1).datagrid('beginEdit', index-1);
+//	                        editIndex=index-1;
+//	                        
+//	                    } else {
+//	                        var rows = grid.datagrid('getRows');
+//	                        grid.datagrid('selectRow', rows.length - 1);
+//	                    }
+//	                    break;
+//	                case 40: // down
+//	                    var selected = grid.datagrid('getSelected');
+//	                    if (selected) {
+//	                        var index = grid.datagrid('getRowIndex', selected);
+//	                        grid.datagrid('selectRow', index + 1);
+//	                        $('#datagrid').datagrid('endEdit', index);
+//	                        $('#datagrid').datagrid('selectRow', index+1).datagrid('beginEdit', index+1);
+//	                        editIndex=index+1;
+//	                    } else {
+//	                        grid.datagrid('selectRow', 0);
+//	                    }
+//	                    break;
+//	                }
+//	            });
+//	        });
+//	    }
+//	});
+//	$("#datagrid").datagrid({}).datagrid("keyCtr");
+	$.extend($.fn.datagrid.defaults.editors, {
+		combogrid: {
+			init: function(container, options){
+				var input = $('<input type="text" class="datagrid-editable-input">').appendTo(container); 
+				input.combogrid(options);
+				return input;
+			},
+			destroy: function(target){
+				$(target).combogrid('destroy');
+			},
+			getValue: function(target){
+				return $(target).combogrid('getText');
+			},
+			setValue: function(target, value){
+				$(target).combogrid('setValue', value);
+				
+			},
+			resize: function(target, width){
+				$(target).combogrid('resize',width);
+			}
+		}
+	});
+	
+	
+	 $.extend($.fn.datagrid.methods, {
+		 editCell: function(jq,param){
+			 return jq.each(function(){
+			 opts = $(this).datagrid('options');
+			 var fields = $(this).datagrid('getColumnFields',true).concat($(this).datagrid('getColumnFields'));
+			 for(var i=0; i<fields.length; i++){
+				 var col = $(this).datagrid('getColumnOption', fields[i]);
+				 col.editor1 = col.editor;
+				 if (fields[i] != param.field){
+					 col.editor = null;
+				 }
+			 }
+			 $(this).datagrid('beginEdit', param.index);
+			 	for(var i=0; i<fields.length; i++){
+			 		var col = $(this).datagrid('getColumnOption', fields[i]);
+			 		col.editor = col.editor1;
+			 	}
+			 });
+		 }
+	 });
+	
+	
+	$("#orderUpload").uploadify({
+        'swf': $WEB_ROOT_PATH + '/images/uploadify.swf',
+        'uploader': $WEB_ROOT_PATH + '/ord/orderCtrl!upload.htm',
+        //在浏览窗口底部的文件类型下拉菜单中显示的文本
+        'buttonText':'Upload',
+        'fileTypeDesc': '支持的格式：',
+        'fileTypeExts': '*.xls',
+        'fileSizeLimit': '30MB',
+        'width': '60',
+        'height': '20',
+        'debug' : false,
+        'fileObjName':'dto.upload',
+        'auto': true,
+        'removeCompleted':false,
+        //开始上传时传递参数
+        'onUploadStart': function(file) {
+        	
+        },
+        //取消上传
+        'onCancel':function(){
+        	
+        },
+        //上传成功
+        'onUploadSuccess':function(file, data, response){
+        	var obj=eval('('+data+')');
+        	if(obj.opFlg=="1"){
+        		$("#importDialog").dialog('close');
+        		$CommonUI.getDataGrid('#datagrid').datagrid('load',{
+    	    		'dto.exeState.ordId':obj.order.orderId,
+        		});
+        		clearData();
+        		$("#emFlag").attr("checked",obj.order.emFlag);
+    	    	$("#hisNO").val(obj.order.orderNo);
+    	    	$("#deliveryDate").datebox('setValue',obj.order.deliveryDate);
+    	    	$("#purId").combobox('setValue',obj.order.purLoc);
+    	    	$("#locId").combobox('setValue',obj.order.recLoc);
+    	    	
+    	    	$.post(
+    	    		 $WEB_ROOT_PATH+'/ven/vendorCtrl!findById.htm',
+    	    		 {
+    	    			 "dto.vendor.vendorId":obj.order.vendorId,
+    	    		 },
+    	    		 function(data){
+    	    			 $("#vendorId").combogrid('setValue',data);
+    	    		 }
+    	    	);
+    	    	$("#vendor").val(obj.order.vendorId);
+    	    	$("#orderId").val(obj.order.orderId);
+    	    	$("#recDestination").combobox({
+    				url:$WEB_ROOT_PATH+'/ord/orderCtrl!findLocDesctionComboList.htm?dto.loc='+obj.order.recLoc,
+    				valueField:'hopCtlocDestinationId',							
+    				textField:'destination',
+    				mode:'remote',
+    			});
+    	    	$("#recDestination").combobox('setValue',obj.order.recDestination);
+    	    	$("#remark").val(obj.order.remark);
+        	}else{
+        		$CommonUI.alert(obj.msg);
+        	};
+        },
+        //检测FLASH失败调用
+        'onFallback': function() {
+            alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+        },
+        //返回一个错误，选择文件的时候触发
+        'onSelectError': function(file, errorCode, errorMsg) {
+            switch (errorCode) {
+            case - 100 : alert("上传的文件数量已经超出系统限制的" + $('#file_upload').uploadify('settings', 'queueSizeLimit') + "个文件！");
+                break;
+            case - 110 : alert("文件 [" + file.name + "] 大小超出系统限制的" + $('#file_upload').uploadify('settings', 'fileSizeLimit') + "大小！");
+                break;
+            case - 120 : alert("文件 [" + file.name + "] 大小异常！");
+                break;
+            case - 130 : alert("文件 [" + file.name + "] 类型不正确！");
+                break;
+            }
+        }
+    });
+	
+//	$CommonUI.getDataGrid('#datagrid').datagrid({ 
+//		url:'orderStateCtrl!listOrdItm.htm?dto.exeState.ordId=XX',
+//	});
+
+	$("#search").on('click', function() {
+		 $("#searchOrderTable").datagrid('load', {
+			 "dto.stdate":$("#stdate").datebox('getValue'),
+			 "dto.eddate":$("#eddate").datebox('getValue'),
+			 "dto.reqStDate":$("#reqStDate").datebox('getValue'),
+			 "dto.reqEdDate":$("#reqEdDate").datebox('getValue'),
+			 "dto.state":0,
+			 "dto.vendor":$("#vendor").val(),
+			 "dto.purloc":$("#purlocSearch").combobox('getValue'),
+			 "dto.emflag":$("#emflag").combobox('getValue')
+		 });
+		
+	});
+	
+
+	var locCombox=[$CommonUI.getComboBox('#purId'),$CommonUI.getComboBox('#locId'),$CommonUI.getComboBox('#purlocSearch')];
+	for(var i=0;i<locCombox.length;i++){
+		locCombox[i].combobox({
+			url:getContextPath()+'/hop/hopCtlocCtrl!getCtlocList.htm',
+			valueField:'hopCtlocId',							
+			textField:'name'
+		});
+	}
+	$CommonUI.getComboBox('#locId').combobox({
+			onSelect:function(rec){
+				$("#recDestination").combobox({
+					url:$WEB_ROOT_PATH+'/ord/orderCtrl!findLocDesctionComboList.htm?dto.loc='+rec.hopCtlocId,
+					valueField:'hopCtlocDestinationId',							
+					textField:'destination',
+					mode:'remote',
+				});
+			}
+	});
+	
+	var venCombox=[$CommonUI.getComboGrid('#vendorSearch'),$CommonUI.getComboGrid('#vendorId')];
+	for(var i=0;i<venCombox.length;i++){
+		venCombox[i].combogrid({
+			url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm", //+ encodeURIComponent($("#vendorName").val()),
+			panelWidth:500,
+			panelHeight:150,
+	        valueField:'vendorId',  
+	        textField:'name', 
+	        fitColumns: true,
+	        mode: 'remote',
+	        columns:[[
+	                  {field:'vendorId',title:'vendorId',width:60,hidden:true},
+	                  {field:'name',title:'name',width:100}
+	        ]],
+	        onSelect:function(rowIndex, rowData) {
+					$("#vendor").val(rowData.vendorId);
+			}
+		});
+	}
+
+});
+
+
+
+var editIndex = undefined;
+function endEditing(){
+	if (editIndex == undefined){return true;};
+	if ($('#datagrid').datagrid('validateRow', editIndex)){
+		$('#datagrid').datagrid('endEdit', editIndex);
+		editIndex = undefined;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+function onClickCell(index, field){
+	if (endEditing()){
+		$('#datagrid').datagrid('selectRow', index).datagrid('editCell', {index:index,field:field});
+		editIndex = index;
+	}
+}
+
+
+function append() {
+    if (endEditing()) {
+    	//orderid=$('#datagrid').datagrid('getRows')[0]['orderid'];
+    	orderid=$("#orderId").val();
+    	if(orderid==undefined){
+    		$CommonUI.alert("请先选择订单或者新建订单");
+    		return;
+    	}
+    	if(orderid==""){
+    		$CommonUI.alert("请先选择订单或者新建订单");
+    		return;
+    	}
+    	$('#datagrid').datagrid('appendRow', {orderid:orderid});
+        editIndex = $('#datagrid').datagrid('getRows').length - 1;
+        $('#datagrid').datagrid('selectRow', editIndex).datagrid('beginEdit', editIndex);
+    }
+}
+
+
+//导入订单
+function importOrder(){
+	$('#importDialog').dialog('open');
+}
+
+//查询导入订单
+function searchOrder(){
+	
+	   $('#searchOrder').dialog('open');
+	
+
+	
+	$('#searchOrderTable').datagrid({  
+	    url:'orderStateCtrl!list.htm',
+	    method:'post',
+	    fit:true,
+	    toolbar:'#searchtoolbar',
+	    loadMsg:'加载数据中.....',
+	    pagination:true,
+	    fitColumns:true,
+	    rownumbers:true,
+	    onDblClickRow:function(rowIndex, rowData){
+	    	$("#searchOrder").dialog('close');
+	    	$CommonUI.getDataGrid('#datagrid').datagrid('load',{
+	    		'dto.exeState.ordId':rowData.orderid
+    		});
+	    	clearData();
+	    	$("#emFlag").attr("checked",rowData.emflag);
+	    	$("#hisNO").val(rowData.hisno);
+	    	$("#deliveryDate").datebox('setValue',rowData.deliverydate);
+	    	$("#purId").combobox('setValue',rowData.purlocid);
+	    	$("#locId").combobox('setValue',rowData.reclocid);
+	    	$("#vendorId").combogrid('setValue',rowData.vendor);
+	    	$("#vendor").val(rowData.vendorid);
+	    	$("#orderId").val(rowData.orderid);
+	    	$("#recDestination").combobox({
+				url:$WEB_ROOT_PATH+'/ord/orderCtrl!findLocDesctionComboList.htm?dto.loc='+rowData.reclocid,
+				valueField:'hopCtlocDestinationId',							
+				textField:'destination',
+				mode:'remote',
+			});
+	    	$("#recDestination").combobox('setValue',rowData.destinationid);
+	    	$("#remark").val(rowData.remark);
+	    },
+	    columns:[[  
+	  	        {field:'orderid',title:'ID',width:100},
+	  	        {field:'hisno',title:'HIS单号',width:100},
+	  	        {field:'statedesc',title:'状态',width:100,sortable:true},
+	  	        {field:'emflag',title:'加急',width:100,sortable:true},
+	  	        {field:'purloc',title:'入库科室',width:150,sortable:true},  
+	  	        {field:'recloc',title:'收货科室',width:150,sortable:true},
+	  	        {field:'destination',title:'收货地址',width:200,sortable:true},
+	  	        {field:'vendor',title:'供应商',width:150,sortable:true},
+	  	        {field:'deliverydate',title:'要求送达日期',width:100,sortable:true}
+	  	 ]]
+	});
+	
+	
+}
+
+
+
+
+function fillValue(rowIndex, rowData){
+	
+	 
+	orderitmid=$('#datagrid').datagrid('getRows')[editIndex]['orderitmid'];
+	ordid=$('#datagrid').datagrid('getRows')[editIndex]['orderid'];
+	qty=$('#datagrid').datagrid('getRows')[editIndex]['qty'];
+	hopincid=rowData.incid;
+	incuomname=rowData.incuomname;
+	incrp=rowData.incrp;
+	 $.post(
+		 $WEB_ROOT_PATH+'/ord/orderCtrl!saveOrditm.htm',
+		 {
+			 "dto.orderItm.orderitmId":orderitmid,
+          	 "dto.orderItm.incId":hopincid,
+          	 "dto.orderItm.ordId":ordid, 
+          	 "dto.orderItm.rp":incrp,
+          	 "dto.orderItm.uom":incuomname,
+          	 "dto.orderItm.reqqty":qty,
+		 },
+		 function(data){
+			 
+			 if(data.dto.opFlg=="1"){
+				 $('#datagrid').datagrid('updateRow', { 
+					 	index: editIndex, 
+						row: {
+							inccode: rowData.inccode, 
+					 	    incname: rowData.incname,
+					 		uom:rowData.incuomname,
+					 		rp:rowData.incrp,
+					 		manf:rowData.manfname,
+					 		hopincid:rowData.incid,
+						}
+				 });
+				 
+				 $CommonUI.autoCloseRightBottomMessage("("+rowData.incname+")"+"药品修改成功","消息",2500,'slide');
+				 $CommonUI.getDataGrid('#datagrid').datagrid('acceptChanges');
+			 }
+			 
+			 
+        },
+		 'json'
+	 );
+}
+
+function onAfterEdit(rowIndex, rowData, changes){
+	 var changes=$CommonUI.getDataGrid('#datagrid').datagrid('getChanges');
+	 if(changes.length==0){
+		 return
+	 }
+	 $.post(
+			 $WEB_ROOT_PATH+'/ord/orderCtrl!saveOrditm.htm',
+			 {
+				 "dto.orderItm.orderitmId":rowData.orderitmid,
+	          	 "dto.orderItm.incId":rowData.hopincid,
+	          	 "dto.orderItm.ordId":rowData.orderid, 
+	          	 "dto.orderItm.rp":rowData.rp,
+	          	 "dto.orderItm.uom":rowData.uom,
+	          	 "dto.orderItm.reqqty":rowData.qty,
+			 },
+			 function(data){
+				 
+				 if(data.dto.opFlg=="1"){					 
+					 $CommonUI.autoCloseRightBottomMessage("("+rowData.incname+")"+"药品修改成功","消息",2500,'slide');
+					 $CommonUI.getDataGrid('#datagrid').datagrid('acceptChanges');
+				 }	 
+	        },
+			 'json'
+		 );
+}
+
+
+function deleteR(value,row,index){  
+	return '<a href="#" onclick="deleterow('+index+')">删除</a>';
+}
+function deleterow(index){
+	orderitmid=$('#datagrid').datagrid('getRows')[index]['orderitmid'];
+	if(orderitmid==undefined){
+		$('#datagrid').datagrid('deleteRow',index);
+		return;
+	}
+	$CommonUI.loadUIM('messager');
+	$.messager.confirm('确认对话框', '确认要删除吗？', function(r){
+		if (r){
+			
+			$.post(
+					 $WEB_ROOT_PATH+'/ord/orderCtrl!deleteOrditm.htm',
+					 {
+						 "dto.orderItm.orderitmId":orderitmid,
+					 },
+					 function(data){
+						 if(data.dto.opFlg=="1"){					 
+							$CommonUI.getDataGrid('#datagrid').datagrid('load');
+						 }
+			        },
+					 'json'
+			);
+		}
+	});
+}
+
+function saveMain(){
+	var isValid = $CommonUI.getForm('#saveOrUpdate').form('validate');
+	if(!isValid){
+		return isValid;
+	}
+	
+	$.post(
+			$WEB_ROOT_PATH+'/ord/orderCtrl!saveMain.htm',
+            {
+           	 	"dto.order.deliveryDate":$("#deliveryDate").datebox('getValue'),
+           	    "dto.order.emFlag":$("#emFlag").attr("checked"),
+           	    "dto.order.remark":$("#remark").val(),
+           	    "dto.order.vendorId":$('#vendor').val(),
+           	    "dto.order.recLoc":$("#locId").combobox('getValue'),
+           	    "dto.order.recDestination":$("#recDestination").combobox('getValue'),
+           	    "dto.order.purLoc":$("#purId").combobox('getValue'),
+           	    "dto.order.orderNo":$("#hisNO").val(),
+           	    "dto.order.orderId":$("#orderId").val(),
+           	    "dto.order.remark":$("#remark").val()
+           	    
+            },
+            function(data){
+               if(data.dto.opFlg=="1"){
+            	   $CommonUI.alert("订单保存成功");
+            	   $("#orderId").val(data.dto.order.orderId);
+               }else{
+            	   $CommonUI.alert("订单保存失败");
+               }
+            },
+            "json"
+    );
+}
+
+function deleteOrder(){
+	if($("#orderId").val()==undefined){
+		$CommonUI.alert("请查找订单");
+		return;
+	}
+	$CommonUI.loadUIM('messager');
+	$.messager.confirm('确认对话框', '确认要删除吗？', function(r){
+		if (r){
+			
+			$.post(
+					 $WEB_ROOT_PATH+'/ord/orderCtrl!delete.htm',
+					 {
+						 "dto.order.orderId":$("#orderId").val(),
+					 },
+					 function(data){
+						 if(data.dto.opFlg=="1"){
+							 $CommonUI.getDataGrid('#datagrid').datagrid('load',{
+						    		'dto.exeState.ordId':0
+					    	 });
+							 clearData();
+							 $CommonUI.alert("删除成功");
+						 }else{
+							 $CommonUI.alert("删除失败");
+						 }
+			        },
+					 'json'
+			);
+		}
+	});
+}
+
+function clearData(){
+	$("#emFlag").attr("checked","");
+    $("#hisNO").val("");
+    $("#deliveryDate").datebox('setValue',"");
+    $("#purId").combobox('setValue',"");
+    $("#locId").combobox('setValue',"");
+    $("#recDestination").combobox('setValue',"");
+    $("#vendorId").combogrid('setValue',"");
+    $("#orderId").val(undefined);
+    $("#remark").val("");
+}
+
+function complete(){
+	
+	if($("#orderId").val()==undefined){
+		$CommonUI.alert("请选择订单");
+		return;
+	}
+	if($("#orderId").val()==""){
+		$CommonUI.alert("请选择订单");
+		return;
+	}
+	$.post(
+			 $WEB_ROOT_PATH+'/ord/orderCtrl!complete.htm',
+			 {
+				 "dto.order.orderId":$("#orderId").val(),
+				 "dto.order.remark":$("#remark").val(),
+			 },
+			 function(data){
+				 if(data.dto.opFlg=="1"){
+	
+					 $CommonUI.alert("确认成功");
+				 }else{
+					 $CommonUI.alert("确认失败");
+				 }
+	        },
+			 'json'
+	);
+}

@@ -1,0 +1,71 @@
+/**
+ * 通过模板生成Dto 
+ * template by zxx
+ */
+package com.dhcc.pms.service.hop.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.dhcc.framework.app.service.CommonService;
+import com.dhcc.framework.common.PagerModel;
+
+import javax.annotation.Resource;
+
+import com.dhcc.pms.service.hop.HopCtlocService;
+import com.dhcc.pms.dao.hop.HopCtlocDao;
+import com.dhcc.pms.dto.hop.HopCtlocDto;
+import com.dhcc.pms.entity.hop.HopCtloc;
+import com.dhcc.pms.entity.vo.hop.HopCtlocVo;
+
+@Service("hopCtlocService")
+public class HopCtlocServiceImpl implements HopCtlocService {
+
+	@Resource
+	private HopCtlocDao hopCtlocDao;
+	@Resource
+	private CommonService commonService;
+
+	public void list(HopCtlocDto dto){
+	
+		PagerModel pagerModel = dto.getPageModel();
+		//调用DAO 拼接查询条件
+		hopCtlocDao.buildPagerModelQuery(pagerModel, dto);
+		//调用分页查询方法
+		commonService.fillPagerModelData(pagerModel);
+	}
+	
+	public void save(HopCtlocDto dto){
+	
+		hopCtlocDao.save(dto.getHopCtloc());
+	}
+	
+	public void delete(HopCtlocDto dto){
+	
+		hopCtlocDao.delete(dto.getHopCtloc());
+	}
+	
+	public void update(HopCtlocDto dto){
+	
+		hopCtlocDao.update(dto.getHopCtloc());
+	}
+	
+	public HopCtloc findById(HopCtlocDto dto){
+	
+		dto.setHopCtloc(hopCtlocDao.findById(dto.getHopCtloc()));
+		return dto.getHopCtloc();
+	}
+
+	public List<HopCtloc> getCtlocInfo(HopCtlocDto dto) {
+		return hopCtlocDao.getCtlocInfo(dto.getHopCtloc());
+	}
+
+
+	public List<HopCtlocVo> getListInfo(HopCtlocDto dto) {
+		
+		PagerModel pagerModel=dto.getPageModel();
+		return hopCtlocDao.getListInfo(pagerModel,dto.getHopCtlocVos(),dto.getHopCtloc());
+	}
+		
+}

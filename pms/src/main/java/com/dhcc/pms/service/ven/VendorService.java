@@ -1,0 +1,33 @@
+/**
+ * 通过模板生成Service
+ * template by zxx
+ */
+package com.dhcc.pms.service.ven;
+
+import java.util.List;
+
+import com.dhcc.pms.dto.ven.VendorDto;
+import com.dhcc.pms.entity.ven.Vendor;
+import com.dhcc.pms.entity.vo.ven.VenQualifTypeVO;
+
+public interface VendorService {
+
+	public void list(VendorDto dto);
+	
+	public void save(VendorDto dto);
+	
+	public void delete(VendorDto dto);
+	
+	public void update(VendorDto dto);
+	
+	public Vendor findById(VendorDto dto);
+	
+	public void saveOrUpdate(VendorDto dto);
+	
+	public List<VenQualifTypeVO> queryQualifyType(VendorDto dto) ;
+	
+	public void saveOrUpdatePic(VendorDto dto);
+	
+	public List<Vendor> findVenComboList(VendorDto dto);
+
+}

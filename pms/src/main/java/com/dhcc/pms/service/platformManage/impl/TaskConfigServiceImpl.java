@@ -1,0 +1,56 @@
+package com.dhcc.pms.service.platformManage.impl;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.dhcc.framework.app.service.CommonService;
+import com.dhcc.framework.common.PagerModel;
+import com.dhcc.pms.dao.platformManage.TaskConfigDao;
+import com.dhcc.pms.dto.platformManage.TaskConfigDto;
+import com.dhcc.pms.service.platformManage.TaskConfigService;
+
+
+/**
+ * 
+* <p>标题: TaskConfigServiceImpl.java</p>
+* <p>业务描述: 统一运维及安全管理平台</p>
+* <p>公司: 东华软件股份公司</p>
+* <p>版权: dhcc2013</p>
+* @author 于鸿
+* @date 2013年11月15日
+* @version V1.0
+ */
+@Service("latformManageService")
+public class TaskConfigServiceImpl implements TaskConfigService {
+
+	@Resource
+	private TaskConfigDao taskConfigDao;
+	@Resource
+	private CommonService commonService;
+
+	public void list(TaskConfigDto dto){
+		PagerModel pagerModel = dto.getPageModel();
+		//调用DAO 拼接查询条件
+		taskConfigDao.buildPagerModelQuery(pagerModel, dto);
+		//调用分页查询方法
+		commonService.fillPagerModelData(pagerModel);
+	}
+	
+	public void save(TaskConfigDto dto){
+		taskConfigDao.save(dto.getTaskConfig());
+	}
+	
+	public void delete(TaskConfigDto dto){
+		taskConfigDao.delete(dto.getTaskConfig());
+	}
+	
+	public void update(TaskConfigDto dto){
+		taskConfigDao.update(dto.getTaskConfig());
+	}
+	
+	public void findById(TaskConfigDto dto){
+		taskConfigDao.findById(dto.getTaskConfig());
+	}
+	
+}

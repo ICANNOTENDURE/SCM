@@ -1,0 +1,82 @@
+package com.dhcc.framework.hbase;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * <p>标题: TBData.java</p>
+ * <p>业务描述:基层医疗卫生开发平台</p>
+ * <p>公司:东华软件股份公司</p>
+ * <p>版权:dhcc2013</p>
+ * @author 姚凯
+ * @date 2013年9月9日
+ * @version V1.0 
+ */
+public class TBData {
+	private int currentPage;
+	private int pageSize;
+	private int totalCount;
+	private int totalPage;
+	private List<Map<String,String>> resultList;
+	/**  
+	 * @return currentPage 
+	 */
+	public int getCurrentPage() {
+		return currentPage;
+	}
+	/**  
+	 * @param currentPage currentPage 
+	 */
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
+	}
+	/**  
+	 * @return pageSize 
+	 */
+	public int getPageSize() {
+		return pageSize;
+	}
+	/**  
+	 * @param pageSize pageSize 
+	 */
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+	/**  
+	 * @return totalCount 
+	 */
+	public int getTotalCount() {
+		return totalCount;
+	}
+	/**  
+	 * @param totalCount totalCount 
+	 */
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+	/**  
+	 * @return totalPage 
+	 */
+	public int getTotalPage() {
+		return totalPage;
+	}
+	/**  
+	 * @param totalPage totalPage 
+	 */
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
+	}
+	/**  
+	 * @return resultList 
+	 */
+	public List<Map<String, String>> getResultList() {
+		return resultList;
+	}
+	/**  
+	 * @param resultList resultList 
+	 */
+	public void setResultList(List<Map<String, String>> resultList) {
+		this.resultList = resultList;
+	}
+	
+}

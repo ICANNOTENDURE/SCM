@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="OrderStateWServiceService" targetNamespace="http://ord.ws.pms.dhcc.com" xmlns:ns1="http://ord.ws.pms.dhcc.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ord.ws.pms.dhcc.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:import namespace="http://ord.ws.pms.dhcc.com/" location="OrderStateWServiceInterface.wsdl">
+    </wsdl:import>
+  <wsdl:binding name="OrderStateWServiceServiceSoapBinding" type="ns1:OrderStateWServiceInterface">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="list">
+      <soap:operation soapAction="" style="rpc"/>
+      <wsdl:input name="list">
+        <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
+      </wsdl:input>
+      <wsdl:output name="listResponse">
+        <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listOrdItm">
+      <soap:operation soapAction="" style="rpc"/>
+      <wsdl:input name="listOrdItm">
+        <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
+      </wsdl:input>
+      <wsdl:output name="listOrdItmResponse">
+        <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="OrderStateWServiceService">
+    <wsdl:port name="OrderStateWServiceServiceHttpSoap12Endpoint" binding="tns:OrderStateWServiceServiceSoapBinding">
+      <soap:address location="/ws/orderStateWService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
