@@ -112,6 +112,7 @@ public class HopIncPicDao extends HibernatePersistentObjectDAO<HopIncPic> {
 		//获取总条数
 		pagerModel.setCountProName("INC_PIC_ID");
 		pagerModel.setQueryHql(hqlBuffer.toString());
+		pagerModel.setHqlParamMap(hqlParamMap);
 		int totalRows = pagerModel.getTotals();
 		if (totalRows == 0) {
 			totalRows = commonDao.getResultCountWithValuesMap(
