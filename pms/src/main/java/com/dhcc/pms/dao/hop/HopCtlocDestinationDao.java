@@ -147,6 +147,7 @@ public class HopCtlocDestinationDao extends HibernatePersistentObjectDAO<HopCtlo
 		
 		pagerModel.setCountProName("CTLOCDES_ID");
 		pagerModel.setQueryHql(hqlBuffer.toString());
+		pagerModel.setHqlParamMap(hqlParamMap);
 		int totalRows = pagerModel.getTotals();
 		if (totalRows == 0) {
 			totalRows = commonDao.getResultCountWithValuesMap(
