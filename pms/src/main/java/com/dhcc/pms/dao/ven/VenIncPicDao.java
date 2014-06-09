@@ -113,6 +113,7 @@ public class VenIncPicDao extends HibernatePersistentObjectDAO<VenIncPic> {
 		//获取总条数
 		pagerModel.setCountProName("VEN_INC_PIC_ID");
 		pagerModel.setQueryHql(hqlBuffer.toString());
+		pagerModel.setHqlParamMap(hqlParamMap);
 		int totalRows = pagerModel.getTotals();
 		if (totalRows == 0) {
 			totalRows = commonDao.getResultCountWithValuesMap(
