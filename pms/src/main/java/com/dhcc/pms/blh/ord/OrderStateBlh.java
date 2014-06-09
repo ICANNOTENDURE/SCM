@@ -118,7 +118,11 @@ public class OrderStateBlh extends AbstractBaseBlh {
 		.getWriter()
 		.write(JsonUtils.toJson(ordertateService.getComboList()));
 	}
-	
+	/**
+	 * 
+	 * @param res
+	 * @throws IOException
+	 */
 	public void OrderAndroid(BusinessRequest res) throws IOException{
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
 
