@@ -130,10 +130,13 @@ public class OrderStateBlh extends AbstractBaseBlh {
 		//调用对应的service方法
 		ordertateService.listOrderState(dto);
 		//调用对应的service方法
-		WebContextHolder
-		.getContext()
-		.getResponse()
-		.getWriter()
-		.write(JsonUtils.toJson(dto.getPageModel().getPageData()));
+		WebContextHolder.getContext().getResponse().setContentType("text/html;charset=UTF-8");
+		WebContextHolder.getContext().getResponse().getWriter()
+		.write("{\"total\":"
+				+ dto.getPageModel().getTotals()
+				+ ",\"rows\":"
+				+ JsonUtils.toJson(dto.getPageModel().getPageData())
+				+ "}");
+		WebContextHolder.getContext().getResponse().getWriter().flush();
 	}
 }
