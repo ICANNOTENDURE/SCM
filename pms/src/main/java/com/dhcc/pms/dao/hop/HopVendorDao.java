@@ -1,0 +1,144 @@
+/**
+ *  
+ * template by zxx
+ */
+package com.dhcc.pms.dao.hop;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Repository;
+
+import com.dhcc.framework.common.PagerModel;
+import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
+import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
+import com.dhcc.framework.transmission.dto.BaseDto;
+import com.dhcc.framework.util.StringUtils;
+import com.dhcc.framework.web.context.WebContextHolder;
+import com.dhcc.pms.dto.hop.HopVendorDto;
+import com.dhcc.pms.entity.hop.HopVendor;
+import com.dhcc.pms.entity.vo.hop.HopVendorVo;
+
+@Repository
+public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
+	
+	@Resource
+	private JdbcTemplateWrapper jdbcTemplateWrapper;
+	
+	public void buildPagerModelQuery(PagerModel pagerModel,BaseDto dto) {
+	
+		HopVendorDto hopVendorDto = (HopVendorDto) dto;
+		HopVendor hopVendor = hopVendorDto.getHopVendor();
+
+		pagerModel.setCountProName(super.getIdName(HopVendor.class));
+		StringBuilder hqlStr = new StringBuilder();
+		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
+		
+		buildQuery(hqlParamMap, hopVendor, hqlStr);
+		pagerModel.setQueryHql(hqlStr.toString());
+		pagerModel.setHqlParamMap(hqlParamMap);
+	}
+
+	/** 
+	 * 拼接查询条件的方法  
+	 * @param hql
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	private void buildQuery(Map hqlParamMap,HopVendor hopVendor,StringBuilder hqlStr){
+		//拼接查询条件
+		hqlStr.append(" from HopVendor where 1=1 ");
+		//接下来拼接其他查询条件 如下示例代码所示
+		//hqlStr.append("WHERE YEAR=:year ");
+		//hqlParamMap.put("year", year);
+		//hqlStr.append("AND MONTH=:month ");
+		//hqlParamMap.put("month", month);
+		//hqlStr.append("AND DAY=:day ");
+		//hqlParamMap.put("day", day);
+	}
+		
+	public void save(HopVendor hopVendor){
+		hopVendor.setHopHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+		super.saveOrUpdate(hopVendor);
+	}
+	
+	public void delete(HopVendor hopVendor){
+		
+		super.delete(hopVendor);
+	}
+	
+	public void update(HopVendor hopVendor){
+	
+		super.update(hopVendor);
+	}
+	
+	public HopVendor findById(HopVendor hopVendor){
+
+		return super.findById(hopVendor.getHopVendorId());
+
+	}
+	
+	/**
+	 * 
+	* @Title: HopVendorDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月11日 上午9:59:48
+	* @version V1.0
+	 */
+	public void listHopCon(HopVendorDto dto){
+		StringBuffer hqlBuffer = new StringBuffer();
+		hqlBuffer.append("select ");
+		hqlBuffer.append("t1.H_VENID as hopvenid, ");
+		hqlBuffer.append("t1.H_NAME as hopvenname, ");
+		hqlBuffer.append("t3.hospital_name as hopname, ");
+		hqlBuffer.append("t2.name as venname, ");
+		hqlBuffer.append("t1.h_vendorid as venid ");
+		
+		hqlBuffer.append("from t_hop_vendor t1 ");
+		hqlBuffer.append("left join t_ven_vendor t2 on t1.h_vendorid=t2.ven_id ");
+		hqlBuffer.append("left join t_sys_hospital t3 on t3.hospital_id=t1.h_hopid ");
+		hqlBuffer.append("where 1=1 ");
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+
+		if(dto.getHopVendor()!=null){
+			if (dto.getHopVendor().getHopHopId()!=null){
+				hqlBuffer.append("and t3.hospital_id=:hopid ");
+				hqlParamMap.put("hopid", dto.getHopVendor().getHopHopId());
+			}
+			if (!StringUtils.isNullOrEmpty(dto.getHopVendor().getHopAlias())){
+				hqlBuffer.append("and t1.h_alias like :hvalias ");
+				hqlParamMap.put("hvalias", "%"+dto.getHopVendor().getHopAlias()+"%");
+			}
+			if (!StringUtils.isNullOrEmpty(dto.getHopVendor().getHopCode())){
+				hqlBuffer.append("and t1.h_code like :hvcode ");
+				hqlParamMap.put("hvcode", "%"+dto.getHopVendor().getHopCode()+"%");
+			}
+			if (!StringUtils.isNullOrEmpty(dto.getHopVendor().getHopName())){
+				hqlBuffer.append("and t1.h_name like :hvname ");
+				hqlParamMap.put("hvname", "%"+dto.getHopVendor().getHopName()+"%");
+			}
+			if (dto.getHopVendor().getHopVenId()!=null){
+				hqlBuffer.append("and t1.H_VENDORID =:hvendorid ");
+				hqlParamMap.put("hvendorid", dto.getHopVendor().getHopVenId());
+			}
+		
+		}
+		if(dto.getFlag()!=null){
+			if (dto.getFlag().equals("2")){
+				hqlBuffer.append("and t1.h_vendorid is null ");
+			}
+			if (dto.getFlag().equals("1")){
+				hqlBuffer.append("and t1.h_vendorid is not null ");
+			}
+		}
+		dto.getPageModel().setQueryHql(hqlBuffer.toString());
+		dto.getPageModel().setHqlParamMap(hqlParamMap);
+		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), HopVendorVo.class, "h_venid");
+	}
+	
+}
