@@ -48,6 +48,7 @@ public class SysImpModelAction extends BaseAction {
 			return "listMain";
 		}
 		if("model".equals(super.getBusinessFlow())){
+			dto.setImpModelList(null);
 			dto.setImpModelList(sysImpModelService.getModelList(dto));
 			return "model";
 		}

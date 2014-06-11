@@ -1,13 +1,13 @@
 package com.dhcc.pms.entity.hop;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -26,6 +26,8 @@ public class HopInc implements Serializable {
 	@GenericGenerator(name="idGenerator",strategy="sequence",
 	parameters={@Parameter(name="sequence",value="SEQUENCE_HOP_INC")})
 	@GeneratedValue(generator="idGenerator")	
+//	@GenericGenerator(name="idGenerator",strategy="uuid")
+//	@GeneratedValue(generator="idGenerator")
 	@Column(name="INC_ID", unique=true, nullable=false, precision=22)
 	private Long incId;
 
@@ -39,7 +41,7 @@ public class HopInc implements Serializable {
 	private String incCode;
 
 	@Column(name="INC_FAC", precision=22)
-	private BigDecimal incFac;
+	private Long incFac;
 
 	@Column(name="INC_HISSYSID", precision=22)
 	private Long incHissysid;
@@ -54,20 +56,81 @@ public class HopInc implements Serializable {
 	private String incUomname;
 	
 	@Column(name="INC_MANFID")
-	private BigDecimal incManfid;
+	private Long incManfid;
 	
 	@Column(name="INC_HOSPID")
 	private Long incHospid;
 
-
-	
 	@Column(name="INC_RP", precision=22)
-	private BigDecimal incRp;
+	private Long incRp;
 	
+	@Column(name="INC_SPEC")
+	private String incSpec;
+	
+	@Column(name="INC_CAT")
+	private String incCat;
+	
+	
+	@Column(name="INC_SP")
+	private Long incSp;
+	
+	@Transient
+	private String incAliaS;
+	
+	
+	
+	/**
+	 * @return the incAliaS
+	 */
+	public String getIncAliaS() {
+		return incAliaS;
+	}
+
+
+	/**
+	 * @param incAliaS the incAliaS to set
+	 */
+	public void setIncAliaS(String incAliaS) {
+		this.incAliaS = incAliaS;
+	}
+
+
+	/**
+	 * @return the incSp
+	 */
+	public Long getIncSp() {
+		return incSp;
+	}
+
+
+	/**
+	 * @param incSp the incSp to set
+	 */
+	public void setIncSp(Long incSp) {
+		this.incSp = incSp;
+	}
+
+
+	/**
+	 * @return the incSpec
+	 */
+	public String getIncSpec() {
+		return incSpec;
+	}
+
+
+	/**
+	 * @param incSpec the incSpec to set
+	 */
+	public void setIncSpec(String incSpec) {
+		this.incSpec = incSpec;
+	}
+
+
 	/**
 	 * @return the incRp
 	 */
-	public BigDecimal getIncRp() {
+	public Long getIncRp() {
 		return incRp;
 	}
 
@@ -75,7 +138,7 @@ public class HopInc implements Serializable {
 	/**
 	 * @param incRp the incRp to set
 	 */
-	public void setIncRp(BigDecimal incRp) {
+	public void setIncRp(Long incRp) {
 		this.incRp = incRp;
 	}
 
@@ -85,7 +148,7 @@ public class HopInc implements Serializable {
 	
 	
 	public HopInc(Long incId,String incCode,String incName, String incUomname,
-			String incBuomname, Long incHissysid,BigDecimal incManfid,
+			String incBuomname, Long incHissysid,Long incManfid,
 			Long incHospid ) {
 		super();
 		this.incId = incId;
@@ -99,11 +162,11 @@ public class HopInc implements Serializable {
 	}
 
 
-	public BigDecimal getIncManfid() {
+	public Long getIncManfid() {
 		return incManfid;
 	}
 
-	public void setIncManfid(BigDecimal incManfid) {
+	public void setIncManfid(Long incManfid) {
 		this.incManfid = incManfid;
 	}
 
@@ -147,11 +210,11 @@ public class HopInc implements Serializable {
 		this.incCode = incCode;
 	}
 
-	public BigDecimal getIncFac() {
+	public Long getIncFac() {
 		return this.incFac;
 	}
 
-	public void setIncFac(BigDecimal incFac) {
+	public void setIncFac(Long incFac) {
 		this.incFac = incFac;
 	}
 
@@ -185,6 +248,22 @@ public class HopInc implements Serializable {
 
 	public void setIncUomname(String incUomname) {
 		this.incUomname = incUomname;
+	}
+
+
+	/**
+	 * @return the incCat
+	 */
+	public String getIncCat() {
+		return incCat;
+	}
+
+
+	/**
+	 * @param incCat the incCat to set
+	 */
+	public void setIncCat(String incCat) {
+		this.incCat = incCat;
 	}
 	
 	

@@ -23,5 +23,17 @@ public interface HopManfService {
 
 	public List<HopManf> getManfInfo(HopManfDto dto);
 	
+	/**
+	 * 
+	* @Title: HopManfService.java
+	* @Description: TODO(更具产地描述查找产地)
+	* @param name
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年6月10日 下午3:19:30
+	* @version V1.0
+	 */
+	public Long getIdByName(String name);
 
 }

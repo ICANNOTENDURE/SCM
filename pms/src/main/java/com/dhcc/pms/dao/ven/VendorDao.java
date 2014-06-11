@@ -16,6 +16,7 @@ import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
+import com.dhcc.framework.util.PingYinUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.pms.dto.ven.VendorDto;
 import com.dhcc.pms.entity.ven.VenQualifPic;
@@ -49,6 +50,7 @@ public class VendorDao extends HibernatePersistentObjectDAO<Vendor> {
 	 * @param hql
 	 * @return
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void buildQuery(Map hqlParamMap, Vendor vendor, StringBuilder hqlStr) {
 		// 拼接查询条件
 		hqlStr.append(" from Vendor where 1=1 ");
@@ -58,17 +60,14 @@ public class VendorDao extends HibernatePersistentObjectDAO<Vendor> {
 				 hqlParamMap.put("code", "%"+vendor.getCode()+"%");
 			}
 			if (vendor.getName()!=null){
-				 hqlStr.append(" and name like :code ");
-				 hqlParamMap.put("code", "%"+vendor.getName()+"%");
+				 hqlStr.append(" and name like :name ");
+				 hqlParamMap.put("name", "%"+vendor.getName()+"%");
+			}
+			if (!StringUtils.isNullOrEmpty(vendor.getAlias())){
+				 hqlStr.append(" and alias like :alias ");
+				 hqlParamMap.put("alias", "%"+vendor.getAlias().toLowerCase()+"%");
 			}
 		}
-		// 接下来拼接其他查询条件 如下示例代码所示
-		// hqlStr.append("WHERE YEAR=:year ");
-		// hqlParamMap.put("year", year);
-		// hqlStr.append("AND MONTH=:month ");
-		// hqlParamMap.put("month", month);
-		// hqlStr.append("AND DAY=:day ");
-		// hqlParamMap.put("day", day);
 	}
 
 	public void save(Vendor vendor) {
@@ -94,7 +93,9 @@ public class VendorDao extends HibernatePersistentObjectDAO<Vendor> {
 
 	public void saveOrUpdate(VendorDto dto) {
 
-		
+		if(StringUtils.isNullOrEmpty(dto.getVendor().getAlias())){
+			dto.getVendor().setAlias(PingYinUtil.getFirstSpell(dto.getVendor().getName()));
+		}
 		super.saveOrUpdate(dto.getVendor());
 		for (int i = 0; i < dto.getVendor().getVenQualificationList().size(); i++) {
 			dto.getVendor().getVenQualificationList().get(i)

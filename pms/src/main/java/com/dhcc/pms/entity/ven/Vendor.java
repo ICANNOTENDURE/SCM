@@ -57,6 +57,9 @@ public class Vendor implements java.io.Serializable {
 	@Column(name="HISID")
 	private Long hisId;
 	
+	@Column(name="ALIAS")
+	private String alias;
+	
 	@Transient
 	private List<VenQualification> venQualificationList;
 	
@@ -65,6 +68,18 @@ public class Vendor implements java.io.Serializable {
 	
 
 
+	/**
+	 * @return the alias
+	 */
+	public String getAlias() {
+		return alias;
+	}
+	/**
+	 * @param alias the alias to set
+	 */
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
 	/**
 	 * @return the hisId
 	 */

@@ -18,8 +18,8 @@ import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.util.StringUtils;
+import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ven.VenIncDto;
-import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.vo.ven.ShowVenIncVo;
 import com.dhcc.pms.entity.vo.ven.VenIncContranstVo;
@@ -231,6 +231,10 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
 		StringBuffer hqlBuffer = new StringBuffer();
 		hqlBuffer.append("select ");
+		hqlBuffer.append("t1.inc_code as hopinccode, ");
+		hqlBuffer.append("t6.name as manf, ");
+		hqlBuffer.append("t1.INC_UOMNAME as uom, ");
+		hqlBuffer.append("t1.INC_SPEC as spec, ");
 		hqlBuffer.append("t1.inc_id as hopincid, ");
 		hqlBuffer.append("t1.inc_name as hopincname, ");
 		hqlBuffer.append("t4.hospital_name as hopname, ");
@@ -250,16 +254,27 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 		}
 		hqlBuffer.append("left join t_sys_hospital t4 on t1.inc_hospid=t4.hospital_id ");
 		hqlBuffer.append("left join t_ven_vendor t5 on t5.ven_id=t3.ven_inc_venid ");
+		hqlBuffer.append("left join t_hop_manf t6 on t1.inc_manfid=t6.id ");
 		hqlBuffer.append(" where 1=1 ");
 		
+		hqlBuffer.append(" AND t1.inc_hospid =:hopid ");
+		hqlParamMap.put("hopid",WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+		
 		if(dto.getVenIncContranstDto()!=null){
-			if(dto.getVenIncContranstDto().getHopId()!=null){
-				hqlBuffer.append(" AND t1.inc_hospid =:hopid ");
-				hqlParamMap.put("hopid",dto.getVenIncContranstDto().getHopId());
-			}
-			if(StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncName())){
+
+			if(!StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncName())){
 				hqlBuffer.append(" AND t1.inc_name  like :hopincname ");
 				hqlParamMap.put("hopincname","%"+dto.getVenIncContranstDto().getIncName()+"%");
+			}
+			if(!StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncCode())){
+				hqlBuffer.append(" AND t1.inc_code  like :hopincode ");
+				hqlParamMap.put("hopincode","%"+dto.getVenIncContranstDto().getIncCode()+"%");
+			}
+			if(dto.getVenIncContranstDto().getFlag().equals("1")){
+				hqlBuffer.append(" AND t3.ven_inc_id is not null ");
+			}
+			if(dto.getVenIncContranstDto().getFlag().equals("2")){
+				hqlBuffer.append(" AND t3.ven_inc_id is  null ");
 			}
 		}
 		dto.getPageModel().setQueryHql(hqlBuffer.toString());
@@ -292,5 +307,66 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 		this.updateByHqlWithFreeParam(hqlStr.toString(),dto.getVenHopInc().getHopIncId());
 		super.save(dto.getVenHopInc());
 		dto.setOpFlg("1");
+	}
+	
+	
+	/**
+	 * 
+	* @Title: VenIncDao.java
+	* @Description: TODO(列出供应商药品供医院对照)
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月11日 下午12:00:53
+	* @version V1.0
+	 */
+	public void listContranst(VenIncDto dto){
+		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
+		StringBuffer hqlBuffer = new StringBuffer();
+		hqlBuffer.append("select ");
+		hqlBuffer.append("t1.inc_code as hopinccode, ");
+		hqlBuffer.append("t6.name as manf, ");
+		hqlBuffer.append("t1.INC_UOMNAME as uom, ");
+		hqlBuffer.append("t1.INC_SPEC as spec, ");
+		hqlBuffer.append("t1.inc_id as hopincid, ");
+		hqlBuffer.append("t1.inc_name as hopincname, ");
+		hqlBuffer.append("t4.hospital_name as hopname, ");
+		hqlBuffer.append("t1.inc_hissysid as hopincsysid, ");
+		hqlBuffer.append("t3.ven_inc_id  as venincid, ");
+		hqlBuffer.append("t3.ven_inc_name as venincname, ");
+		hqlBuffer.append("t5.name as venname, ");
+		hqlBuffer.append("t3.ven_inc_vensysid as vensysid ");
+		
+		hqlBuffer.append(" from t_ven_inc t1 ");
+		hqlBuffer.append("left join t_ven_hop_inc t2 on t2.ven_inc_id=t1.ven_inc_id ");
+		hqlBuffer.append("left join t_hop_inc t3 on t3.inc_id=t2.hop_inc_id  ");
+		if(WebContextHolder.getContext().getVisit().getUserInfo().getUserType()==1){
+			hqlBuffer.append(" and t3.inc_hospid =:incihopid ");
+			hqlParamMap.put("incihopid",WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+		}
+		hqlBuffer.append(" where 1=1 ");
+		
+		
+		
+		if(dto.getVenIncContranstDto()!=null){
+
+			if(!StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncName())){
+				hqlBuffer.append(" AND t1.inc_name  like :hopincname ");
+				hqlParamMap.put("hopincname","%"+dto.getVenIncContranstDto().getIncName()+"%");
+			}
+			if(!StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncCode())){
+				hqlBuffer.append(" AND t1.inc_code  like :hopincode ");
+				hqlParamMap.put("hopincode","%"+dto.getVenIncContranstDto().getIncCode()+"%");
+			}
+			if(dto.getVenIncContranstDto().getFlag().equals("1")){
+				hqlBuffer.append(" AND t3.ven_inc_id is not null ");
+			}
+			if(dto.getVenIncContranstDto().getFlag().equals("2")){
+				hqlBuffer.append(" AND t3.ven_inc_id is  null ");
+			}
+		}
+		dto.getPageModel().setQueryHql(hqlBuffer.toString());
+		dto.getPageModel().setHqlParamMap(hqlParamMap);
+		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), VenIncContranstVo.class, "ven_inc_id");
+		
 	}
 }

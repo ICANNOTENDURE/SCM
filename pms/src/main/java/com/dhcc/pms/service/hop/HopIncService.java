@@ -26,4 +26,16 @@ public interface HopIncService {
 
 	public void getListInfo(HopIncDto dto);
 	
+	/**
+	 * 
+	* @Title: HopIncService.java
+	* @Description: TODO(保存导入药品信息)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月10日 下午3:32:22
+	* @version V1.0
+	 */
+	public void saveInc(HopIncDto dto);
+	
 }

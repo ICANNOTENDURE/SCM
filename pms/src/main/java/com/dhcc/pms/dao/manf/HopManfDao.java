@@ -5,19 +5,18 @@
 package com.dhcc.pms.dao.manf;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.springframework.stereotype.Repository;
 
-import  com.dhcc.framework.common.PagerModel;
+import com.dhcc.framework.common.PagerModel;
+import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.util.StringUtils;
-import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
-import com.dhcc.pms.entity.hop.Hospital;
-import com.dhcc.pms.entity.manf.HopManf;
 import com.dhcc.pms.dto.manf.HopManfDto;
+import com.dhcc.pms.entity.manf.HopManf;
 
 @Repository
 public class HopManfDao extends HibernatePersistentObjectDAO<HopManf> {
@@ -49,7 +48,7 @@ public class HopManfDao extends HibernatePersistentObjectDAO<HopManf> {
 			hqlStr.append(" where 1=1 ");
 			String manfCode =hopManf.getManfCode();
 			String manfName =hopManf.getManfName();
-			BigDecimal manfHisDr=hopManf.getManfHisid();
+			Long manfHisDr=hopManf.getManfHisid();
 			if(!StringUtils.isNullOrEmpty(manfCode)){
 				hqlStr.append(" AND h.manfCode like:manfCode ");
 				hqlParamMap.put("manfCode","%"+manfCode+"%");
@@ -101,4 +100,33 @@ public class HopManfDao extends HibernatePersistentObjectDAO<HopManf> {
 		
 		return (List<HopManf>)this.findByHql(hqlBuffer.toString());
 	} 
+	
+	
+	/**
+	 * 
+	* @Title: HopManfDao.java
+	* @Description: TODO(产地描述查找ID)
+	* @param funcDto
+	* @throws Exception
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月10日 下午3:13:38
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public Long getIdByName(String name){
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		StringBuffer hql = new StringBuffer();
+		hql.append(" from ");
+		hql.append(" HopManf t ");
+		hql.append(" where 1=1 ");
+		hql.append(" and t.manfName = :manfname ");
+		paramMap.put("manfname", name);
+		List<HopManf> manfs=(List<HopManf>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+		if(manfs.size()==1){
+			return manfs.get(0).getHopManfId();
+		}
+		return null;
+	}
+	
 }

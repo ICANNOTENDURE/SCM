@@ -33,7 +33,7 @@ import com.dhcc.pms.service.ven.VendorService;
 		@Result(name = "add", location = "/WEB-INF/jsp/ven/add.jsp"),
 		@Result(name = "update", location = "/WEB-INF/jsp/ven/update.jsp"),
 		@Result(name = "upload", location = "/WEB-INF/jsp/ven/22.jsp"),
-		@Result(name = "contranstInc", location = "/WEB-INF/jsp/ven/ContranstInc.jsp"),
+		@Result(name = "contranstInc", location = "/WEB-INF/jsp/ven/ContranstInc2.jsp"),
 		@Result(name = "listMain", location = "/WEB-INF/jsp/ven/Vendor.jsp") })
 @InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
 @Blh("vendorBlh")
@@ -68,6 +68,9 @@ public class VendorAction extends BaseAction {
 		}
 		if("contranstInc".equals(super.getBusinessFlow())){
 			return "contranstInc";
+		}
+		if("ContranstVendor".equals(super.getBusinessFlow())){
+			return "ContranstVendor";
 		}
 		return null;
 	}

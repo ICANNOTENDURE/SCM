@@ -92,7 +92,7 @@ public class ImpModelDao extends HibernatePersistentObjectDAO<ImpModel> {
 		StringBuffer hqlBuffer = new StringBuffer();
 		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
 		hqlBuffer.append(" from  ImpModel t ");
-		if(StringUtils.isNullOrEmpty(impMode.getType())){
+		if(!StringUtils.isNullOrEmpty(impMode.getType())){
 			hqlBuffer.append(" where t.type = :type");
 			hqlParamMap.put("type",impMode.getType());
 		}

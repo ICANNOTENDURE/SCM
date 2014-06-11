@@ -35,7 +35,7 @@ public class HopManf implements Serializable {
 	private String manfCode;
 
 	@Column(name="HISID")
-	private BigDecimal manfHisid;
+	private Long manfHisid;
 
 	@Column(name="NAME")
 	private String manfName;
@@ -71,11 +71,11 @@ public class HopManf implements Serializable {
 		this.manfCode = manfCode;
 	}
 
-	public BigDecimal getManfHisid() {
+	public Long getManfHisid() {
 		return manfHisid;
 	}
 
-	public void setManfHisid(BigDecimal manfHisid) {
+	public void setManfHisid(Long manfHisid) {
 		this.manfHisid = manfHisid;
 	}
 

@@ -4,6 +4,7 @@
  */
 package com.dhcc.pms.dto.hop;
 
+import java.io.File;
 import java.util.List;
 
 import com.dhcc.pms.entity.hop.HopInc;
@@ -28,7 +29,43 @@ public class HopIncDto extends BaseDto {
 	private String comgridparam;
 	
 	
+	private File upload;
 	
+	private List<HopInc> hopIncs;
+	
+	
+	/**
+	 * @return the hopIncs
+	 */
+	public List<HopInc> getHopIncs() {
+		return hopIncs;
+	}
+
+
+	/**
+	 * @param hopIncs the hopIncs to set
+	 */
+	public void setHopIncs(List<HopInc> hopIncs) {
+		this.hopIncs = hopIncs;
+	}
+
+
+	/**
+	 * @return the upload
+	 */
+	public File getUpload() {
+		return upload;
+	}
+
+
+	/**
+	 * @param upload the upload to set
+	 */
+	public void setUpload(File upload) {
+		this.upload = upload;
+	}
+
+
 	/**
 	 * @return the comgridparam
 	 */

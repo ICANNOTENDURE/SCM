@@ -112,6 +112,9 @@ public class FuncBlh extends AbstractBaseBlh{
 					funcDto.getFunc().setParentId("0");
 					funcDto.getFunc().setIsLeaf("0");
 				}
+				if(funcDto.getFunc().getParentId().equals("0")){
+					funcDto.getFunc().setIsLeaf("0");
+				}
 				if("".equals(funcDto.getFunc().getFuncId())||funcDto.getFunc().getFuncId()==null){
 					this.funcService.saveFunc(funcDto.getFunc());
 					funcDto.setMessage("保存成功");

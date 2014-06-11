@@ -8,6 +8,8 @@ public class VenIncContranstVo {
 	
 	private Long hopincid;
 	
+	private String hopinccode;
+	
 	private String hopincname;
 	
 	private String hopname;
@@ -21,6 +23,71 @@ public class VenIncContranstVo {
 	private String venname;
 	
 	private Long vensysid;
+	
+	private String manf;
+	
+	private String uom;
+	
+	private String spec;
+	
+	
+	
+	
+	/**
+	 * @return the hopinccode
+	 */
+	public String getHopinccode() {
+		return hopinccode;
+	}
+
+	/**
+	 * @param hopinccode the hopinccode to set
+	 */
+	public void setHopinccode(String hopinccode) {
+		this.hopinccode = hopinccode;
+	}
+
+	/**
+	 * @return the manf
+	 */
+	public String getManf() {
+		return manf;
+	}
+
+	/**
+	 * @param manf the manf to set
+	 */
+	public void setManf(String manf) {
+		this.manf = manf;
+	}
+
+	/**
+	 * @return the uom
+	 */
+	public String getUom() {
+		return uom;
+	}
+
+	/**
+	 * @param uom the uom to set
+	 */
+	public void setUom(String uom) {
+		this.uom = uom;
+	}
+
+	/**
+	 * @return the spec
+	 */
+	public String getSpec() {
+		return spec;
+	}
+
+	/**
+	 * @param spec the spec to set
+	 */
+	public void setSpec(String spec) {
+		this.spec = spec;
+	}
 
 	/**
 	 * @return the hopincid

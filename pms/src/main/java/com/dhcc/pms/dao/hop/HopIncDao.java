@@ -4,25 +4,28 @@
  */
 package com.dhcc.pms.dao.hop;
 
-import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Repository;
 
-import  com.dhcc.framework.common.PagerModel;
-import com.dhcc.framework.transmission.dto.BaseDto;
-import com.dhcc.framework.util.StringUtils;
+import com.dhcc.framework.common.BaseConstants;
+import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.hibernate.dao.CommonDao;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
+import com.dhcc.framework.transmission.dto.BaseDto;
+import com.dhcc.framework.util.PingYinUtil;
+import com.dhcc.framework.util.StringUtils;
+import com.dhcc.framework.web.context.WebContextHolder;
+import com.dhcc.pms.dto.hop.HopIncDto;
 import com.dhcc.pms.entity.hop.HopInc;
+import com.dhcc.pms.entity.hop.HopIncAlias;
 import com.dhcc.pms.entity.vo.hop.HopIncVo;
 import com.dhcc.pms.entity.vo.hop.ShowHopIncVo;
-import com.dhcc.pms.dto.hop.HopIncDto;
 
 @Repository
 public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
@@ -60,7 +63,7 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 			hqlStr.append(" where 1=1 ");
 			String codeStr =hopInc.getIncCode();
 			String nameStr =hopInc.getIncName();	
-			BigDecimal manfDr=hopInc.getIncManfid();
+			Long manfDr=hopInc.getIncManfid();
 			Long hospDr=hopInc.getIncHospid();
 			Long hissysDr=hopInc.getIncHissysid();
 			if(!StringUtils.isNullOrEmpty(codeStr)){
@@ -187,7 +190,7 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 		if (hopInc!=null) {			
 			String codeStr =hopInc.getIncCode();
 			String nameStr =hopInc.getIncName();	
-			BigDecimal manfDr=hopInc.getIncManfid();
+			Long manfDr=hopInc.getIncManfid();
 			Long hospDr=hopInc.getIncHospid();
 			Long hissysDr=hopInc.getIncHissysid();
 			if(!StringUtils.isNullOrEmpty(codeStr)){
@@ -283,5 +286,41 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 				
 		//return showHopIncVos;
 		
-	} 
+	}
+	
+	/**\
+	 * 
+	* @Title: HopIncDao.java
+	* @Description: TODO(保存导入药品信息)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月10日 下午3:22:39
+	* @version V1.0
+	 */
+	public void saveInc(HopIncDto dto){
+		
+		List<HopInc> hopIncs=dto.getHopIncs();
+		if(hopIncs.size()>0){
+			 for(int i=0;i<hopIncs.size();i++){
+				 hopIncs.get(i).setIncHospid(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+				 Long hopincIdLong=(Long)super.saveEntity(hopIncs.get(i));
+				 String sarray[]=hopIncs.get(i).getIncAliaS().split(BaseConstants.COMMA);
+				 if (sarray.length>0){
+					 for(int j=0;j<sarray.length;j++){
+						 HopIncAlias incAlias=new HopIncAlias();
+						 incAlias.setIncAliasText(sarray[j]);
+						 incAlias.setIncAliaIncId(hopincIdLong);
+						 super.save(incAlias);
+					 }	 
+				 }
+				 String aliasString=PingYinUtil.getFirstSpell(hopIncs.get(i).getIncName());
+				 HopIncAlias incAlias=new HopIncAlias();
+				 incAlias.setIncAliasText(aliasString);
+				 incAlias.setIncAliaIncId(hopincIdLong);
+				 super.save(incAlias);	
+				 
+			 }	 
+		}
+	}
 }

@@ -15,6 +15,6 @@ import com.dhcc.framework.common.codegen.CodeGenUtils;
  */
 public class PmsCodeGen {
 	public static void main(String[] args){
-		CodeGenUtils.createCode("com.dhcc.pms", "SysImpModel", "ImpModel","sys");
+		CodeGenUtils.createCode("com.dhcc.pms", "HopVendor", "HopVendor","hop");
 	}
 }

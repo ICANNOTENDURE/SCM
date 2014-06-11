@@ -5,6 +5,8 @@
 package com.dhcc.pms.web.hop.action;
 
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
+import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
@@ -30,6 +32,7 @@ import com.dhcc.pms.dto.hop.HopIncDto;
 		@Result(name = "getIncInfo", location = "/WEB-INF/jsp/hop/hopInc.jsp")
 		})
 @Blh("hopIncBlh")
+@InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.hopInc")})
 public class HopIncAction extends BaseAction {
 	

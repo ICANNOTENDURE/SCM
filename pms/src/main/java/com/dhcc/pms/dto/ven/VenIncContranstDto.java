@@ -13,9 +13,44 @@ public class VenIncContranstDto extends BaseDto {
 	
 	private String incName;
 	
+	private String incCode;
+	
 	private Long hopId;
 	
 	private Long venId;
+	
+	private String flag;
+	
+	
+	
+	
+	/**
+	 * @return the incCode
+	 */
+	public String getIncCode() {
+		return incCode;
+	}
+
+	/**
+	 * @param incCode the incCode to set
+	 */
+	public void setIncCode(String incCode) {
+		this.incCode = incCode;
+	}
+
+	/**
+	 * @return the flag
+	 */
+	public String getFlag() {
+		return flag;
+	}
+
+	/**
+	 * @param flag the flag to set
+	 */
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
 
 	/**
 	 * @return the incName

@@ -60,4 +60,13 @@ public class HopManfServiceImpl implements HopManfService {
 		return hopManfDao.getManfInfo(dto.getHopManf());
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.manf.HopManfService#getIdByName(java.lang.String)
+	 */
+	@Override
+	public Long getIdByName(String name) {
+		// TODO Auto-generated method stub
+		return hopManfDao.getIdByName(name);
+	}
+
 }

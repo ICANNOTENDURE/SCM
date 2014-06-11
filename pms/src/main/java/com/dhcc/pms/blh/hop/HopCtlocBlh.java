@@ -107,6 +107,15 @@ public class HopCtlocBlh extends AbstractBaseBlh {
 		
 	}
 	
+	public void findHopId(BusinessRequest res) {
+		
+		HopCtlocDto dto = super.getDto(HopCtlocDto.class, res);
+		
+		//调用对应的service方法
+		hopCtlocService.findById(dto);
+		
+	}
+	
 	//显示科室的部分信息，以json传给浏览器
 	public void getCtlocList(BusinessRequest res) throws Exception {
 		

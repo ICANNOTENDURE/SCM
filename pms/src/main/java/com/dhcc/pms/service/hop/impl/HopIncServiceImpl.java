@@ -67,4 +67,13 @@ public class HopIncServiceImpl implements HopIncService {
 		hopIncDao.getListInfo(dto);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopIncService#saveInc(com.dhcc.pms.dto.hop.HopIncDto)
+	 */
+	@Override
+	public void saveInc(HopIncDto dto) {
+		// TODO Auto-generated method stub
+		hopIncDao.saveInc(dto);
+	}
+
 }

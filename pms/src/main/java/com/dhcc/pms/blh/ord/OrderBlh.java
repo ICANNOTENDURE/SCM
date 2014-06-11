@@ -259,7 +259,7 @@ public class OrderBlh extends AbstractBaseBlh {
 			
 			row = sheet.getRow(1);
 			for (int h = 0; h <= row.getLastCellNum(); h++) {
-				cell = row.getCell((short) h);
+				cell = row.getCell(h);
 				String mainColNameString=modelMap.get(h);
 				if(StringUtils.isNullOrEmpty(mainColNameString)) {mainColNameString=" ";};
 				switch (mainColNameString) {
@@ -268,11 +268,11 @@ public class OrderBlh extends AbstractBaseBlh {
 							order.setOrderNo(cell.toString());
 						}
 						break;
-					case "医院ID":
-						if(cell!=null){
-							order.setHopId(Math.round(cell.getNumericCellValue()));;
-						}
-						break;	
+//					case "医院ID":
+//						if(cell!=null){
+//							order.setHopId(Math.round(cell.getNumericCellValue()));;
+//						}
+//						break;	
 					case "请求科室ID":
 						if(cell!=null){
 							order.setRecLoc(Math.round(cell.getNumericCellValue()));
@@ -306,7 +306,7 @@ public class OrderBlh extends AbstractBaseBlh {
 					}
 			}
 			
-			
+			order.setHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
 			dto.setOrder(order);
 			//明细
 			for (int numRows = 1; numRows <= sheet.getLastRowNum(); numRows++) {
@@ -315,7 +315,7 @@ public class OrderBlh extends AbstractBaseBlh {
 				
 				OrderItm orderItm = new OrderItm();
 				for (int numCells = 0; numCells <= row.getLastCellNum(); numCells++) {
-					cell = row.getCell((short) numCells);
+					cell = row.getCell(numCells);
 					
 					String colNameString=modelMap.get(numCells);
 					if(StringUtils.isNullOrEmpty(colNameString)) {colNameString=" ";};
