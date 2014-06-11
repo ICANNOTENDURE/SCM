@@ -74,6 +74,9 @@
 					<td class="textLabel">HIS标识:</td>
 					<td class="textParent"><input style="width: 250px;" type="text"
 						name="dto.vendor.hisId" value="<s:property value="dto.vendor.hisId"/>"></input></td>
+					<td class="textLabel">别名:</td>
+					<td class="textParent"><input style="width: 250px;" type="text"
+					name="dto.vendor.alias" value="<s:property value="dto.vendor.alias"/>"></input></td>	
 				</tr>
 				<tr>
 					<table id="subDetail">

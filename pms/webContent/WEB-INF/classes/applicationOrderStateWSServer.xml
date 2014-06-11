@@ -5,7 +5,9 @@
 <import resource="classpath:META-INF/cxf/cxf.xml"/>
 <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
 <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
 <bean id="orderStateWService" class="com.dhcc.pms.ws.ord.OrderStateWService" />
 <jaxws:endpoint id="orderStateWServiceWS" address="/orderStateWService" wsdlLocation="/wsdl/OrderStateWService.wsdl" implementor="#orderStateWService">
 </jaxws:endpoint>
+
 </beans>

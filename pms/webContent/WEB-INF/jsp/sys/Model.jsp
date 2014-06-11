@@ -22,9 +22,11 @@
      
     <div style="width:650px;">
     <div class="right">
+        <input type="hidden" value="${dto.impModel.type}" id="type"> 
     <table>
     <tr>
     <td class="blank"></td>
+
     <s:iterator value="dto.impModelList" status="all"  id="impModelList">
     	<td class="title">${impModelList.seq}</td>
     </s:iterator>
@@ -114,7 +116,7 @@
 			i=0;
 			$("#impModel td .item").each(function(){		
 					jsonObj = new Object();
-	                jsonObj.type = "ORDER";
+	                jsonObj.type = $("#type").val();
 	                jsonObj.name = $(this).attr("seq");
 	                jsonObj.seq = i;
 	                impModelStr.push(jsonObj);
@@ -124,7 +126,7 @@
 					'<%=request.getContextPath()%>/sys/sysImpModelCtrl!saveModel.htm',	
 					{
 						"dto.imModelString":	jQuery.toJSON(impModelStr),
-						"dto.impModel.type":"ORDER"
+						"dto.impModel.type":     $("#type").val()
 					},
 					function(data){
 						 if(data.dto.opFlg=="1"){

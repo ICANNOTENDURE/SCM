@@ -237,6 +237,33 @@ function editNormalAccount(){
 				textField:'name'
 			});
 			$CommonUI.getComboBox('#loc').combobox('setValues', [row.normalUser.locId]);
+			$("#hop").combobox({
+				url:$WEB_ROOT_PATH+'/hop/hospitalCtrl!getHospInfo.htm',
+				valueField:'hospitalId',							
+				textField:'hospitalName',
+				onSelect:function(rec){
+					$("#loc").combobox({
+						url:$WEB_ROOT_PATH+'/hop/hopCtlocCtrl!getCtlocList.htm?dto.hopCtloc.hospid='+rec.hospitalId,
+						valueField:'hopCtlocId',							
+						textField:'name',
+						mode: 'remote'
+					});	
+				}
+			});
+			
+			
+			$.post(
+				$WEB_ROOT_PATH+'/hop/hopCtlocCtrl!findHopId.htm',
+				{
+					"dto.hopCtloc.hopCtlocId":[row.normalUser.locId],
+				},
+				function(data){
+					$CommonUI.getComboBox('#hop').combobox('setValue', data.dto.hopCtloc.hospid);
+				},
+				"json"
+			);
+			
+			
 		}
 		if([row.normalUser.vendorId]!=null){
 			$("#ven").combogrid({

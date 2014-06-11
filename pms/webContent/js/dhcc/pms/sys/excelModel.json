@@ -1,3 +1,4 @@
 {"total":1,"rows":[
-	{"type":"ORDER","name":"导入订单excel维护"}
+	{"type":"ORDER","name":"导入订单excel维护"},
+	{"type":"INC","name":"导入药品excel维护"}
 ]}
