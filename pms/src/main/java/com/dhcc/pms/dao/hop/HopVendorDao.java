@@ -5,6 +5,7 @@
 package com.dhcc.pms.dao.hop;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -15,10 +16,12 @@ import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
+import com.dhcc.framework.util.PingYinUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.hop.HopVendorDto;
 import com.dhcc.pms.entity.hop.HopVendor;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.hop.HopVendorVo;
 
 @Repository
@@ -46,10 +49,17 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 	 * @param hql
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
-	private void buildQuery(Map hqlParamMap,HopVendor hopVendor,StringBuilder hqlStr){
+	private void buildQuery(Map<String, Object> hqlParamMap,HopVendor hopVendor,StringBuilder hqlStr){
 		//拼接查询条件
 		hqlStr.append(" from HopVendor where 1=1 ");
+		
+		if(hopVendor!=null){
+			if(StringUtils.isNullOrEmpty(hopVendor.getHopType())){
+				hqlStr.append("and hopType=:type ");
+				hqlParamMap.put("type", hopVendor.getHopType());
+			}
+		}
+		
 		//接下来拼接其他查询条件 如下示例代码所示
 		//hqlStr.append("WHERE YEAR=:year ");
 		//hqlParamMap.put("year", year);
@@ -141,4 +151,70 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), HopVendorVo.class, "h_venid");
 	}
 	
+	/**
+	 * 
+	* @Title: HopVendorDao.java
+	* @Description: TODO(导入保存供应商)
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 上午11:55:22
+	* @version V1.0
+	 */
+	public void exportVendor(HopVendorDto dto){
+		
+		if(dto.getExportFlag().equals("1")){
+			if(dto.getHopVendors().size()>0){
+				for(int i=0;i<dto.getHopVendors().size();i++){
+					HopVendor hopVendor=dto.getHopVendors().get(i);
+					if(StringUtils.isNullOrEmpty(hopVendor.getHopAlias())){
+						hopVendor.setHopAlias(PingYinUtil.getFirstSpell(hopVendor.getHopName()));
+					}
+					Vendor vendor=new Vendor();
+					vendor.setAccount(hopVendor.getHopAccount());
+					vendor.setAddress(hopVendor.getHopAddress());
+					vendor.setAlias(hopVendor.getHopAlias());
+					vendor.setCode(hopVendor.getHopCode());
+					vendor.setContact(hopVendor.getHopContact());
+					vendor.setFax(hopVendor.getHopFax());
+					vendor.setName(hopVendor.getHopName());
+					vendor.setTel(hopVendor.getHopTel());
+					Long vendorId=(Long)super.saveEntity(vendor);
+					hopVendor.setHopVenId(vendorId);
+					super.saveEntity(hopVendor);
+				}
+			}
+		}else{
+			super.batchSaveOrUpdate(dto.getHopVendors());
+		}
+
+	}
+	
+	
+	/**
+	 * 
+	* @Title: VendorDao.java
+	* @Description: TODO(供应商名称找ID)
+	* @param name
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午2:05:08
+	* @version V1.0
+	 */
+	public Long findVendorIdByName(String name){
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		StringBuffer hql = new StringBuffer();
+		hql.append(" from ");
+		hql.append(" HopVendor t ");
+		hql.append(" where 1=1 ");
+		hql.append(" and t.hopName = :hopName ");
+		paramMap.put("hopName", name);
+		@SuppressWarnings("unchecked")
+		List<HopVendor> hopVendors=(List<HopVendor>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+		if(hopVendors.size()==1){
+			return hopVendors.get(0).getHopVendorId();
+		}
+		return null;
+	}
 }

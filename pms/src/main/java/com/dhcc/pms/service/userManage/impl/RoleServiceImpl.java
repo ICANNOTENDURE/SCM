@@ -183,4 +183,40 @@ public class RoleServiceImpl implements RoleService{
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.userManage.RoleService#getRoleVens(com.dhcc.pms.dto.userManage.RoleDto)
+	 */
+	@Override
+	public void getRoleVens(RoleDto roleDto) {
+		// TODO Auto-generated method stub
+		roleDao.getRoleVens(roleDto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.userManage.RoleService#getRoleLocs(com.dhcc.pms.dto.userManage.RoleDto)
+	 */
+	@Override
+	public void getRoleLocs(RoleDto roleDto) {
+		// TODO Auto-generated method stub
+		roleDao.getRoleLocs(roleDto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.userManage.RoleService#saveRoleLoc(com.dhcc.pms.dto.userManage.RoleDto)
+	 */
+	@Override
+	public void saveRoleLoc(RoleDto roleDto) {
+		// TODO Auto-generated method stub
+		roleDao.saveRoleLoc(roleDto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.userManage.RoleService#saveRoleVen(com.dhcc.pms.dto.userManage.RoleDto)
+	 */
+	@Override
+	public void saveRoleVen(RoleDto roleDto) {
+		// TODO Auto-generated method stub
+		roleDao.saveRoleVen(roleDto);
+	}
+
 }

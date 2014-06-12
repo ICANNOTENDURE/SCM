@@ -15,13 +15,19 @@ import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
+import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.pms.dto.platformManage.SystemVersionDto;
 import com.dhcc.pms.dto.userManage.RoleDto;
+import com.dhcc.pms.entity.hop.HopCtloc;
+import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.platformManage.SystemVersion;
 import com.dhcc.pms.entity.userManage.Func;
 import com.dhcc.pms.entity.userManage.RoleFunc;
+import com.dhcc.pms.entity.userManage.RoleLoc;
+import com.dhcc.pms.entity.userManage.RoleVendor;
+import com.dhcc.pms.entity.vo.tree.TreeVO;
 import com.dhcc.pms.service.userManage.RoleService;
 
 /**
@@ -184,39 +190,7 @@ public class RoleBlh extends AbstractBaseBlh{
 		}
 	}
 	
-	/**
-	 * 
-	* 方法名:          saveRoleFunc
-	* 方法功能描述:    分配角色权限
-	* @param:         
-	* @return:        
-	* @Author:        聂文来
-	* @Create Date:   2013年9月29日 下午3:39:29
-	 */
-	public void saveRoleFunc(BusinessRequest req){
-		RoleDto roleDto = super.getDto(RoleDto.class, req);
-		try {
-			List<RoleFunc> roleFuncs = new ArrayList<RoleFunc>();		
-			String funcIds[] = roleDto.getFuncIds().split(",");
-			for(int i=0;i<funcIds.length;i++){
-				RoleFunc roleFunc = new RoleFunc();
-				roleFunc.setRoleId(Long.valueOf(roleDto.getRoleId()));
-				roleFunc.setFuncId(Long.valueOf(funcIds[i]));
-				
-				roleFuncs.add(roleFunc);
-			}
-			roleDto.setRoleFuncs(roleFuncs);
-			this.roleService.saveRoleFunc(roleDto);
-			
-			roleDto.setMessage("操作成功");
-			roleDto.setSuccess(true);
-		} catch (Exception e) {
-			roleDto.setMessage("系统错误");
-			roleDto.setSuccess(true);
-			e.printStackTrace();
-			throw new DataBaseException(e.getMessage(), e);
-		}
-	}
+	
 	
 	
 	
@@ -263,6 +237,257 @@ public class RoleBlh extends AbstractBaseBlh{
 		}
 	}
 	
+	
+	
+	/**
+	 * 
+	* @Title: RoleBlh.java
+	* @Description: TODO(按分类列出供应商)
+	* @param req
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午4:01:32
+	* @version V1.0
+	 */
+	public void getRoleVens(BusinessRequest req){
+		try {
+			RoleDto roleDto = super.getDto(RoleDto.class, req);
+			this.roleService.getRoleVens(roleDto);
+			
+			//根据系统类型获取所有供应商
+			List<HopVendor> hopVendors = roleDto.getHopVendors();
+			
+			//根据角色id获取角色已有供应商
+			List<RoleVendor> roleVendors = roleDto.getRoleVendors();
+			
+			//获取根节点
+			List<TreeVO> roots = new ArrayList<TreeVO>();
+			
+			Map<String, TreeVO> rootMap=new HashMap<String, TreeVO>();
+			
+			 Map<String,String> funMap=new HashMap<String, String>();  
+		     for(RoleVendor  roleVendor:roleVendors){  
+		        if(roleVendor==null){  
+		            continue;  
+		        }  
+		        funMap.put(roleVendor.getSysVenId().toString(), roleVendor.getSysVenId().toString());  
+		      } 
+			
+			if(null!=hopVendors&&hopVendors.size()!=0){
+				//将获取的根节点组装成Map
+				for(int i=0;i<hopVendors.size();i++){
+					String type=hopVendors.get(i).getHopType()+"("+hopVendors.get(i).getHopHopId().toString()+")";
+					String hopVenId=hopVendors.get(i).getHopVendorId().toString();
+					TreeVO treeVO=new TreeVO();
+					treeVO.setId(hopVenId);
+					treeVO.setText(hopVendors.get(i).getHopName());
+					
+					if(!rootMap.containsKey(type)){
+						TreeVO TreeVO2=new TreeVO();
+						TreeVO2.setId("0");
+						TreeVO2.setText(type);
+						rootMap.put(type, TreeVO2);
+					}
+					if(funMap.containsKey(hopVenId)){
+						treeVO.setChecked(true);
+					}
+					rootMap.get(type).getChildren().add(treeVO);
+				}
+				
+				
+				Iterator<String> it = rootMap.keySet().iterator();
+		        while (it.hasNext()) {
+		        	String key = it.next().toString();
+		        	roots.add(rootMap.get(key));
+		        }
+		
+			}
+			
+			roleDto.setTreeVOs(roots);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new DataBaseException(e.getMessage(), e);
+		}
+	}
+	
+	
+	/**
+	 * 
+	* @Title: RoleBlh.java
+	* @Description: TODO(查询科室)
+	* @param req
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午8:26:03
+	* @version V1.0
+	 */
+	public void getRoleLocs(BusinessRequest req){
+		try {
+			RoleDto roleDto = super.getDto(RoleDto.class, req);
+			this.roleService.getRoleLocs(roleDto);
+			
+			//根据当前登录医院获取所有科室
+			List<HopCtloc>  hopCtlocs= roleDto.getHopCtlocs();
+			
+			//根据角色id获取角色已有科室
+			List<RoleLoc> roleVendors = roleDto.getRoleLocs();
+			
+			//获取根节点
+			List<TreeVO> roots = new ArrayList<TreeVO>();
+			
+			Map<String, TreeVO> rootMap=new HashMap<String, TreeVO>();
+			
+			 Map<String,String> funMap=new HashMap<String, String>();  
+		     for(RoleLoc  roleLoc:roleVendors){  
+		        if(roleLoc==null){  
+		            continue;  
+		        }  
+		        funMap.put(roleLoc.getSysLocId().toString(), roleLoc.getSysLocId().toString());  
+		      } 
+			
+			if(null!=hopCtlocs&&hopCtlocs.size()!=0){
+				//将获取的根节点组装成Map
+				for(HopCtloc hopCtloc:hopCtlocs){
+					String hopCtlocId=hopCtloc.getHopCtlocId().toString();
+					String hopId=hopCtloc.getHospid().toString();
+					TreeVO treeVO=new TreeVO();
+					treeVO.setId(hopCtlocId);
+					treeVO.setText(hopCtloc.getName());
+					
+					if(!rootMap.containsKey(hopId)){
+						TreeVO TreeVO2=new TreeVO();
+						TreeVO2.setId("0");
+						TreeVO2.setText(hopId);
+						rootMap.put(hopId, TreeVO2);
+					}
+					if(funMap.containsKey(hopCtlocId)){
+						treeVO.setChecked(true);
+					}
+					rootMap.get(hopId).getChildren().add(treeVO);
+				}
+				
+				
+				Iterator<String> it = rootMap.keySet().iterator();
+		        while (it.hasNext()) {
+		        	String key = it.next().toString();
+		        	roots.add(rootMap.get(key));
+		        }
+		
+			}
+			
+			roleDto.setTreeVOs(roots);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new DataBaseException(e.getMessage(), e);
+		}
+	}
+	
+	
+	/**
+	 * 
+	* 方法名:          saveRoleFunc
+	* 方法功能描述:    分配角色权限
+	* @param:         
+	* @return:        
+	* @Author:        聂文来
+	* @Create Date:   2013年9月29日 下午3:39:29
+	 */
+	public void saveRoleFunc(BusinessRequest req){
+		RoleDto roleDto = super.getDto(RoleDto.class, req);
+		try {
+			List<RoleFunc> roleFuncs = new ArrayList<RoleFunc>();		
+			String funcIds[] = roleDto.getFuncIds().split(",");
+			for(int i=0;i<funcIds.length;i++){
+				RoleFunc roleFunc = new RoleFunc();
+				roleFunc.setRoleId(Long.valueOf(roleDto.getRoleId()));
+				roleFunc.setFuncId(Long.valueOf(funcIds[i]));
+				
+				roleFuncs.add(roleFunc);
+			}
+			roleDto.setRoleFuncs(roleFuncs);
+			this.roleService.saveRoleFunc(roleDto);
+			
+			roleDto.setMessage("操作成功");
+			roleDto.setSuccess(true);
+		} catch (Exception e) {
+			roleDto.setMessage("系统错误");
+			roleDto.setSuccess(true);
+			e.printStackTrace();
+			throw new DataBaseException(e.getMessage(), e);
+		}
+	}
+	
+	
+	/**
+	 * 
+	* @Title: RoleBlh.java
+	* @Description: TODO(保存角色供应商权限)
+	* @param req
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午8:42:27
+	* @version V1.0
+	 */
+	public void saveRoleVen(BusinessRequest req){
+		RoleDto roleDto = super.getDto(RoleDto.class, req);
+		try {
+			List<RoleVendor> roleVendors = new ArrayList<RoleVendor>();		
+			String funcIds[] = roleDto.getVens().split(BaseConstants.COMMA);
+			for(int i=0;i<funcIds.length;i++){
+				RoleVendor roleVendor = new RoleVendor();
+				roleVendor.setSysRoleId(Long.valueOf(roleDto.getRoleId()));
+				roleVendor.setSysVenId(Long.valueOf(funcIds[i]));
+				
+				roleVendors.add(roleVendor);
+			}
+			roleDto.setRoleVendors(roleVendors);
+			this.roleService.saveRoleVen(roleDto);
+			
+			roleDto.setMessage("操作成功");
+			roleDto.setSuccess(true);
+		} catch (Exception e) {
+			roleDto.setMessage("系统错误");
+			roleDto.setSuccess(true);
+			e.printStackTrace();
+			throw new DataBaseException(e.getMessage(), e);
+		}
+	}
+	
+	
+	/**
+	 * 
+	* @Title: RoleBlh.java
+	* @Description: TODO(保存角色科室)
+	* @param req
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午8:48:55
+	* @version V1.0
+	 */
+	public void saveRoleLoc(BusinessRequest req){
+		RoleDto roleDto = super.getDto(RoleDto.class, req);
+		try {
+			List<RoleLoc> roleLocs = new ArrayList<RoleLoc>();		
+			String funcIds[] = roleDto.getLocs().split(BaseConstants.COMMA);
+			for(int i=0;i<funcIds.length;i++){
+				RoleLoc roleLoc = new RoleLoc();
+				roleLoc.setSysRoleId(Long.valueOf(roleDto.getRoleId()));
+				roleLoc.setSysLocId(Long.valueOf(funcIds[i]));
+				
+				roleLocs.add(roleLoc);
+			}
+			roleDto.setRoleLocs(roleLocs);
+			this.roleService.saveRoleLoc(roleDto);
+			
+			roleDto.setMessage("操作成功");
+			roleDto.setSuccess(true);
+		} catch (Exception e) {
+			roleDto.setMessage("系统错误");
+			roleDto.setSuccess(true);
+			e.printStackTrace();
+			throw new DataBaseException(e.getMessage(), e);
+		}
+	}
 }
 
 

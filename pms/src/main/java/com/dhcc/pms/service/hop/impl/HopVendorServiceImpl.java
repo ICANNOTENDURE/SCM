@@ -62,4 +62,22 @@ public class HopVendorServiceImpl implements HopVendorService {
 		hopVendorDao.listHopCon(dto);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopVendorService#exportVendor(com.dhcc.pms.dto.hop.HopVendorDto)
+	 */
+	@Override
+	public void exportVendor(HopVendorDto dto) {
+		// TODO Auto-generated method stub
+		hopVendorDao.exportVendor(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopVendorService#findVendorIdByName(java.lang.String)
+	 */
+	@Override
+	public Long findVendorIdByName(String name) {
+		// TODO Auto-generated method stub
+		return hopVendorDao.findVendorIdByName(name);
+	}
+
 }

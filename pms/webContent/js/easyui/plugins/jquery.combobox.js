@@ -211,7 +211,7 @@ _1a(_3c,[],true);
 _1a(_3c,[q],true);
 }
 if(_3d.mode=="remote"){
-_35(_3c,null,{q:q},true);
+_35(_3c,null,{'dto.comgridparam':q},true);
 }else{
 var _3e=$(_3c).combo("panel");
 _3e.find("div.combobox-item").hide();

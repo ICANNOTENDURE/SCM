@@ -86,4 +86,23 @@ public class VenIncServiceImpl implements VenIncService {
 		venIncDao.saveContranst(dto);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenIncService#listVenContranst(com.dhcc.pms.dto.ven.VenIncDto)
+	 */
+	@Override
+	public void listVenContranst(VenIncDto dto) {
+		// TODO Auto-generated method stub
+		venIncDao.listVenContranst(dto);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenIncService#exportVenInc(com.dhcc.pms.dto.ven.VenIncDto)
+	 */
+	@Override
+	public void exportVenInc(VenIncDto dto) {
+		// TODO Auto-generated method stub
+		venIncDao.exportVenInc(dto);
+	}
+
 }

@@ -170,7 +170,37 @@ function saveRoleFuncs(){
 	
 	$('#saveRoleFuncsDialog').dialog('open');
 }
+//分配科室权限
+function saveLocs(){
+	if ($("#datagrid").datagrid('getSelections').length != 1) {
+		$CommonUI.alert('请选一个角色');
+		return;
+	}
+	var row = $("#datagrid").datagrid('getSelected');
+	//根据系统代码获取系统权限树
+	//alert(row.roleId)
+	$CommonUI.getTree('#saveLocsTree').tree({  
+		url:'roleCtrl!getRoleLocs.htm?&roleDto.roleId='+row.roleId
+    });
+	
+	$('#saveLocsDialog').dialog('open');
+}
 
+//分配供应商权限
+function saveVendors(){
+	if ($("#datagrid").datagrid('getSelections').length != 1) {
+		$CommonUI.alert('请选一个角色');
+		return;
+	}
+	var row = $("#datagrid").datagrid('getSelected');
+	//根据系统代码获取系统权限树
+	//alert(row.roleId)
+	$CommonUI.getTree('#saveVensTree').tree({  
+		url:'roleCtrl!getRoleVens.htm?&roleDto.roleId='+row.roleId
+    });
+	
+	$('#saveVensDialog').dialog('open');
+}
 function giveFunc(){
 	var row = $("#datagrid").datagrid('getSelected');
 	
@@ -196,6 +226,75 @@ function giveFunc(){
 					//根据系统代码获取系统权限树
 					$CommonUI.getTree('#saveRoleFuncsTree').tree({  
 						url:'roleCtrl!getRoleFuncs.htm?roleDto.roleId='+row.roleId
+				    });   
+				}$CommonUI.alert(data.message);
+				
+			},
+			"json"
+	);
+}
+
+
+//保存供应商权限
+function giveVen(){
+	var row = $("#datagrid").datagrid('getSelected');
+	
+	var funcIds = "";
+	var nodes = $CommonUI.getTree('#saveVensTree').tree('getChecked');
+	for(var i=0; i<nodes.length; i++){
+		funcIds = funcIds+nodes[i].id+",";
+	}
+	
+	nodes = $CommonUI.getTree('#saveVensTree').tree('getChecked', 'indeterminate');
+	for(var i=0; i<nodes.length; i++){
+		funcIds = funcIds+nodes[i].id+",";
+	}
+	
+	$.post(
+			'roleCtrl!saveRoleVen.htm',
+			{
+				"roleDto.roleId":row.roleId,
+				"roleDto.vens":funcIds
+			},
+			function(data){
+				if(data.success){
+					//根据系统代码获取系统权限树
+					$CommonUI.getTree('#saveVensTree').tree({  
+						url:'roleCtrl!getRoleVens.htm?roleDto.roleId='+row.roleId
+				    });   
+				}$CommonUI.alert(data.message);
+				
+			},
+			"json"
+	);
+}
+
+//保存科室
+function giveLoc(){
+	var row = $("#datagrid").datagrid('getSelected');
+	
+	var funcIds = "";
+	var nodes = $CommonUI.getTree('#saveLocsTree').tree('getChecked');
+	for(var i=0; i<nodes.length; i++){
+		funcIds = funcIds+nodes[i].id+",";
+	}
+	
+	nodes = $CommonUI.getTree('#saveLocsTree').tree('getChecked', 'indeterminate');
+	for(var i=0; i<nodes.length; i++){
+		funcIds = funcIds+nodes[i].id+",";
+	}
+	
+	$.post(
+			'roleCtrl!saveRoleLoc.htm',
+			{
+				"roleDto.roleId":row.roleId,
+				"roleDto.locs":funcIds
+			},
+			function(data){
+				if(data.success){
+					//根据系统代码获取系统权限树
+					$CommonUI.getTree('#saveLocsTree').tree({  
+						url:'roleCtrl!getRoleLocs.htm?roleDto.roleId='+row.roleId
 				    });   
 				}$CommonUI.alert(data.message);
 				

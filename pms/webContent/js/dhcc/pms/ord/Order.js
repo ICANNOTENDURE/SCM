@@ -120,16 +120,7 @@ $(function (){
     	    	$("#deliveryDate").datebox('setValue',obj.order.deliveryDate);
     	    	$("#purId").combobox('setValue',obj.order.purLoc);
     	    	$("#locId").combobox('setValue',obj.order.recLoc);
-    	    	
-    	    	$.post(
-    	    		 $WEB_ROOT_PATH+'/ven/vendorCtrl!findById.htm',
-    	    		 {
-    	    			 "dto.vendor.vendorId":obj.order.vendorId,
-    	    		 },
-    	    		 function(data){
-    	    			 $("#vendorId").combogrid('setValue',data);
-    	    		 }
-    	    	);
+    	    	$("#vendorId").combobox('setValue',obj.order.vendorId);
     	    	$("#vendor").val(obj.order.vendorId);
     	    	$("#orderId").val(obj.order.orderId);
     	    	$("#recDestination").combobox({
@@ -174,7 +165,7 @@ $(function (){
 			 "dto.reqStDate":$("#reqStDate").datebox('getValue'),
 			 "dto.reqEdDate":$("#reqEdDate").datebox('getValue'),
 			 "dto.state":0,
-			 "dto.vendor":$("#vendor").val(),
+			 "dto.vendor":$("#vendorSearch").combobox('getValue'),
 			 "dto.purloc":$("#purlocSearch").combobox('getValue'),
 			 "dto.emflag":$("#emflag").combobox('getValue')
 		 });
@@ -203,21 +194,12 @@ $(function (){
 	
 	var venCombox=[$CommonUI.getComboGrid('#vendorSearch'),$CommonUI.getComboGrid('#vendorId')];
 	for(var i=0;i<venCombox.length;i++){
-		venCombox[i].combogrid({
-			url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm", //+ encodeURIComponent($("#vendorName").val()),
-			panelWidth:500,
-			panelHeight:150,
+		venCombox[i].combobox({
+			url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm",
+	    	panelHeight:"auto",
 	        valueField:'vendorId',  
-	        textField:'name', 
-	        fitColumns: true,
+	        textField:'name',
 	        mode: 'remote',
-	        columns:[[
-	                  {field:'vendorId',title:'vendorId',width:60,hidden:true},
-	                  {field:'name',title:'name',width:100}
-	        ]],
-	        onSelect:function(rowIndex, rowData) {
-					$("#vendor").val(rowData.vendorId);
-			}
 		});
 	}
 
@@ -297,7 +279,7 @@ function searchOrder(){
 	    	$("#deliveryDate").datebox('setValue',rowData.deliverydate);
 	    	$("#purId").combobox('setValue',rowData.purlocid);
 	    	$("#locId").combobox('setValue',rowData.reclocid);
-	    	$("#vendorId").combogrid('setValue',rowData.vendor);
+	    	$("#vendorId").combobox('setValue',rowData.vendor);
 	    	$("#vendor").val(rowData.vendorid);
 	    	$("#orderId").val(rowData.orderid);
 	    	$("#recDestination").combobox({
@@ -499,7 +481,7 @@ function clearData(){
     $("#purId").combobox('setValue',"");
     $("#locId").combobox('setValue',"");
     $("#recDestination").combobox('setValue',"");
-    $("#vendorId").combogrid('setValue',"");
+    $("#vendorId").combobox('setValue',"");
     $("#orderId").val(undefined);
     $("#remark").val("");
 }

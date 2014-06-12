@@ -122,6 +122,8 @@
 			type="text" />
 			别名: <input id="HopAlias" style="width: 100px;"
 			type="text" />
+		  </div>
+		  <div  style="margin-bottom:5px;margin-top:5px">	
 			状态:
 			<select class="combobox" panelHeight="auto" style="width:100px" id="flag">
 				<option value="0">空</option>
@@ -136,7 +138,7 @@
 		 </div>
 	</div>
   <div class="layout" data-options="fit:'true',border:true">
-        <div data-options="region:'north',title:'医院供应商',iconCls:'icon-ok'" style="height:250px">
+        <div data-options="region:'east',title:'医院供应商',iconCls:'icon-ok',split:true" style="width:550px">
         	<table id="datagrid2" style="height: 250px"  class="datagrid"
 					data-options="toolbar:'#toolbar2',
 					 			 fit:true,
@@ -162,7 +164,7 @@
 				</table>
         
         </div>
-        <div data-options="region:'center',title:'供应商(双击查看以对照医院供应商)',iconCls:'icon-ok'" >
+        <div data-options="region:'center',title:'供应商(双击查看已经对照医院供应商)',iconCls:'icon-ok'" >
             <table id="datagrid" style="height: 250px"  class="datagrid"
 					data-options="toolbar:'#toolbar',
 					 			 fit:true,

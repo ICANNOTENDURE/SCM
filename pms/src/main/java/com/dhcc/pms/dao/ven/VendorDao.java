@@ -19,6 +19,7 @@ import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.util.PingYinUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.pms.dto.ven.VendorDto;
+import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.ven.VenQualifPic;
 import com.dhcc.pms.entity.ven.VenQualification;
 import com.dhcc.pms.entity.ven.Vendor;
@@ -189,19 +190,50 @@ public class VendorDao extends HibernatePersistentObjectDAO<Vendor> {
 		hqlBuffer.append(" t.vendorId, ");
 		hqlBuffer.append(" t.name ) ");
 		hqlBuffer.append(" from Vendor t ");
-		hqlBuffer.append(" where 1=1 ");
 		if(dto.getVendor()!=null){
 			if(dto.getVendor().getName()!=null){
-				hqlBuffer.append(" and t.name like :name");
+				hqlBuffer.append("where  t.name like :name");
 				hqlParamMap.put("name", dto.getVendor().getName()+"%");
+				hqlBuffer.append(" or t.alias like :alias");
+				hqlParamMap.put("alias", dto.getVendor().getName()+"%");
 			}
 		}
 		if(!StringUtils.isNullOrEmpty(dto.getComgridparam())){
-				hqlBuffer.append(" and t.name like :name");
+				hqlBuffer.append("where t.name like :name");
 				hqlParamMap.put("name", dto.getComgridparam()+"%");
+				hqlBuffer.append(" or t.alias like :alias");
+				hqlParamMap.put("alias", dto.getComgridparam()+"%");
 			
 		}
 		return (List<Vendor>)super.findByHqlWithValuesMap(hqlBuffer.toString(),1,20,hqlParamMap,true);
 		
+	}
+	
+	
+	/**
+	 * 
+	* @Title: VendorDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param name
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午2:37:21
+	* @version V1.0
+	 */
+	public Long findVendorIdByName(String name){
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		StringBuffer hql = new StringBuffer();
+		hql.append(" from ");
+		hql.append(" Vendor t ");
+		hql.append(" where 1=1 ");
+		hql.append(" and t.name = :name ");
+		paramMap.put("name", name);
+		List<Vendor> hopVendors=(List<Vendor>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+		if(hopVendors.size()==1){
+			return hopVendors.get(0).getVendorId();
+		}
+		return null;
 	}
 }

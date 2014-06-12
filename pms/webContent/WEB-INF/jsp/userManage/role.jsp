@@ -46,7 +46,15 @@
 			onclick="javascript:selectClick()">查询</a>
 			<a class="linkbutton"
 			data-options="iconCls:'icon-remove',plain:true"
-			onclick="javascript:saveRoleFuncs()">权限分配</a> 
+			onclick="javascript:saveRoleFuncs()">权限分配</a>
+			
+			<a class="linkbutton"
+			data-options="iconCls:'icon-remove',plain:true"
+			onclick="javascript:saveLocs()">科室分配</a> 
+			<a class="linkbutton"
+			data-options="iconCls:'icon-remove',plain:true"
+			onclick="javascript:saveVendors()">供应商分配</a>  
+			
 			<a class="linkbutton"
 			data-options="iconCls:'icon-remove',plain:true"
 			onclick="javascript:searchRoleNormalAccount()">普通用户</a> 
@@ -212,6 +220,7 @@
 		<ul class="tree" id="saveRoleFuncsTree"
 			data-options="method:'get',animate:true,checkbox:true"></ul>
 	</div>
+
 	<div id="saveRoleFuncsToolbar" style="padding: 2px 0">
 		<table cellpadding="0" cellspacing="0" style="width: 100%">
 			<tr>
@@ -221,7 +230,53 @@
 			</tr>
 		</table>
 	</div>
-
+	
+	
+	<div id="saveLocsDialog" class="dialog" title="科室分配"
+		style="width: 350px; height: 500px;"
+		data-options="
+			    modal:true,
+		        closed:true,
+				toolbar: '#saveLocsToolbar'
+			">
+		<ul class="tree" id="saveLocsTree"
+			data-options="method:'get',animate:true,checkbox:true"></ul>
+	</div>
+	
+	<div id="saveLocsToolbar" style="padding: 2px 0">
+		<table cellpadding="0" cellspacing="0" style="width: 100%">
+			<tr>
+				<td style="padding-left: 2px"><a
+					onclick="javascript:giveLoc();" class="linkbutton"
+					data-options="iconCls:'icon-save',plain:true">保存</a></td>
+			</tr>
+		</table>
+	</div>
+	
+	
+	
+	<div id="saveVensDialog" class="dialog" title="供应商分配"
+		style="width: 350px; height: 500px;"
+		data-options="
+			    modal:true,
+		        closed:true,
+				toolbar: '#saveVensToolbar'
+			">
+		<ul class="tree" id="saveVensTree"
+			data-options="method:'get',animate:true,checkbox:true"></ul>
+	</div>
+	
+	<div id="saveVensToolbar" style="padding: 2px 0">
+		<table cellpadding="0" cellspacing="0" style="width: 100%">
+			<tr>
+				<td style="padding-left: 2px"><a
+					onclick="javascript:giveVen();" class="linkbutton"
+					data-options="iconCls:'icon-save',plain:true">保存</a></td>
+			</tr>
+		</table>
+	</div>
+	
+	
 	<div id="searchRolePraAccountWindow" class="window"
 		title="拥有该角色的从业人员账户" style="width: 700px; height: 400px"
 		data-options="

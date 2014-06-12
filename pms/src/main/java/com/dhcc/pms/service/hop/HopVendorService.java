@@ -30,4 +30,29 @@ public interface HopVendorService {
 	* @version V1.0
 	 */
 	public void listHopCon(HopVendorDto dto);
+	
+	/**
+	 * 
+	* @Title: HopVendorService.java
+	* @Description: TODO(批量导入医院供应商)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午12:48:24
+	* @version V1.0
+	 */
+	public void exportVendor(HopVendorDto dto);
+	
+	/**
+	 * 
+	* @Title: HopVendorService.java
+	* @Description: TODO(供应商名称找ID)
+	* @param name
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午2:08:30
+	* @version V1.0
+	 */
+	public Long findVendorIdByName(String name);
 }

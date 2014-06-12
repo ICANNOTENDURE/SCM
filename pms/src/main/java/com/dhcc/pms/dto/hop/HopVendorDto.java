@@ -4,8 +4,11 @@
  */
 package com.dhcc.pms.dto.hop;
 
-import com.dhcc.pms.entity.hop.HopVendor;
+import java.io.File;
+import java.util.List;
+
 import com.dhcc.framework.transmission.dto.BaseDto;
+import com.dhcc.pms.entity.hop.HopVendor;
 
 public class HopVendorDto extends BaseDto {
 
@@ -17,8 +20,65 @@ public class HopVendorDto extends BaseDto {
 
 	private String flag;
 	
+	private String exportFlag;
+	
+	private List<HopVendor> hopVendors;
 	
 	
+	private File upload;
+	
+	
+	/**
+	 * @return the exportFlag
+	 */
+	public String getExportFlag() {
+		return exportFlag;
+	}
+
+
+	/**
+	 * @param exportFlag the exportFlag to set
+	 */
+	public void setExportFlag(String exportFlag) {
+		this.exportFlag = exportFlag;
+	}
+
+
+	/**
+	 * @return the hopVendors
+	 */
+	public List<HopVendor> getHopVendors() {
+		return hopVendors;
+	}
+
+
+	/**
+	 * @param hopVendors the hopVendors to set
+	 */
+	public void setHopVendors(List<HopVendor> hopVendors) {
+		this.hopVendors = hopVendors;
+	}
+
+
+	
+
+
+	/**
+	 * @return the upload
+	 */
+	public File getUpload() {
+		return upload;
+	}
+
+
+	/**
+	 * @param upload the upload to set
+	 */
+	public void setUpload(File upload) {
+		this.upload = upload;
+	}
+
+
 	/**
 	 * @return the flag
 	 */

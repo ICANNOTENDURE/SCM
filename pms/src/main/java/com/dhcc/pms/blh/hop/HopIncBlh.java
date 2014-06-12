@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
+import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
@@ -61,9 +62,7 @@ public class HopIncBlh extends AbstractBaseBlh {
 	
 	@Resource
 	private CommonService commonService;
-	
-	//最大缓存空间
-	private static final int BUFFER_SIZE = 16 * 1024; 
+
 	
 	public HopIncBlh() {
 		
@@ -196,7 +195,7 @@ public class HopIncBlh extends AbstractBaseBlh {
 		}
 
 		File dstFile = new File(storageFileName,newFileName); 
-        com.dhcc.framework.util.FileUtils.copyFile(dto.getUpload(), dstFile,BUFFER_SIZE);
+        com.dhcc.framework.util.FileUtils.copyFile(dto.getUpload(), dstFile,BaseConstants.BUFFER_SIZE);
         
         //
         SysImpModelDto SysImpModelDto=new SysImpModelDto();

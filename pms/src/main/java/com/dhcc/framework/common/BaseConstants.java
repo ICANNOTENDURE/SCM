@@ -60,4 +60,11 @@ public abstract class BaseConstants {
 	 * 前端调用时URL参数中指明方法调用的参数名
 	 */
 	public static final String INVOKE_BLH_METHOD="BLHMI";
+	
+	
+	/**
+	 * 上传文件缓冲大小
+	 */
+	
+	public static final int BUFFER_SIZE = 16 * 1024; 
 }

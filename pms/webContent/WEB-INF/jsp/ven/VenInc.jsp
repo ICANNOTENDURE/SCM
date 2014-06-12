@@ -7,7 +7,12 @@
 <title>Dic</title>
 <%@include file="/WEB-INF/jsp/common/scriptInc.jsp"%>
 <script type="text/javascript"
+	src="<%=request.getContextPath()%>/js/uploadify/jquery.uploadify.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/css/uploadify.css">	
+<script type="text/javascript"
 	src="<%=request.getContextPath()%>/js/dhcc/pms/ven/VenInc.js"></script>
+
 </head>
 <body>
 	<div id="toolbar" class="toolbar">
@@ -19,6 +24,9 @@
 			onclick="javascript:delRow()">删除</a> <a class="linkbutton"
 			data-options="iconCls:'icon-search',plain:true"
 			onclick="javascript:selectClick()">查询</a>
+			<a class="linkbutton"
+			data-options="iconCls:'icon-save',plain:true"
+			onclick="javascript:importClick()">导入</a>
 	</div>
 
 
@@ -26,7 +34,7 @@
 		data-options="toolbar:'#toolbar',fitColumns:true,singleSelect:true,pagination:true">
 	</table>
 	
-	<div id="drugInfoWin" class="dialog" title="新增药品信息"
+	<div id="drugInfoWin" class="dialog" title="新增供应商信息"
 		data-options="modal:true,width:750,height:500,closed:true,buttons:'#btnDiv0'"
 		style="vertical-align: middle;">
 		<form id="incdetail" method="post">
@@ -46,7 +54,7 @@
 				</tr>								
 				<tr>
 					<td class="textLabel">单位代码:</td>
-					<td class="textParent"><input style="width: 250px;"
+					<td class="textParent"><input style="width: 20px;"
 						class="validatebox" type="text" name="dto.venInc.venIncUomcode"
 						data-options="required:true" id="venIncUomcode" /></td>
 					<td class="textLabel">单位名称:</td>
@@ -89,6 +97,26 @@
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.venInc.venIncVensysid"
 						data-options="required:true" id="venIncVensysid" /></td>
+					<td class="textLabel">规格:</td>
+					<td class="textParent"><input style="width: 250px;"
+						 type="text" name="dto.venInc.venIncSpec"
+						 id="venIncSpec" /></td>	
+				</tr>
+				<tr>
+					<td class="textLabel">类组:</td>
+					<td class="textParent"><input style="width: 250px;"
+						 type="text" name="dto.venInc.venIncCat"
+						 id="venIncCat" /></td>
+					<td class="textLabel">售价:</td>
+					<td class="textParent"><input style="width: 250px;"
+						 type="text" name="dto.venInc.venIncSp"
+						 id="venIncSp" /></td>	
+				</tr>
+				<tr>
+					<td class="textLabel">别名:</td>
+					<td class="textParent"><input style="width: 250px;"
+						 type="text" name="dto.venInc.venIncAlias"
+						 id="venIncAlias" /></td>
 				</tr>
 				<tr>
 					<td class="textLabel">图片顺序:</td>
@@ -168,6 +196,24 @@
 		</div>
 	</div>
 	
+	
+	<div id="importDialog" class="dialog" title="导入供应商药品"
+		style="width: 400px; height: 200px; background-color: #F5FAFD;"
+		data-options="
+				modal:true,
+		        closed:true,
+				collapsible:false,
+				minimizable:false,
+				maximizable:false">
+			<table id="addFuncsTable" style="width: 100%;">
+				<tr>
+					<td class="textLabel" style="text-align: right; width: 40%">导入Excel文件:</td>
+					<td class="textParent" style="text-align: left; width: 60%"><input
+						style="width: 250px;" class="validatebox" type="file"
+						name="upload" id="orderUpload"></input></td>
+				</tr>
+			</table>
+	</div>
 	
 </body>
 </html>

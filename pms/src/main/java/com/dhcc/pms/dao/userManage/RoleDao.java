@@ -12,10 +12,15 @@ import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.transmission.dto.BaseDto;
+import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.userManage.RoleDto;
+import com.dhcc.pms.entity.hop.HopCtloc;
+import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.userManage.Role;
 import com.dhcc.pms.entity.userManage.RoleFunc;
+import com.dhcc.pms.entity.userManage.RoleLoc;
+import com.dhcc.pms.entity.userManage.RoleVendor;
 
 /**
  * 标题: RoleDao.java
@@ -186,7 +191,7 @@ public class RoleDao extends HibernatePersistentObjectDAO<Role>{
 	* @Create Date:   2013年11月25日 下午4:15:39
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Role> findRole(RoleDto roleDto) throws Exception{
+	public List<Role> findRole(RoleDto roleDto) {
 		StringBuffer hql = new StringBuffer();
 		hql.append(" from ");
 		hql.append(" Role t ");
@@ -195,4 +200,113 @@ public class RoleDao extends HibernatePersistentObjectDAO<Role>{
 		return (List<Role>)this.findByHql(hql.toString(), roleDto.getSystemType(),roleDto.getRole().getRoleCode());
 	}
 	
+	/**
+	 * 
+	* @Title: RoleDao.java
+	* @Description: TODO(查询权限有的供应商)
+	* @param roleDto
+	* @throws Exception
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午4:23:45
+	* @version V1.0
+	 */
+	public void getRoleVens(RoleDto roleDto) {
+		StringBuffer hql = new StringBuffer();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		hql.append(" from RoleVendor t ");
+		hql.append(" where t.sysRoleId = ? ");
+		@SuppressWarnings("unchecked")
+		List<RoleVendor> roleVendors = (List<RoleVendor>)this.findByHql(hql.toString(),Long.valueOf(roleDto.getRoleId()));
+		roleDto.setRoleVendors(roleVendors);
+		
+		
+		hql.delete(0, hql.length());
+		hql.append(" from HopVendor t ");
+		hql.append(" where 1=1 ");
+		
+		if(WebContextHolder.getContext().getVisit().getUserInfo().getUserType()==1){
+			hql.append(" and t.hopHopId = :hopId ");
+			paramMap.put("hopId",WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+		}
+		@SuppressWarnings("unchecked")
+		List<HopVendor> hopVendors = (List<HopVendor>)this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+		roleDto.setHopVendors(hopVendors);
+	}
+	
+	/**
+	 * 
+	* @Title: RoleDao.java
+	* @Description: TODO(查询权限有的科室)
+	* @param roleDto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午4:38:43
+	* @version V1.0
+	 */
+	public void getRoleLocs(RoleDto roleDto) {
+		StringBuffer hql = new StringBuffer();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		hql.append(" from RoleLoc t ");
+		hql.append(" where t.sysRoleId = ? ");
+		@SuppressWarnings("unchecked")
+		List<RoleLoc> roleLocs = (List<RoleLoc>)this.findByHql(hql.toString(),Long.valueOf(roleDto.getRoleId()));
+		roleDto.setRoleLocs(roleLocs);
+		
+		
+		hql.delete(0, hql.length());
+		hql.append(" from HopCtloc t ");
+		hql.append(" where 1=1 ");
+		
+		if(WebContextHolder.getContext().getVisit().getUserInfo().getUserType()==1){
+			hql.append(" and t.hospid = :hopId ");
+			paramMap.put("hopId",WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+		}
+		@SuppressWarnings("unchecked")
+		List<HopCtloc> hopCtlocs = (List<HopCtloc>)this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+		roleDto.setHopCtlocs(hopCtlocs);
+	}
+	
+	/**
+	 * 
+	* @Title: RoleDao.java
+	* @Description: TODO(保存角色供应商权限)
+	* @param roleDto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午8:55:21
+	* @version V1.0
+	 */
+	public void saveRoleVen(RoleDto roleDto){
+		StringBuffer hql = new StringBuffer();
+		hql.append(" delete ");
+		hql.append(" from RoleVendor t ");
+		hql.append(" where ");
+		hql.append(" t.sysRoleId = ? ");
+		this.updateByHqlWithFreeParam(hql.toString(), roleDto.getRoleId());
+		
+		super.batchSaveOrUpdate(roleDto.getRoleVendors());
+	}
+	
+	/**
+	 * 
+	* @Title: RoleDao.java
+	* @Description: TODO(保存角色科室权限)
+	* @param roleDto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午8:55:43
+	* @version V1.0
+	 */
+	public void saveRoleLoc(RoleDto roleDto){
+		
+		StringBuffer hql = new StringBuffer();
+		hql.append(" delete ");
+		hql.append(" from RoleLoc t ");
+		hql.append(" where ");
+		hql.append(" t.sysRoleId = ? ");
+		this.updateByHqlWithFreeParam(hql.toString(), roleDto.getRoleId());
+		
+		super.batchSaveOrUpdate(roleDto.getRoleLocs());
+	}
 }

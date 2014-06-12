@@ -111,27 +111,12 @@ $(function (){
 			textField:'stateName'	
 		});
 	   $('#vendor').combobox({
-  	    	url:getContextPath()+"/ven/vendorCtrl!getVenCombox.htm?dto.vendor.name=",
+  	    	url:getContextPath()+"/ven/vendorCtrl!getVenCombox.htm",
   	    	panelHeight:"auto",
   	        valueField:'vendorId',  
   	        textField:'name',
   	        mode:'remote',
-  	        onChange:function (newValue, oldValue){
-  	            if(newValue !=null){
-  	            	if(newValue!=oldValue){ 
-  	            		var urlStr =getContextPath()+"/ven/vendorCtrl!getVenCombox.htm?dto.vendor.name=" + encodeURIComponent(newValue);  
-  	            		$("#vendorId").combobox("reload",urlStr);
-  	            	}
-  	            }  
-  	        },
-  	    	onSelect:function(rec){
-  	    		var url = getContextPath()+"/ven/vendorCtrl!getVenCombox.htm?dto.vendor.name=" + encodeURIComponent(rec.name);  ;
-  	    		$('#vendorId').combobox('reload', url);
-  	    		
-  	    		
-  	    		
-  	    	}
-	        });
+	   });
 
 });
 

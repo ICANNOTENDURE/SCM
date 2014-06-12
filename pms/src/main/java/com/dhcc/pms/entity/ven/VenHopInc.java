@@ -2,14 +2,13 @@ package com.dhcc.pms.entity.ven;
 
 import java.io.Serializable;
 
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -18,35 +17,46 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="T_VEN_HOP_INC")
-@IdClass(VenHopIncId.class)
 public class VenHopInc implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
 	
+	@Id
+	@GenericGenerator(name="systemUUID",strategy="uuid")
+	@GeneratedValue(generator="systemUUID")
+	@Column(name="ven_hop_inc_ID", unique=true, nullable=false)
+	private String venHopIncId;
 	
+	@Column(name="HOP_INC_ID")
 	private Long hopIncId;
+	
+	@Column(name="VEN_INC_ID")
 	private Long venIncId;
 
-	
-	
-	@Id
-	@AttributeOverrides({
-		@AttributeOverride(name="hopIncId",
-	    column=@Column(name="HOP_INC_ID")),
-	    @AttributeOverride(name="venIncId",
-	    column=@Column(name="VEN_INC_ID"))
-	})
-	
+	@Column(name="VEN_INC_FAC")
+	private Long venIncFac;
+
+	/**
+	 * @return the venHopIncId
+	 */
+	public String getVenHopIncId() {
+		return venHopIncId;
+	}
+
+	/**
+	 * @param venHopIncId the venHopIncId to set
+	 */
+	public void setVenHopIncId(String venHopIncId) {
+		this.venHopIncId = venHopIncId;
+	}
+
 	/**
 	 * @return the hopIncId
 	 */
-	@Column(name = "HOP_INC_ID")
 	public Long getHopIncId() {
 		return hopIncId;
 	}
-
-
 
 	/**
 	 * @param hopIncId the hopIncId to set
@@ -55,17 +65,12 @@ public class VenHopInc implements Serializable {
 		this.hopIncId = hopIncId;
 	}
 
-
-
 	/**
 	 * @return the venIncId
 	 */
-	@Column(name = "VEN_INC_ID")
 	public Long getVenIncId() {
 		return venIncId;
 	}
-
-
 
 	/**
 	 * @param venIncId the venIncId to set
@@ -74,24 +79,21 @@ public class VenHopInc implements Serializable {
 		this.venIncId = venIncId;
 	}
 
+	/**
+	 * @return the venIncFac
+	 */
+	public Long getVenIncFac() {
+		return venIncFac;
+	}
+
+	/**
+	 * @param venIncFac the venIncFac to set
+	 */
+	public void setVenIncFac(Long venIncFac) {
+		this.venIncFac = venIncFac;
+	}
 	
-	/**
-	 * @param hopIncId
-	 * @param venIncId
-	 */
-	public VenHopInc(Long hopIncId, Long venIncId) {
-		super();
-		this.hopIncId = hopIncId;
-		this.venIncId = venIncId;
-	}
-
-
-
-	/**
-	 * 
-	 */
-	public VenHopInc() {
-		super();
-	}
-
+	
+	
+	
 }

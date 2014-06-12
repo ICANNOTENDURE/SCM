@@ -6,19 +6,17 @@ package com.dhcc.pms.service.ven.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.dhcc.framework.app.service.CommonService;
-import com.dhcc.framework.app.service.CommonServiceImpl;
 import com.dhcc.framework.common.PagerModel;
-
-import javax.annotation.Resource;
-
-import com.dhcc.pms.service.ven.VendorService;
 import com.dhcc.pms.dao.ven.VendorDao;
 import com.dhcc.pms.dto.ven.VendorDto;
 import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.ven.VenQualifTypeVO;
+import com.dhcc.pms.service.ven.VendorService;
 
 @Service("vendorService")
 public class VendorServiceImpl implements VendorService {
@@ -90,6 +88,15 @@ public class VendorServiceImpl implements VendorService {
 	@Override
 	public List<Vendor> findVenComboList(VendorDto dto) {
 		return vendorDao.findVenComboList(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VendorService#findVendorIdByName(java.lang.String)
+	 */
+	@Override
+	public Long findVendorIdByName(String name) {
+		// TODO Auto-generated method stub
+		return vendorDao.findVendorIdByName(name);
 	}
 
 }

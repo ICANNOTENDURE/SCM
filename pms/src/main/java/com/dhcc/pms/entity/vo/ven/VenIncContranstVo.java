@@ -22,7 +22,7 @@ public class VenIncContranstVo {
 	
 	private String venname;
 	
-	private Long vensysid;
+	private String vensysid;
 	
 	private String manf;
 	
@@ -190,14 +190,14 @@ public class VenIncContranstVo {
 	/**
 	 * @return the vensysid
 	 */
-	public Long getVensysid() {
+	public String getVensysid() {
 		return vensysid;
 	}
 
 	/**
 	 * @param vensysid the vensysid to set
 	 */
-	public void setVensysid(Long vensysid) {
+	public void setVensysid(String vensysid) {
 		this.vensysid = vensysid;
 	}
 

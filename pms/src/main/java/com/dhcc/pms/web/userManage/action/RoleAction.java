@@ -32,7 +32,7 @@ import com.dhcc.pms.dto.userManage.RoleDto;
 		@Result(name="praAccountList",location="/WEB-INF/jsp/userManage/role.jsp"),
 		@Result(name="normalAccountList",location="/WEB-INF/jsp/userManage/role.jsp")
 })
-@JsonResult4Pojo("getRoleFuncs:roleDto.funcs;saveRoleFunc:roleDto;getSystemVersion:roleDto.systemVersions")
+@JsonResult4Pojo("saveRoleVen:roleDto;saveRoleLoc:roleDto;getRoleLocs:roleDto.treeVOs;getRoleVens:roleDto.treeVOs;getRoleFuncs:roleDto.funcs;saveRoleFunc:roleDto;getSystemVersion:roleDto.systemVersions")
 @Blh("roleBlh")
 public class RoleAction extends BaseAction{
 

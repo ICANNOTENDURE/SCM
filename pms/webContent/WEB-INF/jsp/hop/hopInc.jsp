@@ -39,7 +39,7 @@
 		data-options="modal:true,width:750,height:500,closed:true,buttons:'#btnDiv0'"
 		style="vertical-align: middle;">
 		<form id="incdetail" method="post">
-			<table style="width: 100%;" cellspacing="10">
+			<table style="width: 100%;" >
 				<tr style="display: none">
 					<input type="hidden" name="dto.hopInc.incId" />
 				</tr>

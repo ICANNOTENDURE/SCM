@@ -29,5 +29,17 @@ public interface VendorService {
 	public void saveOrUpdatePic(VendorDto dto);
 	
 	public List<Vendor> findVenComboList(VendorDto dto);
-
+	
+	/**
+	 * 
+	* @Title: VendorService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param name
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午2:38:34
+	* @version V1.0
+	 */
+	public Long findVendorIdByName(String name);
 }

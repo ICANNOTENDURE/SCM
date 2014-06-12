@@ -48,4 +48,29 @@ public interface VenIncService {
 	* @version V1.0
 	 */
 	public void saveContranst(VenIncDto dto);
+	
+	/**
+	 * 
+	* @Title: VenIncService.java
+	* @Description: TODO(列出供应商药品)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月11日 下午2:42:57
+	* @version V1.0
+	 */
+	public void listVenContranst(VenIncDto dto);
+	
+	
+	/**
+	 * 
+	* @Title: VenIncService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午2:14:19
+	* @version V1.0
+	 */
+	public void exportVenInc(VenIncDto dto);
 }

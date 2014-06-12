@@ -4,6 +4,7 @@
  */
 package com.dhcc.pms.dto.ven;
 
+import java.io.File;
 import java.util.List;
 
 import com.dhcc.framework.transmission.dto.BaseDto;
@@ -30,8 +31,46 @@ public class VenIncDto extends BaseDto {
 	
 	private String comgridparam;
 	
+	private List<VenInc> venIncs;
 	
 	
+	private File upload;
+	
+	
+	
+	
+	/**
+	 * @return the upload
+	 */
+	public File getUpload() {
+		return upload;
+	}
+
+
+	/**
+	 * @param upload the upload to set
+	 */
+	public void setUpload(File upload) {
+		this.upload = upload;
+	}
+
+
+	/**
+	 * @return the venIncs
+	 */
+	public List<VenInc> getVenIncs() {
+		return venIncs;
+	}
+
+
+	/**
+	 * @param venIncs the venIncs to set
+	 */
+	public void setVenIncs(List<VenInc> venIncs) {
+		this.venIncs = venIncs;
+	}
+
+
 	/**
 	 * @return the comgridparam
 	 */

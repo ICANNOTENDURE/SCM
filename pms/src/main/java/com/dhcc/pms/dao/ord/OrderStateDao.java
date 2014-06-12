@@ -4,6 +4,7 @@
  */
 package com.dhcc.pms.dao.ord;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,11 +216,11 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 				hqlParamMap.put("ord", dto.getExeState().getOrdId());
 			}
 		}
-//		else{
-//			dto.getPageModel().setTotals(0);
-//			dto.getPageModel().setPageData(new ArrayList<OrderItmVo>());
-//			return;
-//		}
+		else{
+			dto.getPageModel().setTotals(0);
+			dto.getPageModel().setPageData(new ArrayList<OrderItmVo>());
+			return;
+		}
 
 		dto.getPageModel().setQueryHql(hqlBuffer.toString());
 		dto.getPageModel().setHqlParamMap(hqlParamMap);

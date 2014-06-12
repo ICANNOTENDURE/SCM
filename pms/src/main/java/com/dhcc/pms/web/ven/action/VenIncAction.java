@@ -5,6 +5,8 @@
 package com.dhcc.pms.web.ven.action;
 
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
+import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
@@ -29,8 +31,12 @@ import com.dhcc.pms.dto.ven.VenIncDto;
 		@Result(name = "getIncInfo", location = "/WEB-INF/jsp/ven/VenInc.jsp")		
 		})
 @Blh("venIncBlh")
+@InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.venInc"),
-			  @JResult(BlhMethod="saveContranst",ognlExpress="dto")
+			  @JResult(BlhMethod="saveContranst",ognlExpress="dto"),
+			  @JResult(BlhMethod="saveContranstInc",ognlExpress="dto"),
+			  @JResult(BlhMethod="updateContranstInc",ognlExpress="dto"),
+			  @JResult(BlhMethod="deleteContranstInc",ognlExpress="dto")
 			 })
 public class VenIncAction extends BaseAction {
 	

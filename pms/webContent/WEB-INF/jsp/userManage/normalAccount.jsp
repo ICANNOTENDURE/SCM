@@ -190,7 +190,8 @@
 					<td class="textLabel" style="text-align: right; width: 20%">人员类型:</td>
 					<td class="textParent" style="text-align: left; width: 30%">
 					<select class="combobox" panelHeight="auto" style="width:200px"  
-					     name="normalAccountDto.normalAccount.normalUser.type" id="type">
+					     name="normalAccountDto.normalAccount.normalUser.type" id="type"
+					     data-options="required:true">
 					<option value="0">工作人员</option>
 					<option value="1">医院用户</option>
 					<option value="2">供应商用户</option>
@@ -207,7 +208,7 @@
 				<tr>
 					<td class="textLabel" style="text-align: right; width: 20%">供应商:</td>
 					<td class="textParent" style="text-align: left; width: 30%"><input style="width: 200px;" 
-					name="normalAccountDto.normalAccount.normalUser.vendorId"  class="combogrid" id="ven"/></td>	
+					name="normalAccountDto.normalAccount.normalUser.vendorId"  class="combobox" id="ven"/></td>	
 				</tr>
 				<tr style="display: none;">
 					<td class="textLabel" style="text-align: right; width: 20%">会话密钥:</td>

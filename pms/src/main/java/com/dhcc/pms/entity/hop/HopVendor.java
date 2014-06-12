@@ -62,6 +62,61 @@ public class HopVendor implements Serializable {
 
 	@Column(name="H_HOPID")
 	private Long hopHopId;
+	
+	@Column(name="H_TYPE")
+	private String hopType;
+	
+	@Column(name="H_EMAIL")
+	private String hopEmail;
+	
+	
+	@Column(name="H_SEND")
+	private String hopSend;
+	
+	
+	
+	
+	/**
+	 * @return the hopSend
+	 */
+	public String getHopSend() {
+		return hopSend;
+	}
+
+	/**
+	 * @param hopSend the hopSend to set
+	 */
+	public void setHopSend(String hopSend) {
+		this.hopSend = hopSend;
+	}
+
+	/**
+	 * @return the hopEmail
+	 */
+	public String getHopEmail() {
+		return hopEmail;
+	}
+
+	/**
+	 * @param hopEmail the hopEmail to set
+	 */
+	public void setHopEmail(String hopEmail) {
+		this.hopEmail = hopEmail;
+	}
+
+	/**
+	 * @return the hopType
+	 */
+	public String getHopType() {
+		return hopType;
+	}
+
+	/**
+	 * @param hopType the hopType to set
+	 */
+	public void setHopType(String hopType) {
+		this.hopType = hopType;
+	}
 
 	/**
 	 * @return the hopVendorId

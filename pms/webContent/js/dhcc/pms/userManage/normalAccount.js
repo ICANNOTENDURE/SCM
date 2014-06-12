@@ -150,7 +150,7 @@ $(function(){
 	$('#type').combobox({
 			onSelect:function(rec){
 				if(rec.value==1){
-					$("#ven").combogrid('clear');
+					$("#ven").combobox('clear');
 					$("#hop").combobox({
 						url:$WEB_ROOT_PATH+'/hop/hospitalCtrl!getHospInfo.htm',
 						valueField:'hospitalId',							
@@ -168,17 +168,12 @@ $(function(){
 				}
 				if(rec.value==2){
 					$("#hop").combobox('clear');
-					$("#ven").combogrid({
-						url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm", //+ encodeURIComponent($("#vendorName").val()),
-						panelWidth:500,
+					$("#ven").combobox({
+						url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm",
+				    	panelHeight:"auto",
 				        valueField:'vendorId',  
-				        textField:'name', 
-				        fitColumns: true,
+				        textField:'name',
 				        mode: 'remote',
-				        columns:[[
-				                  {field:'vendorId',title:'vendorId',width:60,hidden:true},
-				                  {field:'name',title:'name',width:100}
-				        ]]
 					});
 				}
 			}	
@@ -266,19 +261,14 @@ function editNormalAccount(){
 			
 		}
 		if([row.normalUser.vendorId]!=null){
-			$("#ven").combogrid({
-				url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm", //+ encodeURIComponent($("#vendorName").val()),
-				panelWidth:500,
+			$("#ven").combobox({
+				url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm",
+		    	panelHeight:"auto",
 		        valueField:'vendorId',  
-		        textField:'name', 
-		        fitColumns: true,
+		        textField:'name',
 		        mode: 'remote',
-		        columns:[[
-		                  {field:'vendorId',title:'vendorId',width:60,hidden:true},
-		                  {field:'name',title:'name',width:100}
-		        ]]
 			});
-			//$CommonUI.getComboGrid('#ven').combobox('setValues', [row.normalUser.vendorId]);
+			$CommonUI.getComboGrid('#ven').combobox('setValues', [row.normalUser.vendorId]);
 		}
 		$CommonUI.getDateBox('#updateTime').datebox('setValue', new Date(row.updateTime).format("yyyy-MM-dd"));
 		$CommonUI.getDateBox('#loginTime').datebox('setValue', new Date(row.loginTime).format("yyyy-MM-dd"));

@@ -7,6 +7,10 @@
 <title>Dic</title>
 <%@include file="/WEB-INF/jsp/common/scriptInc.jsp"%>
 <script type="text/javascript"
+	src="<%=request.getContextPath()%>/js/uploadify/jquery.uploadify.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/css/uploadify.css">
+<script type="text/javascript"
 	src="<%=request.getContextPath()%>/js/dhcc/pms/hop/HopVendor.js"></script>
 </head>
 <body>
@@ -19,6 +23,9 @@
 			onclick="javascript:delRow()">删除</a> <a class="linkbutton"
 			data-options="iconCls:'icon-search',plain:true"
 			onclick="javascript:selectClick()">查询</a>
+			<a class="linkbutton"
+			data-options="iconCls:'icon-save',plain:true"
+			onclick="javascript:exportClick()">导入</a>
 	</div>
 
 
@@ -52,6 +59,11 @@
 						style="width: 250px;" class="validatebox" type="text"
 						name="dto.hopVendor.hopAlias" data-options="required:true"></input>
 					</td>
+					<td class="textLabel" style="text-align: right; width: 20%">类型:</td>
+					<td class="textParent" style="text-align: left; width: 30%"><input
+						style="width: 250px;" class="validatebox" type="text"
+						name="dto.hopVendor.hopType" data-options="required:true"></input>
+					</td>
 				</tr>
 			</table>
 			<div id="btnDiv" align="center">
@@ -69,21 +81,28 @@
 	</div>
 
 	<div id="selectWin" class="dialog" title="条件查询"
-		data-options="modal:true,width:350,height:150,closed:true,buttons:'#searchBtnDiv'"
+		data-options="modal:true,width:400,height:200,closed:true,buttons:'#searchBtnDiv'"
 		style="vertical-align: middle;">
 		<table id="saveOrUpdateTable" style="width: 100%;">
 				<tr>
-					<td class="textLabel" style="text-align: right; width: 20%">状态代码:</td>
+					<td class="textLabel" style="text-align: right; width: 20%">医院供应商代码:</td>
 					<td class="textParent" style="text-align: left; width: 30%"><input
 						style="width: 250px;" class="validatebox" type="text"
-						name="dto.state.stateCode" ></input>
+						name="dto.hopVendor.hopCode" ></input>
 					</td>
 				</tr>
 				<tr>
-					<td class="textLabel" style="text-align: right; width: 20%">状态名称:</td>
+					<td class="textLabel" style="text-align: right; width: 20%">医院供应商名称:</td>
 					<td class="textParent" style="text-align: left; width: 30%"><input
 						style="width: 250px;" class="validatebox" type="text"
-						name="dto.state.stateName" ></input>
+						name="dto.hopVendor.hopName" ></input>
+					</td>
+				</tr>
+				<tr>
+					<td class="textLabel" style="text-align: right; width: 20%">医院供应商类别:</td>
+					<td class="textParent" style="text-align: left; width: 30%"><input
+						style="width: 250px;" class="validatebox" type="text"
+						name="dto.hopVendor.hopType" ></input>
 					</td>
 				</tr>
 			</table>	
@@ -98,6 +117,26 @@
 					</tr>
 				</table>
 			</div>
+	</div>
+	
+	
+	<div id="importDialog" class="dialog" title="导入供应商"
+		style="width: 400px; height: 150px; background-color: #F5FAFD;"
+		data-options="
+				modal:true,
+		        closed:true,
+				collapsible:false,
+				minimizable:false,
+				maximizable:false">
+			<table id="addFuncsTable" style="width: 100%;">
+
+				<tr>
+					<td class="textLabel" style="text-align: right; width: 40%">导入Excel文件:</td>
+					<td class="textParent" style="text-align: left; width: 60%"><input
+						style="width: 250px;" class="validatebox" type="file"
+						name="upload" id="orderUpload"></input></td>
+				</tr>
+			</table>
 	</div>
 </body>
 </html>

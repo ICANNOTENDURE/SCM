@@ -119,4 +119,55 @@ public interface RoleService {
 	 */
 	public Role findRole(RoleDto roleDto) throws Exception;
 	
+	/**
+	 * 
+	* @Title: RoleService.java
+	* @Description: TODO(查询角色有的供应商)
+	* @param roleDto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午4:36:12
+	* @version V1.0
+	 */
+	public void getRoleVens(RoleDto roleDto);
+	
+	/**
+	 * 
+	* @Title: RoleService.java
+	* @Description: TODO(查询角色有的供应商)
+	* @param roleDto
+	* @return
+	* @return:List<Role> 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午4:37:29
+	* @version V1.0
+	 */
+	public void getRoleLocs(RoleDto roleDto);
+	
+	/**
+	 * 
+	* @Title: RoleService.java
+	* @Description: TODO(保存角色权限科室)
+	* @param roleDto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午8:58:31
+	* @version V1.0
+	 */
+	public void saveRoleLoc(RoleDto roleDto);
+	
+	
+	/**
+	 * 
+	* @Title: RoleService.java
+	* @Description: TODO(保存权限供应商)
+	* @param roleDto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月12日 下午8:59:11
+	* @version V1.0
+	 */
+	
+	public void saveRoleVen(RoleDto roleDto);
+	
 }

@@ -1,13 +1,11 @@
 package com.dhcc.pms.entity.ven;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -20,7 +18,6 @@ import org.hibernate.annotations.Parameter;
  */
 @Entity
 @Table(name="T_VEN_INC")
-@NamedQuery(name="VenInc.findAll", query="SELECT v FROM VenInc v")
 public class VenInc implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -28,50 +25,60 @@ public class VenInc implements Serializable {
 	@GenericGenerator(name="idGenerator",strategy="sequence",
 	parameters={@Parameter(name="sequence",value="SEQUENCE_VEN_INC")})
 	@GeneratedValue(generator="idGenerator")	
-	@Column(name="VEN_INC_ID", unique=true, nullable=false, precision=22)
+	@Column(name="VEN_INC_ROWID", unique=true, nullable=false)
 	private Long venIncId;
 
-	@Column(name="VEN_INC_BUOMCODE", length=50)
+	@Column(name="VEN_INC_BUOMCODE")
 	private String venIncBuomcode;
 
-	@Column(name="VEN_INC_BUOMNAME", length=50)
+	@Column(name="VEN_INC_BUOMNAME")
 	private String venIncBuomname;
 
-	@Column(name="VEN_INC_CODE", length=50)
+	@Column(name="VEN_INC_CODE")
 	private String venIncCode;
 
-	@Column(name="VEN_INC_FAC", precision=22)
-	private BigDecimal venIncFac;
+	@Column(name="VEN_INC_FAC")
+	private  Long venIncFac;
 	
-	@Column(name="VEN_INC_PRICE", precision=22)
-	private BigDecimal venIncPrice;
+	@Column(name="VEN_INC_PRICE")
+	private Long venIncPrice;
 	
-	@Column(name="VEN_INC_NAME", length=50)
+	@Column(name="VEN_INC_NAME")
 	private String venIncName;
 
-	@Column(name="VEN_INC_UOMCODE", length=50)
+	@Column(name="VEN_INC_UOMCODE")
 	private String venIncUomcode;
 
-	@Column(name="VEN_INC_UOMNAME", length=50)
+	@Column(name="VEN_INC_UOMNAME")
 	private String venIncUomname;
 	
-	@Column(name="VEN_INC_MANFID", precision=22)
-	private BigDecimal venIncManfid;
+	@Column(name="VEN_INC_MANFID")
+	private Long venIncManfid;
 	
-	@Column(name="VEN_INC_VENID", precision=22)
-	private BigDecimal venIncVenid;
+	@Column(name="VEN_INC_VENID")
+	private Long venIncVenid;
 
-	@Column(name="VEN_INC_VENSYSID", precision=22)
-	private BigDecimal venIncVensysid;
-
+	@Column(name="VEN_INC_VENSYSID")
+	private String venIncVensysid;
 	
-
+	@Column(name="VEN_INC_SPEC")
+	private String venIncSpec;
+	
+	@Column(name="VEN_INC_CAT")
+	private String venIncCat;
+	
+	@Column(name="VEN_INC_ALIAS")
+	private String venIncAlias;
+	
+	@Column(name="VEN_INC_Sp")
+	private Long venIncSp;
+	
 	public VenInc() {
 	}
 
 	public VenInc(Long venIncId,  String venIncCode, String venIncName,
-			 String venIncUomname, String venIncBuomname, BigDecimal venIncManfid,
-			BigDecimal venIncVenid, BigDecimal venIncVensysid) {
+			 String venIncUomname, String venIncBuomname, Long venIncManfid,
+			Long venIncVenid, String venIncVensysid) {
 		super();
 		this.venIncId = venIncId;		
 		this.venIncCode = venIncCode;
@@ -117,70 +124,175 @@ public class VenInc implements Serializable {
 		this.venIncCode = venIncCode;
 	}
 
-	public BigDecimal getVenIncFac() {
-		return this.venIncFac;
+	/**
+	 * @return the venIncFac
+	 */
+	public Long getVenIncFac() {
+		return venIncFac;
 	}
 
-	public void setVenIncFac(BigDecimal venIncFac) {
+	/**
+	 * @param venIncFac the venIncFac to set
+	 */
+	public void setVenIncFac(Long venIncFac) {
 		this.venIncFac = venIncFac;
-	}	
+	}
 
-	public BigDecimal getVenIncPrice() {
+	/**
+	 * @return the venIncPrice
+	 */
+	public Long getVenIncPrice() {
 		return venIncPrice;
 	}
 
-	public void setVenIncPrice(BigDecimal venIncPrice) {
+	/**
+	 * @param venIncPrice the venIncPrice to set
+	 */
+	public void setVenIncPrice(Long venIncPrice) {
 		this.venIncPrice = venIncPrice;
 	}
 
+	/**
+	 * @return the venIncName
+	 */
 	public String getVenIncName() {
-		return this.venIncName;
+		return venIncName;
 	}
 
+	/**
+	 * @param venIncName the venIncName to set
+	 */
 	public void setVenIncName(String venIncName) {
 		this.venIncName = venIncName;
 	}
 
+	/**
+	 * @return the venIncUomcode
+	 */
 	public String getVenIncUomcode() {
-		return this.venIncUomcode;
+		return venIncUomcode;
 	}
 
+	/**
+	 * @param venIncUomcode the venIncUomcode to set
+	 */
 	public void setVenIncUomcode(String venIncUomcode) {
 		this.venIncUomcode = venIncUomcode;
 	}
 
+	/**
+	 * @return the venIncUomname
+	 */
 	public String getVenIncUomname() {
-		return this.venIncUomname;
+		return venIncUomname;
 	}
 
+	/**
+	 * @param venIncUomname the venIncUomname to set
+	 */
 	public void setVenIncUomname(String venIncUomname) {
 		this.venIncUomname = venIncUomname;
 	}
 
-	public BigDecimal getVenIncVensysid() {
-		return this.venIncVensysid;
-	}
-
-	public void setVenIncVensysid(BigDecimal venIncVensysid) {
-		this.venIncVensysid = venIncVensysid;
-	}
-
-	
-	public BigDecimal getVenIncManfid() {
+	/**
+	 * @return the venIncManfid
+	 */
+	public Long getVenIncManfid() {
 		return venIncManfid;
 	}
 
-	public void setVenIncManfid(BigDecimal venIncManfid) {
+	/**
+	 * @param venIncManfid the venIncManfid to set
+	 */
+	public void setVenIncManfid(Long venIncManfid) {
 		this.venIncManfid = venIncManfid;
 	}
 
-	public BigDecimal getVenIncVenid() {
+	/**
+	 * @return the venIncVenid
+	 */
+	public Long getVenIncVenid() {
 		return venIncVenid;
 	}
 
-	public void setVenIncVenid(BigDecimal venIncVenid) {
+	/**
+	 * @param venIncVenid the venIncVenid to set
+	 */
+	public void setVenIncVenid(Long venIncVenid) {
 		this.venIncVenid = venIncVenid;
 	}
+
+	/**
+	 * @return the venIncVensysid
+	 */
+	public String getVenIncVensysid() {
+		return venIncVensysid;
+	}
+
+	/**
+	 * @param venIncVensysid the venIncVensysid to set
+	 */
+	public void setVenIncVensysid(String venIncVensysid) {
+		this.venIncVensysid = venIncVensysid;
+	}
+
+	/**
+	 * @return the venIncSpec
+	 */
+	public String getVenIncSpec() {
+		return venIncSpec;
+	}
+
+	/**
+	 * @param venIncSpec the venIncSpec to set
+	 */
+	public void setVenIncSpec(String venIncSpec) {
+		this.venIncSpec = venIncSpec;
+	}
+
+	/**
+	 * @return the venIncCat
+	 */
+	public String getVenIncCat() {
+		return venIncCat;
+	}
+
+	/**
+	 * @param venIncCat the venIncCat to set
+	 */
+	public void setVenIncCat(String venIncCat) {
+		this.venIncCat = venIncCat;
+	}
+
+	/**
+	 * @return the venIncAlias
+	 */
+	public String getVenIncAlias() {
+		return venIncAlias;
+	}
+
+	/**
+	 * @param venIncAlias the venIncAlias to set
+	 */
+	public void setVenIncAlias(String venIncAlias) {
+		this.venIncAlias = venIncAlias;
+	}
+
+	/**
+	 * @return the venIncSp
+	 */
+	public Long getVenIncSp() {
+		return venIncSp;
+	}
+
+	/**
+	 * @param venIncSp the venIncSp to set
+	 */
+	public void setVenIncSp(Long venIncSp) {
+		this.venIncSp = venIncSp;
+	}
+
+	
 
 	
 }
