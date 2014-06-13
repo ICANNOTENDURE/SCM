@@ -13,15 +13,7 @@ import com.dhcc.pms.entity.userManage.RoleLoc;
 import com.dhcc.pms.entity.userManage.RoleVendor;
 import com.dhcc.pms.entity.vo.tree.TreeVO;
 
-/**
- * 标题: RoleDto.java
- * 业务描述：安全运维管理平台
- * 公司:东华软件股份公司
- * 版权:dhcc2013
- * @author 聂文来
- * @date 2013年9月3日
- * @version V1.0 
- */
+
 public class RoleDto extends BaseDto{
 	
 	/**  
