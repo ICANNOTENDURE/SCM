@@ -4,8 +4,11 @@
  */
 package com.dhcc.pms.service.hop;
 
+import java.util.List;
+
 import com.dhcc.pms.dto.hop.HopVendorDto;
 import com.dhcc.pms.entity.hop.HopVendor;
+import com.dhcc.pms.entity.vo.combo.ComboxVo;
 
 public interface HopVendorService {
 
@@ -55,4 +58,19 @@ public interface HopVendorService {
 	* @version V1.0
 	 */
 	public Long findVendorIdByName(String name);
+	
+	
+	/**
+	 * 
+	* @Title: HopVendorService.java
+	* @Description: TODO(查询登录人有权限的供应商)
+	* @param input
+	* @return
+	* @return:List<ComboxVo> 
+	* @author zhouxin  
+	* @date 2014年6月13日 上午11:35:12
+	* @version V1.0
+	 */
+	public List<ComboxVo> findHopVenComboxVos(String input);
+	
 }

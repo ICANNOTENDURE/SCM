@@ -17,6 +17,7 @@ import com.dhcc.pms.service.hop.HopCtlocService;
 import com.dhcc.pms.dao.hop.HopCtlocDao;
 import com.dhcc.pms.dto.hop.HopCtlocDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
+import com.dhcc.pms.entity.vo.combo.ComboxVo;
 import com.dhcc.pms.entity.vo.hop.HopCtlocVo;
 
 @Service("hopCtlocService")
@@ -66,6 +67,15 @@ public class HopCtlocServiceImpl implements HopCtlocService {
 		
 		PagerModel pagerModel=dto.getPageModel();
 		return hopCtlocDao.getListInfo(pagerModel,dto.getHopCtlocVos(),dto.getHopCtloc());
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopCtlocService#findHopLocComboxVos(com.dhcc.pms.dto.hop.HopCtlocDto)
+	 */
+	@Override
+	public List<ComboxVo> findHopLocComboxVos(HopCtlocDto dto) {
+		// TODO Auto-generated method stub
+		return hopCtlocDao.findHopLocComboxVos(dto);
 	}
 		
 }

@@ -5,6 +5,7 @@
 package com.dhcc.pms.blh.hop;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,6 +145,23 @@ public class HopCtlocBlh extends AbstractBaseBlh {
 						+ JsonUtils.toJson(hopCtlocVos)
 						+ "}");
 			
+	}
+	
+	
+	/**
+	 * 
+	* @Title: HopCtlocBlh.java
+	* @Description: TODO(按登录人权限和科室类型查看权限下科室)
+	* @param res
+	* @throws IOException
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月13日 下午1:05:15
+	* @version V1.0
+	 */
+	public void findHopLocComboxVos(BusinessRequest res) throws IOException{
+		HopCtlocDto dto = super.getDto(HopCtlocDto.class, res);
+		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(hopCtlocService.findHopLocComboxVos(dto)));
 	}
 	
 }

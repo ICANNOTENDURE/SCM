@@ -4,6 +4,8 @@
  */
 package com.dhcc.pms.service.hop.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import com.dhcc.framework.common.PagerModel;
 import com.dhcc.pms.dao.hop.HopVendorDao;
 import com.dhcc.pms.dto.hop.HopVendorDto;
 import com.dhcc.pms.entity.hop.HopVendor;
+import com.dhcc.pms.entity.vo.combo.ComboxVo;
 import com.dhcc.pms.service.hop.HopVendorService;
 
 @Service("hopVendorService")
@@ -78,6 +81,15 @@ public class HopVendorServiceImpl implements HopVendorService {
 	public Long findVendorIdByName(String name) {
 		// TODO Auto-generated method stub
 		return hopVendorDao.findVendorIdByName(name);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopVendorService#findHopVenComboxVos(java.lang.String)
+	 */
+	@Override
+	public List<ComboxVo> findHopVenComboxVos(String input) {
+		// TODO Auto-generated method stub
+		return hopVendorDao.findHopVenComboxVos(input);
 	}
 
 }

@@ -15,9 +15,48 @@ public class HopCtlocDto extends BaseDto {
 	private static final long serialVersionUID = 1L;
 	private HopCtloc hopCtloc;
 	private Long hospitalDr;
+	private String comgridparam;
+	private String type;
 	//要显示的科室信息
 	private List<HopCtlocVo> hopCtlocVos;
 	
+	
+	
+	
+	
+	
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+
+	/**
+	 * @return the comgridparam
+	 */
+	public String getComgridparam() {
+		return comgridparam;
+	}
+
+
+	/**
+	 * @param comgridparam the comgridparam to set
+	 */
+	public void setComgridparam(String comgridparam) {
+		this.comgridparam = comgridparam;
+	}
+
+
 	public Long getHospitalDr() {
 		return hospitalDr;
 	}

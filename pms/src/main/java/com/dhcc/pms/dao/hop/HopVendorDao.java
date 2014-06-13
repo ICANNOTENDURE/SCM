@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Repository;
 
+import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
@@ -22,6 +23,7 @@ import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.hop.HopVendorDto;
 import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.ven.Vendor;
+import com.dhcc.pms.entity.vo.combo.ComboxVo;
 import com.dhcc.pms.entity.vo.hop.HopVendorVo;
 
 @Repository
@@ -214,6 +216,44 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 		List<HopVendor> hopVendors=(List<HopVendor>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
 		if(hopVendors.size()==1){
 			return hopVendors.get(0).getHopVendorId();
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * 
+	* @Title: HopVendorDao.java
+	* @Description: TODO(更具权限和条件查询供应商列表combox)
+	* @param input
+	* @return
+	* @return:List<ComboxVo> 
+	* @author zhouxin  
+	* @date 2014年6月13日 上午10:39:45
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ComboxVo> findHopVenComboxVos(String input){
+		
+		Long type=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+		Long userId=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+		//1是医院，2是供应商，0是平台维护人员
+		if(type==1){
+			StringBuffer hqlBuffer = new StringBuffer();
+			hqlBuffer.append("select ");
+			hqlBuffer.append("t3.H_NAME as name, ");
+			hqlBuffer.append("t1.sys_ven_id as id ");
+			hqlBuffer.append("from t_sys_ven_role t1 ");
+			hqlBuffer.append("left join t_sys_normalaccount_role t2 on t2.role_id=t1.sys_role_id and t2.account_id=:userId ");
+			hqlParamMap.put("userId", userId);
+			hqlBuffer.append("left join t_hop_vendor t3 on t3.h_venid=t1.sys_ven_id ");
+			hqlBuffer.append("where 1=1 ");
+			if(!StringUtils.isNullOrEmpty(input)){
+				hqlBuffer.append("and t3.h_alias like :alias ");
+				hqlParamMap.put("alias", input+"%");
+			}
+			return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_ven_id");
 		}
 		return null;
 	}

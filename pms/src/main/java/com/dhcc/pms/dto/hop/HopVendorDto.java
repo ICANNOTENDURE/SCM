@@ -27,7 +27,26 @@ public class HopVendorDto extends BaseDto {
 	
 	private File upload;
 	
+	private String comgridparam;
 	
+	
+	
+	/**
+	 * @return the comgridparam
+	 */
+	public String getComgridparam() {
+		return comgridparam;
+	}
+
+
+	/**
+	 * @param comgridparam the comgridparam to set
+	 */
+	public void setComgridparam(String comgridparam) {
+		this.comgridparam = comgridparam;
+	}
+
+
 	/**
 	 * @return the exportFlag
 	 */

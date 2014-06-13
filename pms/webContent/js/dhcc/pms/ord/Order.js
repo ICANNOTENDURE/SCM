@@ -173,14 +173,25 @@ $(function (){
 	});
 	
 
-	var locCombox=[$CommonUI.getComboBox('#purId'),$CommonUI.getComboBox('#locId'),$CommonUI.getComboBox('#purlocSearch')];
-	for(var i=0;i<locCombox.length;i++){
-		locCombox[i].combobox({
-			url:getContextPath()+'/hop/hopCtlocCtrl!getCtlocList.htm',
-			valueField:'hopCtlocId',							
+
+	$CommonUI.getComboBox('#purId').combobox({
+			url:getContextPath()+'/hop/hopCtlocCtrl!findHopLocComboxVos.htm?dto.type=1',
+			valueField:'id',							
 			textField:'name'
-		});
-	}
+	});
+	
+	$CommonUI.getComboBox('#locId').combobox({
+		url:getContextPath()+'/hop/hopCtlocCtrl!findHopLocComboxVos.htm?dto.type=2',
+		valueField:'id',							
+		textField:'name'
+	});
+	
+	$CommonUI.getComboBox('#purlocSearch').combobox({
+		url:getContextPath()+'/hop/hopCtlocCtrl!findHopLocComboxVos.htm?dto.type=1',
+		valueField:'id',							
+		textField:'name'
+	});
+	
 	$CommonUI.getComboBox('#locId').combobox({
 			onSelect:function(rec){
 				$("#recDestination").combobox({
@@ -195,9 +206,9 @@ $(function (){
 	var venCombox=[$CommonUI.getComboGrid('#vendorSearch'),$CommonUI.getComboGrid('#vendorId')];
 	for(var i=0;i<venCombox.length;i++){
 		venCombox[i].combobox({
-			url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm",
+			url:$WEB_ROOT_PATH+"/hop/hopVendorCtrl!findHopVenComboxVos.htm",
 	    	panelHeight:"auto",
-	        valueField:'vendorId',  
+	        valueField:'id',  
 	        textField:'name',
 	        mode: 'remote',
 		});

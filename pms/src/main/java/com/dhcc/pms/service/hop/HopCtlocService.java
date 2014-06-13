@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.dhcc.pms.dto.hop.HopCtlocDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
+import com.dhcc.pms.entity.vo.combo.ComboxVo;
 import com.dhcc.pms.entity.vo.hop.HopCtlocVo;
 
 public interface HopCtlocService {
@@ -34,5 +35,17 @@ public interface HopCtlocService {
 	public List<HopCtlocVo> getListInfo(HopCtlocDto dto);
 	
 	
+	/**
+	 * 
+	* @Title: HopCtlocService.java
+	* @Description: TODO(按登录人权限查和科室类型看科室)
+	* @param dto
+	* @return
+	* @return:List<ComboxVo> 
+	* @author zhouxin  
+	* @date 2014年6月13日 下午1:02:30
+	* @version V1.0
+	 */
+	public List<ComboxVo> findHopLocComboxVos(HopCtlocDto dto);
 
 }

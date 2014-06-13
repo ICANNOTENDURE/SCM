@@ -66,5 +66,11 @@ public abstract class BaseConstants {
 	 * 上传文件缓冲大小
 	 */
 	
-	public static final int BUFFER_SIZE = 16 * 1024; 
+	public static final int BUFFER_SIZE = 16 * 1024;
+	
+	/**
+	 * combox一页查出的条数
+	 */
+	
+	public static final int COMBOX_PAGE_SIZE = 20;
 }

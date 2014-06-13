@@ -6,6 +6,7 @@ package com.dhcc.pms.blh.hop;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
+import com.dhcc.framework.util.JsonUtils;
 import com.dhcc.framework.util.PingYinUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
@@ -294,5 +296,22 @@ public class HopVendorBlh extends AbstractBaseBlh {
 			throw new DataBaseException(e.getMessage(), e);
 		}
 
+	}
+	
+	
+	/**
+	 * 
+	* @Title: HopVendorBlh.java
+	* @Description: TODO(查找登录权限有的供应商)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月13日 上午11:37:57
+	* @version V1.0
+	 * @throws IOException 
+	 */
+	public void findHopVenComboxVos(BusinessRequest res) throws IOException{
+		HopVendorDto dto = super.getDto(HopVendorDto.class, res);
+		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(hopVendorService.findHopVenComboxVos(dto.getComgridparam())));
 	}
 }
