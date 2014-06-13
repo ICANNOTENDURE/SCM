@@ -219,8 +219,6 @@ $(function(){
  
     });
 
-    
-	
 	
 	
 	//左侧菜单鼠标移动效果
@@ -271,11 +269,34 @@ $(function(){
 	
 	
 	$("#childrenMenu ul:first").show();
+	
+	
+	//修改个人信息
+	$("#editinfo").click(function(){
+		$("#mainPanel iframe").attr("src","./normalAccount/normalAccountCtrl!editInfo.htm");
+	});
+	
+	//退出登录 
+	$("#logout").click(function(){
+		$.post(
+				'authenTicket/authenTicketCtrl!logout.htm',
+				function(data){
+					window.location.href="./";
+				}
+		);
+	});
+	
 });
 
 
 $(document).ready(function () {
-    
+	$.post(
+			'authenTicket/authenTicketCtrl!getLoginInfo.htm',
+			function(data){
+				$(".admin-username").html(data);
+			}
+	);
+	
 });
 
 </script>
@@ -301,9 +322,9 @@ $(document).ready(function () {
 				</div>
 				<div class="admin-meta">
 					<ul>
-						<li class="admin-username">admin</li>
-						<li><a href="#">Edit Profile</a></li>
-						<li><a href="#">View Profile </a><a href="#"><i class="icon-lock"></i> Logout</a></li>
+						<li class="admin-username">请登录,亲</li>
+						<li id="editinfo"><a href="#" >修改个人资料</a></li>
+						<li><a href="#" id="logout"><i class="icon-lock"></i> 退出登录</a></li>
 					</ul>
 				</div>
 		   </div>

@@ -27,6 +27,7 @@ import com.dhcc.pms.dto.login.LoginDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.userManage.Func;
 import com.dhcc.pms.entity.userManage.NormalAccount;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.login.LoginVo;
 import com.dhcc.pms.service.userManage.LoginService;
 import com.dhcc.pms.tool.datetime.OperTime;
@@ -200,7 +201,7 @@ public class AuthenTicketBlh extends AbstractBaseBlh {
 	public void GetMainMeun(BusinessRequest res) throws IOException{
 		WebContext webContext = WebContextHolder.getContext();
 		String ss=(String)webContext.getSessionAttr("MainMenu");
-		logger.info("\n-----------ss-----------\n"+ss);
+		logger.info("\n-----------login-----------\n"+ss);
 		WebContextHolder.getContext().getResponse().getWriter().write(ss);
 
 	}
@@ -219,5 +220,35 @@ public class AuthenTicketBlh extends AbstractBaseBlh {
 		}
 	
 
-	
+	/**
+	 * 
+	* @Title: LoginBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param res
+	* @throws IOException
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月13日 下午2:48:27
+	* @version V1.0
+	 */
+	public void getLoginInfo(BusinessRequest res) throws IOException{
+		Long type=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+		String userName=WebContextHolder.getContext().getVisit().getUserInfo().getName();
+		if(type==1){
+			Long locIdLong=WebContextHolder.getContext().getVisit().getUserInfo().getLocId();
+			HopCtloc HopCtloc=commonService.get(HopCtloc.class, locIdLong);
+			userName=userName+"(科室:"+HopCtloc.getName()+")";
+		}
+		if(type==2){
+			Long vendorLong=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
+			Vendor Vendor=commonService.get(Vendor.class, vendorLong);
+			userName=userName+"(供应商"+Vendor.getName()+")";
+		}
+		if(type==0){
+			userName=userName+"		(系统管理员)";
+		}
+		WebContextHolder.getContext().getResponse().setContentType("text/html;charset=UTF-8");
+		WebContextHolder.getContext().getResponse().getWriter().write(userName);
+		WebContextHolder.getContext().getResponse().getWriter().flush();
+	}
 }

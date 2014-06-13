@@ -83,7 +83,7 @@ public class NormalAccountBlh extends AbstractBaseBlh{
 				if(null==normalAccountDto.getNormalAccounts()||normalAccountDto.getNormalAccounts().size()==0){
 					if("".equals(normalAccountDto.getNormalAccount().getAccountId())||normalAccountDto.getNormalAccount().getAccountId()==null){
 						normalAccountDto.getNormalAccount().setAccountName(new Date().getTime()+"");
-						normalAccountDto.getNormalAccount().setPassword("000000");
+						normalAccountDto.getNormalAccount().setPassword("1");
 						normalAccountDto.getNormalAccount().getNormalUser().setDescription(normalAccountDto.getNormalAccount().getDescription());
 						normalAccountDto.getNormalAccount().getNormalUser().setUseState(normalAccountDto.getNormalAccount().getUseState());
 						

@@ -25,6 +25,7 @@ import com.dhcc.pms.dto.userManage.NormalAccountDto;
 @Scope("prototype")
 @Action(value="normalAccountCtrl",results={
 		@Result(name="normalAccountMain",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
+		@Result(name="editInfo",location="/WEB-INF/jsp/userManage/editAccount.jsp"),
 		@Result(name="normalAccountList",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
 		@Result(name="deleteNormalAccount",location="/WEB-INF/jsp/userManage/normalAccount.jsp")
 })
@@ -71,6 +72,10 @@ public class NormalAccountAction extends BaseAction{
 		if ("normalAccountMain".equals(super.getBusinessFlow())) {
 			return "normalAccountMain";
 		}
+		if ("editInfo".equals(super.getBusinessFlow())) {
+			return "editInfo";
+		}
+		
 		return null;
 	}
 	
