@@ -130,7 +130,8 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 		hqlBuffer.append(" h.name, ");
 		hqlBuffer.append(" h.hospid, ");
 		hqlBuffer.append(" hs.hospitalName, ");
-		hqlBuffer.append(" h.hisid) ");
+		hqlBuffer.append(" h.hisid, ");
+		hqlBuffer.append(" h.type) ");
 		hqlBuffer.append(" from HopCtloc h , Hospital hs ");		
 		hqlBuffer.append(" where h.hospid=hs.hospitalId ");
 		if(hopCtloc!=null){

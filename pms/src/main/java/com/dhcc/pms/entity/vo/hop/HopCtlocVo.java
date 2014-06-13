@@ -20,11 +20,13 @@ public class HopCtlocVo {
 	//His科室id
 	private Long hisid;
 	
+	private String type;
+	
 	public HopCtlocVo(){}
 
 	
 	public HopCtlocVo(Long hopCtlocId, String code, String name,
-			Long hospid, String hospitalName, Long hisid) {
+			Long hospid, String hospitalName, Long hisid,String type) {
 		super();
 		this.hopCtlocId = hopCtlocId;
 		this.code = code;
@@ -32,6 +34,7 @@ public class HopCtlocVo {
 		this.hospid = hospid;
 		this.hospitalName = hospitalName;
 		this.hisid = hisid;
+		this.type=type;
 	}
 
 
@@ -92,6 +95,22 @@ public class HopCtlocVo {
 
 	public void setHisid(Long hisid) {
 		this.hisid = hisid;
+	}
+
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
 	}
 
 		

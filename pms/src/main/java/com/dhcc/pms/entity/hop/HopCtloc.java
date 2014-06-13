@@ -41,6 +41,9 @@ public class HopCtloc implements Serializable {
 	@Column(name="CTLOC_NAME")
 	private String name;
 	
+	
+	@Column(name="CTLOC_TYPE")
+	private String type;
 
 			
 	public HopCtloc() {
@@ -110,6 +113,20 @@ public class HopCtloc implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
 	}
 
 

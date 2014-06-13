@@ -29,7 +29,7 @@
 		data-options="modal:true,width:400,height:250,closed:true,buttons:'#btnDiv'"
 		style="vertical-align: middle;">
 		<form id="ctlocdetail" method="post">
-			<table style="width: 100%;" cellspacing="10">
+			<table style="width: 100%;" >
 				<tr style="display: none">
 					<input type="hidden" name="dto.hopCtloc.hopCtlocId" />
 				</tr>
@@ -56,6 +56,16 @@
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.hopCtloc.hisid"
 						data-options="required:true" id="ctlocHisid" /></td>					
+				</tr>
+				<tr>
+					<td class="textLabel">科室类型:</td>
+					<td class="textParent" >
+						<select class="combobox" panelHeight="auto" style="width:250px"  name="dto.hopCtloc.type">
+							<option value="1">入库科室</option>
+							<option value="2">收货科室</option>
+							<option value="3">全部</option>
+						</select>
+					</td>					
 				</tr>	
 			</table>							
 			<div id="btnDiv" align="center">

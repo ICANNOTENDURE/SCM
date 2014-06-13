@@ -27,14 +27,29 @@ $(function (){
 	    url:$WEB_ROOT_PATH+'/hop/hopCtlocCtrl!listInfo.htm',	   
 	    method:'post',
 	    fit:true,
+	    rownumbers:true,
+	    pageList : [10, 20, 30],          // 可以设置每页记录条数的列表
+	    pageSize : 20, 
 	    columns:[[ 
-            {field:'ck1',checkbox:true},
             {field:'hopCtlocId',title:'科室ID',width:100},
 	        {field:'code',title:'科室代码',width:100},  
 	        {field:'name',title:'科室描述',width:100},
 	        {field:'hospid',title:'医院ID',hidden:true},
 	        {field:'hospitalName',title:'医院描述',width:100}, 
-	        {field:'hisid',title:'His科室ID',width:100},  
+	        {field:'hisid',title:'His科室ID',width:100},
+	        {field:'type',title:'科室类型',width:100,formatter: function(value,row,index){
+					switch(row.type){   
+				        case   "1"   :   
+				        	return "入库科室";   
+				        case   "2"   :   
+				            return "收货科室";
+				        case   "3"   :   
+				            return "全部";
+				        default   :   
+				            return "空";   
+					}
+				}
+	        }, 
 	    ]]	 
 	});
 	//新增或更新成功的回调函数
