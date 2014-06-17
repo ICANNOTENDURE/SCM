@@ -348,6 +348,28 @@ public class LoginDao extends HibernatePersistentObjectDAO<NormalAccount>{
 		}
 		return (List<Func>)this.findByHqlWithValuesMap(hqlStr.toString(), hqlParamMap, false);
 	}
+
+	/**
+	 * @param userName
+	 * @return
+	 */
+	public String getUserPassword(String userName) {
+		String userId="";
+		String loginType="accountAlias";
+		//String userName=loginVo.getUserName();
+
+		StringBuilder hqlStr=new StringBuilder(64);
+		hqlStr.append("select normalAccount.accountId,normalAccount.password from NormalAccount normalAccount where ");
+		hqlStr.append(loginType).append("=?");
+		List<Object[]>  listObj=this.findByHql(hqlStr.toString(), userName);
+
+		String password="";
+		if(listObj.size()>0){
+			userId=listObj.get(0)[1].toString();
+			password=listObj.get(0)[1].toString();
+		}
+		return userId+"^"+password;
+	}
 	
 
 	

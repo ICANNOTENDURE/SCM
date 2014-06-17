@@ -69,13 +69,16 @@ public class HopCtlocServiceImpl implements HopCtlocService {
 		return hopCtlocDao.getListInfo(pagerModel,dto.getHopCtlocVos(),dto.getHopCtloc());
 	}
 
-	/* (non-Javadoc)
-	 * @see com.dhcc.pms.service.hop.HopCtlocService#findHopLocComboxVos(com.dhcc.pms.dto.hop.HopCtlocDto)
-	 */
-	@Override
+	
 	public List<ComboxVo> findHopLocComboxVos(HopCtlocDto dto) {
-		// TODO Auto-generated method stub
+		
 		return hopCtlocDao.findHopLocComboxVos(dto);
+	}
+
+	
+	public List<ComboxVo> findHopLocAndroid(HopCtlocDto dto) {
+		// TODO Auto-generated method stub
+		return hopCtlocDao.findHopLocAndroid(dto);
 	}
 		
 }

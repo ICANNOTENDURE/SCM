@@ -122,5 +122,7 @@ public class HopVendorDto extends BaseDto {
 	public void setHopVendor(HopVendor hopVendor) {
 		this.hopVendor = hopVendor;
 	}
+
+
 	
 }

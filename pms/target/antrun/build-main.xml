@@ -2,6 +2,6 @@
 <project name="maven-antrun-" default="main"  >
 <target name="main">
   <property name="compile_classpath" refid="maven.compile.classpath"/>
-  <ant antfile="C:\users\administrator\git\SCM\pms/build.xml" target="package-clean"/>
+  <ant antfile="C:\Users\Administrator\git\SCM\pms/build.xml" target="package-clean"/>
 </target>
 </project>

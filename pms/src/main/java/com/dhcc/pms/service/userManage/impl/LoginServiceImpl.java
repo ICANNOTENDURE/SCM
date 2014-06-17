@@ -74,5 +74,12 @@ public class LoginServiceImpl implements LoginService {
 		List<Func>  funclist=loginDao.getFuncByParentId(loginDto);
 		return funclist;
 	}
+
+	
+	@Override
+	public String getUserPassword(String userName) {
+		String accountKey=loginDao.getUserPassword(userName);
+		return accountKey;
+	}
 	
 }

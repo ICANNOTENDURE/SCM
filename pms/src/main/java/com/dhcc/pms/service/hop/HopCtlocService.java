@@ -48,4 +48,12 @@ public interface HopCtlocService {
 	 */
 	public List<ComboxVo> findHopLocComboxVos(HopCtlocDto dto);
 
+	/**
+	 * @param dto
+	 * @return
+	 */
+	public List<ComboxVo> findHopLocAndroid(HopCtlocDto dto);
+
+
+
 }

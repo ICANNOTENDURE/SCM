@@ -13,9 +13,15 @@ import org.springframework.stereotype.Component;
 import com.dhcc.framework.annotation.PmDataType;
 import com.dhcc.framework.annotation.PmDataTypes;
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
+import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.config.PropertiesBean;
 import com.dhcc.framework.transmission.event.BusinessRequest;
+import com.dhcc.framework.util.JsonUtils;
+import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.login.LoginDto;
+import com.dhcc.pms.entity.hop.HopCtloc;
+import com.dhcc.pms.entity.userManage.NormalAccount;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.login.LoginVo;
 import com.dhcc.pms.service.userManage.LoginService;
 import com.dhcc.pms.tool.security.AESCoder;
@@ -36,7 +42,8 @@ public class LoginBlh extends AbstractBaseBlh {
 
 	private static Log logger = LogFactory.getLog(LoginBlh.class);
 	
-
+	@Resource
+	private CommonService commonService;
 	
 	
 	@Resource
@@ -159,6 +166,66 @@ public class LoginBlh extends AbstractBaseBlh {
 		}
 		return sb.toString();
 	}
+	
+	/**
+	 * 
+	 * @param res
+	 */
+	@SuppressWarnings("unused")
+	public void loginAndroid(BusinessRequest res) throws Exception {
+		String info="";
+		String ctlocName="";
+		String ctlocId="";
+		LoginDto loginDto = super.getDto(LoginDto.class, res);
+		String userName=loginDto.getUserName();
+		String passWord=loginDto.getPassword();
+		String accountKey="";
+		String result=loginService.getUserPassword(userName);
+		Long userId=Long.parseLong(result.split("\\^")[0]);
+		accountKey=result.split("\\^")[1];
+		if(accountKey.equals("")){
+			info="用户名输入错误";
+		}else if(!accountKey.equals(passWord)){
+			info="密码输入错误";
+		}else if(accountKey.equals(passWord)){
+			info="success";
+			NormalAccount normalAccount=commonService.get(NormalAccount.class, userId);
+			ctlocId=normalAccount.getNormalUser().getLocId().toString();
+			HopCtloc hopCtloc=commonService.get(HopCtloc.class, normalAccount.getNormalUser().getLocId());
+			ctlocName=hopCtloc.getName();
+		}
+		
+		/**
+		 * 
+		if(type==1){
+		    Long locIdLong=WebContextHolder.getContext().getVisit().getUserInfo().getLocId();
+			HopCtloc HopCtloc=commonService.get(HopCtloc.class, locIdLong);
+			userName=userName+"(科室:"+HopCtloc.getName()+")";
+		}
+		if(type==2){
+			Long vendorLong=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
+			Vendor Vendor=commonService.get(Vendor.class, vendorLong);
+			userName=userName+"(供应商"+Vendor.getName()+")";
+		}
+		if(type==0){
+			userName=userName+"		(系统管理员)";
+		}
+		*/
+		WebContextHolder.getContext().getResponse().setContentType("text/html;charset=UTF-8");
+		WebContextHolder.getContext().getResponse().getWriter()
+		.write("{\"info\":"
+				+ info
+				+",\"userId\":"
+				+userId
+				+ ",\"ctlocId\":"
+				+ ctlocId
+				+ ",\"ctlocName\":"
+				+ctlocName
+				+ "}");
+		WebContextHolder.getContext().getResponse().getWriter().flush();
+		 
+	}
+	
 	
 
 	
