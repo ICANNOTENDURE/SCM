@@ -4,6 +4,7 @@
  */
 package com.dhcc.pms.blh.hop;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
+import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
@@ -34,7 +36,11 @@ public class HopCtlocDestinationBlh extends AbstractBaseBlh {
 
 	@Resource
 	private HopCtlocDestinationService hopCtlocDestinationService;
+	
+	@Resource
+	private CommonService commonService;
 
+	
 	public HopCtlocDestinationBlh() {
 		
 	}
@@ -149,9 +155,26 @@ public class HopCtlocDestinationBlh extends AbstractBaseBlh {
 	}
 	
 	
-	public void getDefaultDes(BusinessRequest res){
-		
-		
+	/**
+	 * 
+	* @Title: HopCtlocDestinationBlh.java
+	* @Description: TODO(查询默认收货科室和地址)
+	* @param res
+	* @throws IOException
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月17日 上午9:57:21
+	* @version V1.0
+	 */
+	public void getDefaultDes(BusinessRequest res) throws IOException{
+		Long locId=WebContextHolder.getContext().getVisit().getUserInfo().getLocId();
+		HopCtloc hopCtloc=commonService.get(HopCtloc.class, locId);
+		WebContextHolder.getContext().getResponse().getWriter().write(
+				"{\"locId\":"
+						+ locId
+						+ ",\"destionId\":"
+						+ hopCtloc.getCtlocDest()
+						+ "}");
 	}
 	
 	

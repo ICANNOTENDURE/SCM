@@ -47,5 +47,19 @@ public interface HopCtlocService {
 	* @version V1.0
 	 */
 	public List<ComboxVo> findHopLocComboxVos(HopCtlocDto dto);
+	
+	
+	/**
+	 * 
+	* @Title: HopCtlocService.java
+	* @Description: TODO(更具科室描述和登录医院取科室ID)
+	* @param name
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年6月17日 上午10:29:25
+	* @version V1.0
+	 */
+	public Long getLocIdByName(String name);
 
 }

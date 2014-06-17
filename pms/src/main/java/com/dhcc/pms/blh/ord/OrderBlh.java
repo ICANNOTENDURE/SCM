@@ -35,6 +35,9 @@ import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.ImpModel;
+import com.dhcc.pms.service.hop.HopCtlocService;
+import com.dhcc.pms.service.hop.HopIncService;
+import com.dhcc.pms.service.hop.HopVendorService;
 import com.dhcc.pms.service.ord.OrderService;
 import com.dhcc.pms.service.sys.SysImpModelService;
 
@@ -51,6 +54,15 @@ public class OrderBlh extends AbstractBaseBlh {
 	
 	@Resource
 	private SysImpModelService sysImpModelService;
+	
+	@Resource
+	private HopCtlocService hopCtlocService;
+	
+	@Resource
+	private HopIncService hopIncService;
+	
+	@Resource
+	private HopVendorService hopVendorService;
 	
 	//最大缓存空间
 	private static final int BUFFER_SIZE = 16 * 1024; 
@@ -258,6 +270,7 @@ public class OrderBlh extends AbstractBaseBlh {
 			sheet = workbook.getSheetAt(0);
 			
 			row = sheet.getRow(1);
+			dto.setOpFlg("1");
 			for (int h = 0; h <= row.getLastCellNum(); h++) {
 				cell = row.getCell(h);
 				String mainColNameString=modelMap.get(h);
@@ -275,12 +288,12 @@ public class OrderBlh extends AbstractBaseBlh {
 //						break;	
 					case "请求科室ID":
 						if(cell!=null){
-							order.setRecLoc(Math.round(cell.getNumericCellValue()));
+							order.setRecLoc(hopCtlocService.getLocIdByName(cell.getStringCellValue()));
 						}
 						break;
 					case "入库科室ID":
 						if(cell!=null){
-							order.setPurLoc(Math.round(cell.getNumericCellValue()));
+							order.setPurLoc(hopCtlocService.getLocIdByName(cell.getStringCellValue()));
 						}
 						break;	
 					case "是否加急":
@@ -300,13 +313,19 @@ public class OrderBlh extends AbstractBaseBlh {
 						break;
 					case "供应商ID":
 						if(cell!=null){
-							order.setVendorId(Math.round(cell.getNumericCellValue()));
+							Long vendorIdLong=hopVendorService.findVendorIdByName(cell.getStringCellValue());
+							if(vendorIdLong==null){
+								 dto.setOpFlg("6");
+							     dto.setMsg(cell.getStringCellValue()+":供应商在平台没有维护");
+							}else{
+								order.setVendorId(hopVendorService.findVendorIdByName(cell.getStringCellValue()));
+							}	
 						}
 						break;	
 					}
 			}
 			
-			order.setHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+			
 			dto.setOrder(order);
 			//明细
 			for (int numRows = 1; numRows <= sheet.getLastRowNum(); numRows++) {
@@ -314,15 +333,28 @@ public class OrderBlh extends AbstractBaseBlh {
 				row = sheet.getRow(numRows);
 				
 				OrderItm orderItm = new OrderItm();
+				
 				for (int numCells = 0; numCells <= row.getLastCellNum(); numCells++) {
 					cell = row.getCell(numCells);
 					
 					String colNameString=modelMap.get(numCells);
 					if(StringUtils.isNullOrEmpty(colNameString)) {colNameString=" ";};
+					
 					switch (colNameString) {
 						case "HIS药品标示":
 							if(cell!=null){
-								orderItm.setIncId(Math.round(cell.getNumericCellValue()));
+								Long incId=hopIncService.getIncIdByName(cell.getStringCellValue());
+								if(incId==null){
+									   if(StringUtils.isNullOrEmpty(dto.getMsg())){
+										   dto.setMsg(cell.getStringCellValue()+":在平台里有没");
+									   }else{
+										   dto.setMsg(dto.getMsg()+"."+cell.getStringCellValue()+":在平台里有没");
+										   dto.setOpFlg("4");
+									   }
+									   
+								}else{
+									orderItm.setIncId(incId);
+								}
 							}
 							break;
 						case "单位":
@@ -340,9 +372,12 @@ public class OrderBlh extends AbstractBaseBlh {
 								orderItm.setRp(Math.round(cell.getNumericCellValue()));
 							}
 							break;
-					}	
+					}
+//					if(incId==null){
+//						break ;
+//					}
 				}
-				orderItm.setOrdId(order.getOrderId());
+				
 				orderItms.add(orderItm);
 			}
 			dto.setOrderItms(orderItms);
@@ -421,11 +456,36 @@ public class OrderBlh extends AbstractBaseBlh {
 		orderService.complete(dto);
 	}
 	
-	//保存订单
-		public void saveMain(BusinessRequest res) {
-		
-			OrderDto dto = super.getDto(OrderDto.class, res);
-			commonService.saveOrUpdate(dto.getOrder());
-			dto.setOpFlg("1");
-		}
+	/**
+	 * 
+	* @Title: OrderBlh.java
+	* @Description: TODO(取消完成状态)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月17日 下午2:00:55
+	* @version V1.0
+	 */
+	public void cancleComplete(BusinessRequest res){
+		OrderDto dto = super.getDto(OrderDto.class, res);
+		orderService.cancleComplete(dto);
+		dto.setOpFlg("1");
+	}
+	
+	/**
+	 * 
+	* @Title: OrderBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月17日 上午9:53:27
+	* @version V1.0
+	 */
+	public void saveMain(BusinessRequest res) {
+	
+		OrderDto dto = super.getDto(OrderDto.class, res);
+		commonService.saveOrUpdate(dto.getOrder());
+		dto.setOpFlg("1");
+	}
 }

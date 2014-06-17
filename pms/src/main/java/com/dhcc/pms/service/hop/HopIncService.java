@@ -38,4 +38,17 @@ public interface HopIncService {
 	 */
 	public void saveInc(HopIncDto dto);
 	
+	/**
+	 * 
+	* @Title: HopIncService.java
+	* @Description: TODO(查询药品id)
+	* @param name
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年6月17日 上午10:32:36
+	* @version V1.0
+	 */
+	public Long getIncIdByName(String name);
+	
 }

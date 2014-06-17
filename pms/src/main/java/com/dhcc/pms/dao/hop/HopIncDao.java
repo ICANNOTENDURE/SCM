@@ -22,6 +22,7 @@ import com.dhcc.framework.util.PingYinUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.hop.HopIncDto;
+import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopInc;
 import com.dhcc.pms.entity.hop.HopIncAlias;
 import com.dhcc.pms.entity.vo.hop.HopIncVo;
@@ -322,5 +323,37 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 				 
 			 }	 
 		}
+	}
+	
+	
+	/**
+	 * 
+	* @Title: HopIncDao.java
+	* @Description: TODO(更具药品描述取id)
+	* @param name
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年6月17日 上午10:30:55
+	* @version V1.0
+	 */
+	public Long getIncIdByName(String name) {
+		StringBuffer hqlBuffer = new StringBuffer();
+		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
+		hqlBuffer.append(" from HopInc h");
+		hqlBuffer.append(" where 1=1 ");
+		hqlBuffer.append(" and h.incName = :name ");
+		hqlParamMap.put("name",name);
+		
+		Long hopId=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+		hqlBuffer.append(" and h.incHospid = :hopId ");
+		hqlParamMap.put("hopId",hopId);
+		
+		@SuppressWarnings("unchecked")
+		List<HopInc> hopCtlocs=(List<HopInc>)this.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,false);
+		if(hopCtlocs.size()>0){
+			return hopCtlocs.get(0).getIncId();
+		}
+		return null;
 	}
 }

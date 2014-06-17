@@ -44,6 +44,7 @@ import com.dhcc.pms.service.ord.OrderService;
 			  @JResult(BlhMethod="saveOrditm",ognlExpress="dto"),
 			  @JResult(BlhMethod="complete",ognlExpress="dto"),
 			  @JResult(BlhMethod="deleteOrditm",ognlExpress="dto"),
+			  @JResult(BlhMethod="cancleComplete",ognlExpress="dto"),
 			  @JResult(BlhMethod="listShopCart",ognlExpress="dto")})
 public class OrderAction extends BaseAction {
 	

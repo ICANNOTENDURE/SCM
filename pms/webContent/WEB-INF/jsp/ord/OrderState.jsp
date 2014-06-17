@@ -71,22 +71,28 @@
 			状态:
 			<input class="combobox" panelHeight="auto" style="width:150px" id="state"/>
 			供应商:
-			<input class="combobox" panelHeight="auto" style="width:150px" id="vendor"/>
-			采购科室:
-			<input class="combobox" panelHeight="auto" style="width:150px" id="purloc"/>
+			<input class="combobox" panelHeight="auto" style="width:250px" id="vendor"/>
+			
 			
 		 </div>
 		 <div style="margin-bottom:5px">
 			要求到达日期: <input class="datebox" style="width:100px" id="reqStDate">
 			结束日期: <input class="datebox" style="width:100px" id="reqEdDate">
 			加急:
-			<select class="combobox" panelHeight="auto" style="width:100px" id="emflag">
+			<select class="combobox" panelHeight="auto" style="width:150px" id="emflag">
 				<option value="check"></option>
 				<option value="checked">加急</option>
 			</select>
-
+		
+		</div>
+		<div>	
+			入库科室:
+			<input class="combobox" panelHeight="auto" style="width:250px" id="purloc"/>
+			收货科室:
+			<input class="combobox" panelHeight="auto" style="width:250px" id="recloc"/>
 			<a href="#" class="linkbutton" iconCls="icon-search" id="search">查询</a>
 			</div>
+			
 		 </div>			
 </body>
 </html>

@@ -17,10 +17,8 @@ import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
-import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderDto;
-import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.hop.HopInc;
 import com.dhcc.pms.entity.hop.Hospital;
@@ -28,7 +26,6 @@ import com.dhcc.pms.entity.ord.ExeState;
 import com.dhcc.pms.entity.ord.OrdShopping;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
-import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.ord.ShopCartPicVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartVo;
 
@@ -364,74 +361,78 @@ public void impOrder(OrderDto dto){
 			   return;
 		   }
 	   }
-	   //入库科室
-	   if(dto.getOrder().getPurLoc()!=null){
-		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
-		   hqlBuffer.delete(0, hqlBuffer.length());
-
-		   hqlBuffer.append(" from HopCtloc t ");
-		   hqlBuffer.append(" where t.hisid = :hisid");
-		   hqlParamMap.put("hisid", dto.getOrder().getPurLoc());
-		   hqlBuffer.append(" and t.hospid = :hopid");
-		   hqlParamMap.put("hopid", dto.getOrder().getHopId());
-		   List<HopCtloc> ctlocs=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
-		   if(ctlocs.size()>0){
-			   dto.getOrder().setPurLoc(ctlocs.get(0).getHopCtlocId());
-		   }else{
-			   //没有入库科室，或者科室在平台没有
-			   dto.setOpFlg("5");
-			   dto.setMsg("没有入库科室，或者科室在平台没有");
-			   return;
-		   }
-	   }
-	   //收货科室
-	   if(dto.getOrder().getRecLoc()!=null){
-		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
-		   hqlBuffer.delete(0, hqlBuffer.length());
-
-		   hqlBuffer.append(" from HopCtloc t ");
-		   hqlBuffer.append(" where t.hisid = :hisid");
-		   hqlParamMap.put("hisid", dto.getOrder().getRecLoc());
-		   hqlBuffer.append(" and t.hospid = :hopid");
-		   hqlParamMap.put("hopid", dto.getOrder().getHopId());
-		   List<HopCtloc> ctlocs=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
-		   if(ctlocs.size()>0){
-			   dto.getOrder().setRecLoc(ctlocs.get(0).getHopCtlocId());
-		   }else{
-			   //没有入库科室，或者科室在平台没有
-			   dto.setOpFlg("5");
-			   dto.setMsg("没有接收科室，或者科室在平台没有");
-			   //return;
-		   }
-	   }
-	   
-	   
-	 //供应商
-	   if(dto.getOrder().getVendorId()!=null){
-		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
-		   hqlBuffer.delete(0, hqlBuffer.length());
-
-		   hqlBuffer.append(" from Vendor t ");
-		   hqlBuffer.append(" where t.hisId = :hisid");
-		   hqlParamMap.put("hisid", dto.getOrder().getVendorId());
-		   List<Vendor> vendors=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
-		   if(vendors.size()>0){
-			   dto.getOrder().setVendorId(vendors.get(0).getVendorId());
-		   }else{
-			   //没有入库科室，或者科室在平台没有
-			   dto.setOpFlg("6");
-			   dto.setMsg("供应商在平台没有维护");
-			   return;
-		   }
-	   }else{
-		   dto.setOpFlg("6");
-		   dto.setMsg("供应商不能为空");
-		   return;
-	   }
+//	   //入库科室
+//	   if(dto.getOrder().getPurLoc()!=null){
+//		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+//		   hqlBuffer.delete(0, hqlBuffer.length());
+//
+//		   hqlBuffer.append(" from HopCtloc t ");
+//		   hqlBuffer.append(" where t.hisid = :hisid");
+//		   hqlParamMap.put("hisid", dto.getOrder().getPurLoc());
+//		   hqlBuffer.append(" and t.hospid = :hopid");
+//		   hqlParamMap.put("hopid", dto.getOrder().getHopId());
+//		   List<HopCtloc> ctlocs=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
+//		   if(ctlocs.size()>0){
+//			   dto.getOrder().setPurLoc(ctlocs.get(0).getHopCtlocId());
+//		   }else{
+//			   //没有入库科室，或者科室在平台没有
+//			   dto.setOpFlg("5");
+//			   dto.setMsg("没有入库科室，或者科室在平台没有");
+//			   return;
+//		   }
+//	   }
+//	   //收货科室
+//	   if(dto.getOrder().getRecLoc()!=null){
+//		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+//		   hqlBuffer.delete(0, hqlBuffer.length());
+//
+//		   hqlBuffer.append(" from HopCtloc t ");
+//		   hqlBuffer.append(" where t.hisid = :hisid");
+//		   hqlParamMap.put("hisid", dto.getOrder().getRecLoc());
+//		   hqlBuffer.append(" and t.hospid = :hopid");
+//		   hqlParamMap.put("hopid", dto.getOrder().getHopId());
+//		   List<HopCtloc> ctlocs=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
+//		   if(ctlocs.size()>0){
+//			   dto.getOrder().setRecLoc(ctlocs.get(0).getHopCtlocId());
+//		   }else{
+//			   //没有入库科室，或者科室在平台没有
+//			   dto.setOpFlg("5");
+//			   dto.setMsg("没有接收科室，或者科室在平台没有");
+//			   //return;
+//		   }
+//	   }
+//	   
+//	   
+//	 //供应商
+//	   if(dto.getOrder().getVendorId()!=null){
+//		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+//		   hqlBuffer.delete(0, hqlBuffer.length());
+//
+//		   hqlBuffer.append(" from Vendor t ");
+//		   hqlBuffer.append(" where t.hisId = :hisid");
+//		   hqlParamMap.put("hisid", dto.getOrder().getVendorId());
+//		   List<Vendor> vendors=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
+//		   if(vendors.size()>0){
+//			   dto.getOrder().setVendorId(vendors.get(0).getVendorId());
+//		   }else{
+//			   //没有入库科室，或者科室在平台没有
+//			   dto.setOpFlg("6");
+//			   dto.setMsg("供应商在平台没有维护");
+//			   return;
+//		   }
+//	   }else{
+//		   dto.setOpFlg("6");
+//		   dto.setMsg("供应商不能为空");
+//		   return;
+//	   }
 	   
 	   if(dto.getOrder().getOrderNo()==null){
 		   //his订单号不能为空
 		   dto.setOpFlg("3"); 
+		   return;
+	   }
+	   
+	   if(Integer.valueOf(dto.getOpFlg())>1){
 		   return;
 	   }
 	   Order order=dto.getOrder();
@@ -444,30 +445,35 @@ public void impOrder(OrderDto dto){
 	   List<OrderItm> orderItms=dto.getOrderItms();
 	   for(int i=0;i<orderItms.size();i++){
 		   orderItms.get(i).setOrdId(order.getOrderId());
-		   Long hisIncIdLong= orderItms.get(i).getIncId();
-		   hqlBuffer.delete(0, hqlBuffer.length());
-		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
-		   hqlBuffer.append(" from HopInc t ");
-		   hqlBuffer.append(" where t.incHospid = :hopid");
-		   hqlParamMap.put("hopid", order.getHopId());
-		   hqlBuffer.append(" and t.incHissysid = :incHissysid");
-		   hqlParamMap.put("incHissysid", hisIncIdLong);
-		   List<HopInc> hopIncs=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
-		   if(hopIncs.size()>0){
-			   orderItms.get(i).setIncId(hopIncs.get(0).getIncId());
-		   }else{
+		   if(orderItms.get(i).getIncId()==null){
 			   orderItms.remove(i);
-			   if(StringUtils.isNullOrEmpty(dto.getMsg())){
-				   dto.setMsg(hisIncIdLong.toString()+":在平台里有没");
-			   }else{
-				   dto.setMsg(dto.getMsg()+"."+hisIncIdLong.toString()+":在平台里有没");
-				   dto.setOpFlg("4");
-			   }
 		   }
-	   }
-	   if(orderItms.size()>0){
-		  super.batchSaveOrUpdate(orderItms);
-	   }
+	   }	   
+//		   Long hisIncIdLong= orderItms.get(i).getIncId();
+//		   hqlBuffer.delete(0, hqlBuffer.length());
+//		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+//		   hqlBuffer.append(" from HopInc t ");
+//		   hqlBuffer.append(" where t.incHospid = :hopid");
+//		   hqlParamMap.put("hopid", order.getHopId());
+//		   hqlBuffer.append(" and t.incHissysid = :incHissysid");
+//		   hqlParamMap.put("incHissysid", hisIncIdLong);
+//		   List<HopInc> hopIncs=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
+//		   if(hopIncs.size()>0){
+//			   orderItms.get(i).setIncId(hopIncs.get(0).getIncId());
+//		   }else{
+//			   orderItms.remove(i);
+//			   if(StringUtils.isNullOrEmpty(dto.getMsg())){
+//				   dto.setMsg(hisIncIdLong.toString()+":在平台里有没");
+//			   }else{
+//				   dto.setMsg(dto.getMsg()+"."+hisIncIdLong.toString()+":在平台里有没");
+//				   dto.setOpFlg("4");
+//			   }
+//		   }
+//	   }
+//	   if(orderItms.size()>0){
+//		  
+//	   }
+	   super.batchSaveOrUpdate(orderItms);
 	   dto.setOpFlg("1");
    }
    
@@ -522,6 +528,30 @@ public void impOrder(OrderDto dto){
 	   exeState.setOrdId(dto.getOrder().getOrderId());
 	   exeState.setExedate(new Date());
 	   super.save(exeState);
+	   
+	   Order order=super.get(Order.class,dto.getOrder().getOrderId());
+	   order.setExeStateId(exeState.getExestateId());
+	   super.saveOrUpdate(order);
 	   dto.setOpFlg("1");
+   }
+   
+   
+   /**
+    * 
+   * @Title: OrderDao.java
+   * @Description: TODO(取消完成状态)
+   * @param dto
+   * @return:void 
+   * @author zhouxin  
+   * @date 2014年6月17日 下午2:01:40
+   * @version V1.0
+    */
+   public void cancleComplete(OrderDto dto){
+	   
+	   
+	   Order order=super.get(Order.class,dto.getOrder().getOrderId());
+	   super.deleteById(ExeState.class, order.getExeStateId());
+	   order.setExeStateId(null);
+	   super.saveOrUpdate(order);
    }
 }

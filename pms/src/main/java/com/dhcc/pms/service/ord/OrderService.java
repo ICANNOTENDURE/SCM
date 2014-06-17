@@ -137,4 +137,16 @@ public interface OrderService {
 	* @version V1.0
 	 */
 	public void complete(OrderDto dto);
+	
+	/**
+	 * 
+	* @Title: OrderService.java
+	* @Description: TODO(取消完成状态)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月17日 下午2:03:18
+	* @version V1.0
+	 */
+	 public void cancleComplete(OrderDto dto);
 }

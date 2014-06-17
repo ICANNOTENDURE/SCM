@@ -124,6 +124,11 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 			hqlBuffer.append("and t1.purloc=:purloc ");
 			hqlParamMap.put("purloc", dto.getPurloc());
 		}
+		
+		if(dto.getRecLoc()!=null){
+			hqlBuffer.append("and t1.recloc=:recloc ");
+			hqlParamMap.put("recloc", dto.getRecLoc());
+		}
 		if(dto.getPageModel()==null){
 			PagerModel pageModel=new PagerModel();
 			pageModel.setPageNo(1);

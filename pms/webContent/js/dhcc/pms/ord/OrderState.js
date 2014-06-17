@@ -93,6 +93,7 @@ $(function (){
 			 "dto.state":$("#state").combobox('getValue'),
 			 "dto.vendor":$("#vendor").combobox('getValue'),
 			 "dto.purloc":$("#purloc").combobox('getValue'),
+			 "dto.recLoc":$("#recloc").combobox('getValue'),
 			 "dto.emflag":$("#emflag").combobox('getValue')
 		 });
 		
@@ -100,23 +101,31 @@ $(function (){
 	
 	
 
+
 	   $('#purloc').combobox({
-			url:getContextPath()+'/hop/hopCtlocCtrl!getCtlocList.htm',
-			valueField:'hopCtlocId',							
-			textField:'name'	
+			url:getContextPath()+'/hop/hopCtlocCtrl!findHopLocComboxVos.htm?dto.type=1',
+			valueField:'id',							
+			textField:'name'
+		});
+	   $('#recloc').combobox({
+			url:getContextPath()+'/hop/hopCtlocCtrl!findHopLocComboxVos.htm?dto.type=2',
+			valueField:'id',							
+			textField:'name'
 		});
 	   $('#state').combobox({
 			url:'orderStateCtrl!getComboList.htm',
 			valueField:'stateSeq',							
 			textField:'stateName'	
 		});
+	   
 	   $('#vendor').combobox({
-  	    	url:getContextPath()+"/ven/vendorCtrl!getVenCombox.htm",
-  	    	panelHeight:"auto",
-  	        valueField:'vendorId',  
-  	        textField:'name',
-  	        mode:'remote',
+		    url:getContextPath()+"/hop/hopVendorCtrl!findHopVenComboxVos.htm",
+	        valueField:'id',  
+	        textField:'name',
+	        mode: 'remote',
 	   });
+
+
 
 });
 
