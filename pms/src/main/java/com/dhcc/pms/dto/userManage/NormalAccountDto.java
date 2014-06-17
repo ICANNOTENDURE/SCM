@@ -26,6 +26,69 @@ public class NormalAccountDto extends BaseDto{
 	private static final long serialVersionUID = 1L;
 	
 	private NormalAccount normalAccount;
+	
+	private String hopName;
+	private String vendorName;
+	private String locName;
+	private Long destinationId;
+	
+	
+	
+	/**
+	 * @return the vendorName
+	 */
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	/**
+	 * @param vendorName the vendorName to set
+	 */
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	/**
+	 * @return the hopName
+	 */
+	public String getHopName() {
+		return hopName;
+	}
+
+	/**
+	 * @param hopName the hopName to set
+	 */
+	public void setHopName(String hopName) {
+		this.hopName = hopName;
+	}
+
+	/**
+	 * @return the locName
+	 */
+	public String getLocName() {
+		return locName;
+	}
+
+	/**
+	 * @param locName the locName to set
+	 */
+	public void setLocName(String locName) {
+		this.locName = locName;
+	}
+
+	/**
+	 * @return the destinationId
+	 */
+	public Long getDestinationId() {
+		return destinationId;
+	}
+
+	/**
+	 * @param destinationId the destinationId to set
+	 */
+	public void setDestinationId(Long destinationId) {
+		this.destinationId = destinationId;
+	}
 
 	/**  
 	 * @return normalAccount 

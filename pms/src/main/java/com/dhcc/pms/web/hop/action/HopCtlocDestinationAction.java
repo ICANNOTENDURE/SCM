@@ -29,7 +29,8 @@ import com.dhcc.pms.dto.hop.HopCtlocDestinationDto;
 		@Result(name = "delete", location = "/WEB-INF/jsp/hop/hopCtlocDes.jsp")
 		})
 @Blh("hopCtlocDestinationBlh")
-@JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.hopCtlocDestination")})
+@JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.hopCtlocDestination"),
+			  @JResult(BlhMethod="save",ognlExpress="dto")})
 public class HopCtlocDestinationAction extends BaseAction {
 
 	private static final long serialVersionUID = 1L;

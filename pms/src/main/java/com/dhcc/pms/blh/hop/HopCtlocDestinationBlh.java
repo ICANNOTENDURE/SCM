@@ -72,6 +72,7 @@ public class HopCtlocDestinationBlh extends AbstractBaseBlh {
 		}else {
 			hopCtlocDestinationService.update(dto);
 		}	
+		dto.setOpFlg("1");
 		
 	}
 	
@@ -145,6 +146,12 @@ public class HopCtlocDestinationBlh extends AbstractBaseBlh {
 						+ JsonUtils.toJson(hopDestinationVos)
 						+ "}");
 			
+	}
+	
+	
+	public void getDefaultDes(BusinessRequest res){
+		
+		
 	}
 	
 	

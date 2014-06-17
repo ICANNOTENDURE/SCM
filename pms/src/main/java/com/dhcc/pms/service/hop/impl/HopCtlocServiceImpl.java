@@ -72,7 +72,7 @@ public class HopCtlocServiceImpl implements HopCtlocService {
 	/* (non-Javadoc)
 	 * @see com.dhcc.pms.service.hop.HopCtlocService#findHopLocComboxVos(com.dhcc.pms.dto.hop.HopCtlocDto)
 	 */
-	@Override
+
 	public List<ComboxVo> findHopLocComboxVos(HopCtlocDto dto) {
 		// TODO Auto-generated method stub
 		return hopCtlocDao.findHopLocComboxVos(dto);

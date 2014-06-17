@@ -198,7 +198,6 @@ $(function (){
 					url:$WEB_ROOT_PATH+'/ord/orderCtrl!findLocDesctionComboList.htm?dto.loc='+rec.hopCtlocId,
 					valueField:'hopCtlocDestinationId',							
 					textField:'destination',
-					mode:'remote',
 				});
 			}
 	});
@@ -213,6 +212,16 @@ $(function (){
 	        mode: 'remote',
 		});
 	}
+	
+	//设置默认收货科室和收货地址
+	$.post(
+		$WEB_ROOT_PATH+"/hop/hopVendorCtrl!findHopVenComboxVos.htm",
+		function(data){
+			
+		},
+		"json"
+	);
+	
 
 });
 

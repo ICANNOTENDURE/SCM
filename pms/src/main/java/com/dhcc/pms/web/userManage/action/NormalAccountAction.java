@@ -29,7 +29,7 @@ import com.dhcc.pms.dto.userManage.NormalAccountDto;
 		@Result(name="normalAccountList",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
 		@Result(name="deleteNormalAccount",location="/WEB-INF/jsp/userManage/normalAccount.jsp")
 })
-@JsonResult4Pojo("getNormalAccountRole:normalAccountDto.roles;saveOrUpdateNormalAccount,saveNormalAccountRole:normalAccountDto;getNormalAccountFunc:normalAccountDto.funcs;updatePassword:normalAccountDto")
+@JsonResult4Pojo("saveInfo:normalAccountDto;getUserInfo:normalAccountDto;getNormalAccountRole:normalAccountDto.roles;saveOrUpdateNormalAccount,saveNormalAccountRole:normalAccountDto;getNormalAccountFunc:normalAccountDto.funcs;updatePassword:normalAccountDto")
 public class NormalAccountAction extends BaseAction{
 
 	/**  

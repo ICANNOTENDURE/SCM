@@ -31,7 +31,8 @@ import com.dhcc.pms.dto.hop.HopCtlocDto;
 		})
 @Blh("hopCtlocBlh")
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.hopCtloc"),
-			  @JResult(BlhMethod="findHopId",ognlExpress="dto")})
+			  @JResult(BlhMethod="findHopId",ognlExpress="dto"),
+			  @JResult(BlhMethod="setDefaut",ognlExpress="dto")})
 public class HopCtlocAction extends BaseAction {
 
 	private static final long serialVersionUID = 1L;

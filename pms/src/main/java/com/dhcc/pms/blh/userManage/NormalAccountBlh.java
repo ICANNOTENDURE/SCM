@@ -16,13 +16,19 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
+import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
+import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.userManage.NormalAccountDto;
+import com.dhcc.pms.entity.hop.HopCtloc;
+import com.dhcc.pms.entity.hop.Hospital;
 import com.dhcc.pms.entity.userManage.Func;
 import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.userManage.NormalAccountRole;
+import com.dhcc.pms.entity.userManage.NormalUser;
 import com.dhcc.pms.entity.userManage.Role;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.service.userManage.NormalAccountService;
 
 /**
@@ -45,6 +51,9 @@ public class NormalAccountBlh extends AbstractBaseBlh{
 	
 	@Resource
 	private NormalAccountService normalAccountService;
+	
+	@Resource
+	private CommonService commonService;
 	
 	/**
 	 * 
@@ -367,4 +376,55 @@ public class NormalAccountBlh extends AbstractBaseBlh{
 	}
 	
 	
+	/**
+	 * 
+	* @Title: NormalAccountBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param req
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月16日 下午12:32:43
+	* @version V1.0
+	 */
+	public void getUserInfo(BusinessRequest req){
+		NormalAccountDto normalAccountDto = this.getDto(NormalAccountDto.class, req);
+		String userId=WebContextHolder.getContext().getVisit().getUserInfo().getId();
+		Long hopId=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+		Long LocId=WebContextHolder.getContext().getVisit().getUserInfo().getLocId();
+		Long venId=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
+		Long userType=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+		NormalAccount normalAccount=commonService.get(NormalAccount.class, Long.valueOf(userId));
+		normalAccountDto.setNormalAccount(normalAccount);
+		if(userType==1){
+			normalAccountDto.setHopName(commonService.get(Hospital.class, hopId).getHospitalName());
+			HopCtloc hopCtloc=commonService.get(HopCtloc.class, LocId);
+			normalAccountDto.setLocName(hopCtloc.getName());
+			normalAccountDto.setDestinationId(hopCtloc.getCtlocDest());
+		}
+		if(userType==2){
+			normalAccountDto.setHopName(commonService.get(Vendor.class, venId).getName());
+		}
+		
+	}
+	
+	/**
+	 * 
+	* @Title: NormalAccountBlh.java
+	* @Description: TODO(修改用户信息)
+	* @param req
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月16日 下午7:35:24
+	* @version V1.0
+	 */
+	public void saveInfo(BusinessRequest req){
+		NormalAccountDto normalAccountDto = this.getDto(NormalAccountDto.class, req);
+		NormalUser normalUser=new NormalUser();
+		normalUser=commonService.get(NormalAccount.class,Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId())).getNormalUser();
+		normalUser.setEmail(normalAccountDto.getNormalAccount().getNormalUser().getEmail());
+		normalUser.setRealName(normalAccountDto.getNormalAccount().getNormalUser().getRealName());
+		normalUser.setTelephone(normalAccountDto.getNormalAccount().getNormalUser().getTelephone());
+		commonService.saveOrUpdate(normalUser);
+		normalAccountDto.setOpFlg("1");
+	}
 }

@@ -271,4 +271,6 @@ public class NormalAccountDao extends HibernatePersistentObjectDAO<NormalAccount
 		normalAccountDto.setNormalAccounts((List<NormalAccount>)this.findByHqlWithValuesMap(hql.toString(),paramMap,false));
 	}
 	
+	
+
 }
