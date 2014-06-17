@@ -94,22 +94,6 @@ public class HopCtlocServiceImpl implements HopCtlocService {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.dhcc.pms.service.hop.HopCtlocService#getLocIdByName(java.lang.String)
-	 */
 
-	public Long getLocIdByName(String name) {
-		// TODO Auto-generated method stub
-		return hopCtlocDao.getLocIdByName(name);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.dhcc.pms.service.hop.HopCtlocService#getLocIdByName(java.lang.String)
-	 */
-	@Override
-	public Long getLocIdByName(String name) {
-		// TODO Auto-generated method stub
-		return hopCtlocDao.getLocIdByName(name);
-	}
 		
 }
