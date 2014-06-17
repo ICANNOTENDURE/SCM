@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
+import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
@@ -35,6 +36,9 @@ public class HopCtlocBlh extends AbstractBaseBlh {
 
 	@Resource
 	private HopCtlocService hopCtlocService;
+	
+	@Resource
+	private CommonService commonService;
 
 	public HopCtlocBlh() {
 		
@@ -184,4 +188,22 @@ public class HopCtlocBlh extends AbstractBaseBlh {
 		WebContextHolder.getContext().getResponse().getWriter().flush();
 	}
 	
-}
+	
+	/**
+	 * 
+	* @Title: HopCtlocBlh.java
+	* @Description: TODO(修改科室默认收货地址)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月16日 下午5:39:26
+	* @version V1.0
+	 */
+	public void setDefaut(BusinessRequest res){
+		HopCtlocDto dto = super.getDto(HopCtlocDto.class, res);
+		HopCtloc hopCtloc=commonService.get(HopCtloc.class,Long.valueOf(Math.round(dto.getId())));
+		hopCtloc.setCtlocDest(dto.getDestionId());
+		commonService.saveOrUpdate(hopCtloc);
+		dto.setOpFlg("1");
+	}
+}	

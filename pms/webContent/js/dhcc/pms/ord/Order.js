@@ -98,14 +98,8 @@ $(function (){
         'fileObjName':'dto.upload',
         'auto': true,
         'removeCompleted':false,
-        //开始上传时传递参数
-        'onUploadStart': function(file) {
-        	
-        },
-        //取消上传
-        'onCancel':function(){
-        	
-        },
+        'checkExisting':false,
+
         //上传成功
         'onUploadSuccess':function(file, data, response){
         	var obj=eval('('+data+')');
@@ -119,17 +113,22 @@ $(function (){
     	    	$("#hisNO").val(obj.order.orderNo);
     	    	$("#deliveryDate").datebox('setValue',obj.order.deliveryDate);
     	    	$("#purId").combobox('setValue',obj.order.purLoc);
-    	    	$("#locId").combobox('setValue',obj.order.recLoc);
+    	    	
     	    	$("#vendorId").combobox('setValue',obj.order.vendorId);
     	    	$("#vendor").val(obj.order.vendorId);
     	    	$("#orderId").val(obj.order.orderId);
-    	    	$("#recDestination").combobox({
-    				url:$WEB_ROOT_PATH+'/ord/orderCtrl!findLocDesctionComboList.htm?dto.loc='+obj.order.recLoc,
-    				valueField:'hopCtlocDestinationId',							
-    				textField:'destination',
-    				mode:'remote',
-    			});
-    	    	$("#recDestination").combobox('setValue',obj.order.recDestination);
+    	    	if(obj.order.recLoc!=null){ 
+    	    		$("#locId").combobox('setValue',obj.order.recLoc);	
+	    	    	$("#recDestination").combobox({
+	    				url:$WEB_ROOT_PATH+'/ord/orderCtrl!findLocDesctionComboList.htm?dto.loc='+obj.order.recLoc,
+	    				valueField:'hopCtlocDestinationId',							
+	    				textField:'destination',
+	    				mode:'remote',
+	    			});
+    	    	}
+    	    	if(obj.order.recDestination!=null){
+    	    		$("#recDestination").combobox('setValue',obj.order.recDestination);
+    	    	}
     	    	$("#remark").val(obj.order.remark);
         	}else{
         		$CommonUI.alert(obj.msg);
@@ -164,10 +163,10 @@ $(function (){
 			 "dto.eddate":$("#eddate").datebox('getValue'),
 			 "dto.reqStDate":$("#reqStDate").datebox('getValue'),
 			 "dto.reqEdDate":$("#reqEdDate").datebox('getValue'),
-			 "dto.state":0,
+			 "dto.state":($("#state").attr('checked')=='checked'?1:0),
 			 "dto.vendor":$("#vendorSearch").combobox('getValue'),
 			 "dto.purloc":$("#purlocSearch").combobox('getValue'),
-			 "dto.emflag":$("#emflag").combobox('getValue')
+			 "dto.emflag":$("#emflag").attr('checked')
 		 });
 		
 	});
@@ -198,7 +197,6 @@ $(function (){
 					url:$WEB_ROOT_PATH+'/ord/orderCtrl!findLocDesctionComboList.htm?dto.loc='+rec.hopCtlocId,
 					valueField:'hopCtlocDestinationId',							
 					textField:'destination',
-					mode:'remote',
 				});
 			}
 	});
@@ -213,6 +211,23 @@ $(function (){
 	        mode: 'remote',
 		});
 	}
+	
+	//设置默认收货科室和收货地址
+	$.post(
+		$WEB_ROOT_PATH+"/hop/hopCtlocDestinationCtrl!getDefaultDes.htm",
+		function(data){
+			$CommonUI.getComboBox('#locId').combobox('setValue',data.locId);
+			$CommonUI.getComboBox('#purId').combobox ('setValue',data.locId);
+			$("#recDestination").combobox({
+				url:$WEB_ROOT_PATH+'/ord/orderCtrl!findLocDesctionComboList.htm?dto.loc='+data.locId,
+				valueField:'hopCtlocDestinationId',							
+				textField:'destination',
+			});
+			$("#recDestination").combobox('setValue',data.destionId);
+		},
+		"json"
+	);
+	
 
 });
 
@@ -279,6 +294,9 @@ function searchOrder(){
 	    pagination:true,
 	    fitColumns:true,
 	    rownumbers:true,
+	    queryParams:{
+	    	'dto.state':0
+	    },
 	    onDblClickRow:function(rowIndex, rowData){
 	    	$("#searchOrder").dialog('close');
 	    	$CommonUI.getDataGrid('#datagrid').datagrid('load',{
@@ -490,8 +508,8 @@ function clearData(){
     $("#hisNO").val("");
     $("#deliveryDate").datebox('setValue',"");
     $("#purId").combobox('setValue',"");
-    $("#locId").combobox('setValue',"");
-    $("#recDestination").combobox('setValue',"");
+    //$("#locId").combobox('setValue',"");
+    //$("#recDestination").combobox('setValue',"");
     $("#vendorId").combobox('setValue',"");
     $("#orderId").val(undefined);
     $("#remark").val("");
@@ -519,6 +537,35 @@ function complete(){
 					 $CommonUI.alert("确认成功");
 				 }else{
 					 $CommonUI.alert("确认失败");
+				 }
+	        },
+			 'json'
+	);
+}
+
+
+
+function canclecomplete(){
+	
+	if($("#orderId").val()==undefined){
+		$CommonUI.alert("请选择订单");
+		return;
+	}
+	if($("#orderId").val()==""){
+		$CommonUI.alert("请选择订单");
+		return;
+	}
+	$.post(
+			 $WEB_ROOT_PATH+'/ord/orderCtrl!cancleComplete.htm',
+			 {
+				 "dto.order.orderId":$("#orderId").val(),
+			 },
+			 function(data){
+				 if(data.dto.opFlg=="1"){
+	
+					 $CommonUI.alert("操作成功");
+				 }else{
+					 $CommonUI.alert("操作失败");
 				 }
 	        },
 			 'json'

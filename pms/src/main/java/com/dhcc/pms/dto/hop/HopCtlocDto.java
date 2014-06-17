@@ -17,6 +17,7 @@ public class HopCtlocDto extends BaseDto {
 	private Long hospitalDr;
 	private String comgridparam;
 	private String type;
+	private Long destionId;
 	//要显示的科室信息
 	private List<HopCtlocVo> hopCtlocVos;
 	
@@ -25,6 +26,22 @@ public class HopCtlocDto extends BaseDto {
 	
 	
 	
+	/**
+	 * @return the destionId
+	 */
+	public Long getDestionId() {
+		return destionId;
+	}
+
+
+	/**
+	 * @param destionId the destionId to set
+	 */
+	public void setDestionId(Long destionId) {
+		this.destionId = destionId;
+	}
+
+
 	/**
 	 * @return the type
 	 */

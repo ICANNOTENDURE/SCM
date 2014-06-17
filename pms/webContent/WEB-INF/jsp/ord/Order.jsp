@@ -30,7 +30,9 @@
 			<a id="addBt" class="linkbutton" onclick="javascript:append()"
 				data-options="iconCls:'icon-add',plain:true">新增一行</a>
 			<a id="addBt" class="linkbutton" onclick="javascript:deleteOrder()"
-				data-options="iconCls:'icon-remove',plain:true">删除</a>						
+				data-options="iconCls:'icon-remove',plain:true">删除</a>
+				<a id="addBt" class="linkbutton" onclick="javascript:canclecomplete()"
+				data-options="iconCls:'icon-remove',plain:true">取消完成状态</a>							
 		 </div>
 		 <div  style="margin-bottom:5px;margin-top:5px">
 		 	<form id="saveOrUpdate">
@@ -150,9 +152,8 @@
 	</table>
 
 	<div id="importDialog" class="dialog" title="导入订单"
-		style="width: 400px; height: 200px; background-color: #F5FAFD;"
+		style="width:400px;height: 200px; background-color: #F5FAFD;"
 		data-options="
-				buttons:'#importDialogButton',
 				modal:true,
 		        closed:true,
 				collapsible:false,
@@ -168,16 +169,7 @@
 			</table>
 	</div>
 	
-	<div id="importDialogButton" align="center">
-		<table cellpadding="0" cellspacing="0" style="width: 100%">
-			<tr>
-				<td style="text-align: center;"><a id="importSubmitFuncBtn"
-					href="javascript:void(0)" class="linkbutton"
-					data-options="iconCls:'icon-save',plain:true">确定</a> 
-				</td>
-			</tr>
-		</table>
-	</div>
+
 	
 	<!-- 弹出查询订单 -->
 	<div id="searchOrder" class="dialog" title="查询订单（双击选择）"
@@ -191,18 +183,16 @@
 			订单开始日期: <input class="datebox" style="width:100px" id="stdate">
 			结束日期: <input class="datebox" style="width:100px" id="eddate">
 			供应商:
-			<input class="combobox" panelHeight="auto" style="width:150px" id="vendorSearch"/>
+			<input class="combobox" panelHeight="auto" style="width:250px" id="vendorSearch"/>
+			加急:<input type="checkbox" id="emflag"/>
+			已完成:<input type="checkbox" id="state"/>
 		</div>
 		 <div style="margin-bottom:5px">
 			要求到达日期: <input class="datebox" style="width:100px" id="reqStDate">
 			结束日期: <input class="datebox" style="width:100px" id="reqEdDate">
-			加急:
-			<select class="combobox" panelHeight="auto" style="width:100px" id="emflag">
-				<option value="check"></option>
-				<option value="checked">加急</option>
-			</select>
+			
 			入库科室:
-			<input class="combobox" panelHeight="auto" style="width:150px" id="purlocSearch"/>
+			<input class="combobox" panelHeight="auto" style="width:250px" id="purlocSearch"/>
 			<a href="#" class="linkbutton" iconCls="icon-search" id="search">查询</a>
 		 </div>
 		</div>			

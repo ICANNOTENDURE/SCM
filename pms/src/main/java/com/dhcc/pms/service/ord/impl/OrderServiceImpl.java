@@ -158,4 +158,13 @@ public class OrderServiceImpl implements OrderService {
 		orderDao.complete(dto);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ord.OrderService#cancleComplete(com.dhcc.pms.dto.ord.OrderDto)
+	 */
+	@Override
+	public void cancleComplete(OrderDto dto) {
+		// TODO Auto-generated method stub
+		orderDao.cancleComplete(dto);
+	}
+
 }

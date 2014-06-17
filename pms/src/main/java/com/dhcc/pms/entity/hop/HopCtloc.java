@@ -45,7 +45,11 @@ public class HopCtloc implements Serializable {
 	@Column(name="CTLOC_TYPE")
 	private String type;
 
-			
+	@Column(name="CTLOC_DEST")		
+	private Long ctlocDest;
+	
+	
+	
 	public HopCtloc() {
 	}
 	
@@ -56,6 +60,22 @@ public class HopCtloc implements Serializable {
 	}
 
 
+	
+	
+	
+	/**
+	 * @return the ctlocDest
+	 */
+	public Long getCtlocDest() {
+		return ctlocDest;
+	}
+
+	/**
+	 * @param ctlocDest the ctlocDest to set
+	 */
+	public void setCtlocDest(Long ctlocDest) {
+		this.ctlocDest = ctlocDest;
+	}
 
 	public Long getHopCtlocId() {
 		return hopCtlocId;

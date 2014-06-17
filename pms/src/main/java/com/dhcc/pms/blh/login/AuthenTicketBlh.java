@@ -100,11 +100,13 @@ public class AuthenTicketBlh extends AbstractBaseBlh {
     	String serviceTicketDecrypt = AESCoder.aesCbcDecrypt(serviceTicket, servicePassword);
         logger.info("\n-----------解密后的服务票据信息-----------\n"+serviceTicketDecrypt);
         
+		@SuppressWarnings("unchecked")
 		Map<String, Object> ticket = JsonUtils.toObject(serviceTicketDecrypt, Map.class);
 
 		String accountId=ticket.get("accountId").toString();
 		String sessionKey=ticket.get("sessionKey").toString();
 		String timestamp=ticket.get("timestamp").toString();
+		@SuppressWarnings("unchecked")
 		List<Map<String, String>> roleFuncList=(List<Map<String, String>>)ticket.get("roleFunc");
         
         String authenMsgDecrypt = AESCoder.aesCbcDecrypt(authenMsgC, sessionKey);

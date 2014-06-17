@@ -201,6 +201,10 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 			hqlBuffer.append("and t3.ctloc_name like :alias ");
 			hqlParamMap.put("alias", "%"+dto.getComgridparam()+"%");
 		}
+		if(!StringUtils.isNullOrEmpty(WebContextHolder.getContext().getRequest().getParameter("q"))){
+			hqlBuffer.append("and t3.ctloc_name like :xxx ");
+			hqlParamMap.put("xxx", WebContextHolder.getContext().getRequest().getParameter("q")+"%");
+		}
 		if(!StringUtils.isNullOrEmpty(dto.getType())){
 			if(dto.getType().equals("3")){
 				hqlBuffer.append("and t3.ctloc_type is not null");
@@ -215,6 +219,7 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 		return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_role_loc_id");
 	
 	}
+
 
 	/**
 	 * @param dto
@@ -251,5 +256,39 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 		}
 		return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_role_loc_id");
 		
+	}
+
+	
+	
+	
+	/**
+	 * 
+	* @Title: HopCtlocDao.java
+	* @Description: TODO(更具科室描述取id)
+	* @param name
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年6月17日 上午10:27:02
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public Long getLocIdByName(String name) {
+		StringBuffer hqlBuffer = new StringBuffer();
+		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
+		hqlBuffer.append(" from HopCtloc h");
+		hqlBuffer.append(" where 1=1 ");
+		hqlBuffer.append(" and h.name = :name ");
+		hqlParamMap.put("name",name);
+		
+		Long hopId=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+		hqlBuffer.append(" and h.hospid = :hopId ");
+		hqlParamMap.put("hopId",hopId);
+		
+		List<HopCtloc> hopCtlocs=(List<HopCtloc>)this.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,false);
+		if(hopCtlocs.size()>0){
+			return hopCtlocs.get(0).getHopCtlocId();
+		}
+		return null;
 	}
 }

@@ -69,7 +69,11 @@ public class HopCtlocServiceImpl implements HopCtlocService {
 		return hopCtlocDao.getListInfo(pagerModel,dto.getHopCtlocVos(),dto.getHopCtloc());
 	}
 
-	
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopCtlocService#findHopLocComboxVos(com.dhcc.pms.dto.hop.HopCtlocDto)
+	 */
+
 	public List<ComboxVo> findHopLocComboxVos(HopCtlocDto dto) {
 		
 		return hopCtlocDao.findHopLocComboxVos(dto);
@@ -79,6 +83,33 @@ public class HopCtlocServiceImpl implements HopCtlocService {
 	public List<ComboxVo> findHopLocAndroid(HopCtlocDto dto) {
 		// TODO Auto-generated method stub
 		return hopCtlocDao.findHopLocAndroid(dto);
+	}
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopCtlocService#getLocIdByName(java.lang.String)
+	 */
+
+	public Long getLocIdByName(String name) {
+		// TODO Auto-generated method stub
+		return hopCtlocDao.getLocIdByName(name);
+
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopCtlocService#getLocIdByName(java.lang.String)
+	 */
+
+	public Long getLocIdByName(String name) {
+		// TODO Auto-generated method stub
+		return hopCtlocDao.getLocIdByName(name);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopCtlocService#getLocIdByName(java.lang.String)
+	 */
+	@Override
+	public Long getLocIdByName(String name) {
+		// TODO Auto-generated method stub
+		return hopCtlocDao.getLocIdByName(name);
 	}
 		
 }

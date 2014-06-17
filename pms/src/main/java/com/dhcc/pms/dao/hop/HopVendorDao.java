@@ -212,6 +212,9 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 		hql.append(" where 1=1 ");
 		hql.append(" and t.hopName = :hopName ");
 		paramMap.put("hopName", name);
+		Long hopId=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+		hql.append(" and t.hopHopId = :hopId ");
+		paramMap.put("hopId",hopId);
 		@SuppressWarnings("unchecked")
 		List<HopVendor> hopVendors=(List<HopVendor>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
 		if(hopVendors.size()==1){
@@ -252,6 +255,10 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 			if(!StringUtils.isNullOrEmpty(input)){
 				hqlBuffer.append("and t3.h_alias like :alias ");
 				hqlParamMap.put("alias", input+"%");
+			}
+			if(!StringUtils.isNullOrEmpty(WebContextHolder.getContext().getRequest().getParameter("q"))){
+				hqlBuffer.append("and t3.h_alias like :xxx ");
+				hqlParamMap.put("xxx", WebContextHolder.getContext().getRequest().getParameter("q")+"%");
 			}
 			return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_ven_id");
 		}

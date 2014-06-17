@@ -39,10 +39,26 @@ public class OrderStateDto extends BaseDto {
 	
 	private String emflag;
 	
+	private Long recLoc;
 	
 	
 	
 	
+	
+	/**
+	 * @return the recLoc
+	 */
+	public Long getRecLoc() {
+		return recLoc;
+	}
+
+	/**
+	 * @param recLoc the recLoc to set
+	 */
+	public void setRecLoc(Long recLoc) {
+		this.recLoc = recLoc;
+	}
+
 	/**
 	 * @return the stdate
 	 */
