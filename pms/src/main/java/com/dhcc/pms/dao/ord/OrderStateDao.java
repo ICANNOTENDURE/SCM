@@ -68,7 +68,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("t8.realname as realname, ");
 		hqlBuffer.append("t1.deliverydate as deliverydate, ");
 		hqlBuffer.append("t2.exedate as exedate, ");
-		hqlBuffer.append("t9.name as vendor ");
+		hqlBuffer.append("t9.hopName as vendor ");
 		hqlBuffer.append("from t_ord_order t1  ");
 		hqlBuffer.append("left join t_ord_exestate t2 on t1.exestate_id=t2.exestate_id  ");
 		hqlBuffer.append("left join t_ord_state t3 on t2.state_id=t3.state_seq ");
@@ -77,7 +77,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("left join t_sys_ctloc_destination t6 on t6.ctlocdes_id=t1.recdestination ");
 		hqlBuffer.append("left join t_sys_normal_account t7 on  t7.account_id=t1.createuser ");
 		hqlBuffer.append("left join t_sys_normal_user t8 on  t8.user_id=t7.user_id ");
-		hqlBuffer.append("left join t_ven_vendor t9 on t9.ven_id=t1.vendor_id ");
+		hqlBuffer.append("left join T_HOP_VENDOR t9 on t9.H_VENID=t1.vendor_id ");
 		hqlBuffer.append("where 1=1 ");
 		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
 		
