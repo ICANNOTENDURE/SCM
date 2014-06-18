@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.pms.dao.ord.OrderDao;
+import com.dhcc.pms.dao.ven.VenDeliverDao;
 import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.vo.ord.ExportOrderVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartPicVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartVo;
 import com.dhcc.pms.service.ord.OrderService;
@@ -27,7 +29,9 @@ public class OrderServiceImpl implements OrderService {
 	private OrderDao orderDao;
 	@Resource
 	private CommonService commonService;
-
+	@Resource
+	private VenDeliverDao venDeliverDao;
+	
 	public void list(OrderDto dto){
 	
 		PagerModel pagerModel = dto.getPageModel();
@@ -165,6 +169,25 @@ public class OrderServiceImpl implements OrderService {
 	public void cancleComplete(OrderDto dto) {
 		// TODO Auto-generated method stub
 		orderDao.cancleComplete(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ord.OrderService#exeOrder(com.dhcc.pms.dto.ord.OrderDto)
+	 */
+	@Override
+	public void exeOrder(OrderDto dto) {
+		// TODO Auto-generated method stub
+		orderDao.exeOrder(dto);
+		venDeliverDao.AccectOrder(dto.getOrder().getOrderId());
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ord.OrderService#ExportOrder(com.dhcc.pms.dto.ord.OrderDto)
+	 */
+	@Override
+	public List<ExportOrderVo> ExportOrder(Long dto) {
+		// TODO Auto-generated method stub
+		return orderDao.ExportOrder(dto);
 	}
 
 }

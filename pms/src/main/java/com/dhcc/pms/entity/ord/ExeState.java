@@ -1,8 +1,16 @@
 package com.dhcc.pms.entity.ord;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import java.util.Date;
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 
 
 /**
@@ -20,8 +28,8 @@ public class ExeState implements Serializable {
 	@Column(name="EXESTATE_ID")
 	private Long exestateId;
 
-	@Temporal(TemporalType.DATE)
-	private Date exedate;
+	@Column(name="EXEDATE")
+	private Timestamp exedate;
 
 	@Column(name="ORD_ID")
 	private Long ordId;
@@ -37,9 +45,33 @@ public class ExeState implements Serializable {
 	
 	@Column(name="USER_ID")
 	private Long userid;
-
+	
+	
+	@Column(name="DELIVER_ID")
+	private Long deliverId;
+	
 	public ExeState() {
 	}
+
+	
+	
+	/**
+	 * @return the deliverId
+	 */
+	public Long getDeliverId() {
+		return deliverId;
+	}
+
+
+
+	/**
+	 * @param deliverId the deliverId to set
+	 */
+	public void setDeliverId(Long deliverId) {
+		this.deliverId = deliverId;
+	}
+
+
 
 	public Long getExestateId() {
 		return this.exestateId;
@@ -49,11 +81,11 @@ public class ExeState implements Serializable {
 		this.exestateId = exestateId;
 	}
 
-	public Date getExedate() {
+	public Timestamp getExedate() {
 		return this.exedate;
 	}
 
-	public void setExedate(Date exedate) {
+	public void setExedate(Timestamp exedate) {
 		this.exedate = exedate;
 	}
 

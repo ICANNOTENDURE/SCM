@@ -61,12 +61,51 @@ public class Order implements Serializable {
 	@Column(name="PURLOC")
 	private Long purLoc;
 	
+	//1,部分发货,2，全部发货
+	@Column(name="ORD_FLAG")
+	private Long ordFlag;
+	
 	public Order() {
 	}
 	
 	
 	
 	
+	
+
+
+
+
+	/**
+	 * @return the ordFlag
+	 */
+	public Long getOrdFlag() {
+		return ordFlag;
+	}
+
+
+
+
+
+
+
+
+
+	/**
+	 * @param ordFlag the ordFlag to set
+	 */
+	public void setOrdFlag(Long ordFlag) {
+		this.ordFlag = ordFlag;
+	}
+
+
+
+
+
+
+
+
+
 	/**
 	 * @return the createUser
 	 */

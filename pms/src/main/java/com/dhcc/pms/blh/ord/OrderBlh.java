@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -369,7 +370,7 @@ public class OrderBlh extends AbstractBaseBlh {
 							break;
 						case "进价":
 							if(cell!=null){
-								orderItm.setRp(Math.round(cell.getNumericCellValue()));
+								orderItm.setRp((float)cell.getNumericCellValue());
 							}
 							break;
 					}
@@ -485,7 +486,41 @@ public class OrderBlh extends AbstractBaseBlh {
 	public void saveMain(BusinessRequest res) {
 	
 		OrderDto dto = super.getDto(OrderDto.class, res);
-		commonService.saveOrUpdate(dto.getOrder());
+		Order order=new Order();
+		if(dto.getOrder().getOrderId()!=null){
+			order=commonService.get(Order.class, dto.getOrder().getOrderId());
+			order.setDeliveryDate(dto.getOrder().getDeliveryDate());
+			order.setEmFlag(dto.getOrder().getEmFlag());
+			order.setOrderNo(dto.getOrder().getOrderNo());
+			order.setRemark(dto.getOrder().getRemark());
+			order.setPlanDate(dto.getOrder().getPlanDate());
+			order.setPurLoc(dto.getOrder().getPurLoc());
+			order.setRecDestination(dto.getOrder().getRecDestination());
+			order.setRecLoc(dto.getOrder().getRecLoc());
+			order.setVendorId(dto.getOrder().getVendorId());
+		}else{
+			order.setHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+			order.setCreateUser(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
+			order.setPlanDate(new Date());
+		}
+			
+		commonService.saveOrUpdate(order);
+		
 		dto.setOpFlg("1");
+	}
+	
+	/**
+	 * 
+	* @Title: OrderBlh.java
+	* @Description: TODO(执行订单状态)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月17日 下午8:45:41
+	* @version V1.0
+	 */
+	public void exeOrder(BusinessRequest res){
+		OrderDto dto = super.getDto(OrderDto.class, res);
+		orderService.exeOrder(dto);
 	}
 }

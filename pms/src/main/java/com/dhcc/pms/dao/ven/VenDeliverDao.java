@@ -4,68 +4,73 @@
  */
 package com.dhcc.pms.dao.ven;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
-import  com.dhcc.framework.common.PagerModel;
-import com.dhcc.framework.transmission.dto.BaseDto;
+
+import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
+import com.dhcc.framework.transmission.dto.BaseDto;
+import com.dhcc.framework.web.context.WebContextHolder;
+import com.dhcc.pms.entity.ord.ExeState;
+import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.ven.VenDeliver;
-import com.dhcc.pms.dto.ven.VenDeliverDto;
+import com.dhcc.pms.entity.ven.VenDeliveritm;
 
 @Repository
 public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 
 	public void buildPagerModelQuery(PagerModel pagerModel,BaseDto dto) {
+
+	}		
 	
-		VenDeliverDto venDeliverDto = (VenDeliverDto) dto;
-		VenDeliver venDeliver = venDeliverDto.getVenDeliver();
-
-		pagerModel.setCountProName(super.getIdName(VenDeliver.class));
-		StringBuilder hqlStr = new StringBuilder();
-		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
-		
-		buildQuery(hqlParamMap, venDeliver, hqlStr);
-		pagerModel.setQueryHql(hqlStr.toString());
-		pagerModel.setHqlParamMap(hqlParamMap);
-	}
-
-	/** 
-	 * 拼接查询条件的方法  
-	 * @param hql
-	 * @return
+	/**
+	 * 
+	* @Title: VenDeliverDao.java
+	* @Description: TODO(更具订单生成发货单 )
+	* @param orderId
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月18日 下午3:29:01
+	* @version V1.0
 	 */
-	private void buildQuery(Map hqlParamMap,VenDeliver venDeliver,StringBuilder hqlStr){
-		//拼接查询条件
-		hqlStr.append(" from VenDeliver where 1=1 ");
-		//接下来拼接其他查询条件 如下示例代码所示
-		//hqlStr.append("WHERE YEAR=:year ");
-		//hqlParamMap.put("year", year);
-		//hqlStr.append("AND MONTH=:month ");
-		//hqlParamMap.put("month", month);
-		//hqlStr.append("AND DAY=:day ");
-		//hqlParamMap.put("day", day);
-	}
+	@SuppressWarnings("unchecked")
+	public void AccectOrder(Long orderId){
+		StringBuilder hqlStr = new StringBuilder();
 		
-	public void save(VenDeliver venDeliver){
-	
-		super.save(venDeliver);
-	}
-	
-	public void delete(VenDeliver venDeliver){
+		Order order=super.get(Order.class, orderId);
 		
-		super.delete(venDeliver);
+		VenDeliver venDeliver=new VenDeliver();
+		venDeliver.setDeliverHopid(order.getHopId());
+		venDeliver.setDeliverOrderid(order.getOrderId());
+		venDeliver.setDeliverUserid(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
+		venDeliver.setDeliverPurloc(order.getPurLoc());
+		venDeliver.setDeliverRecloc(order.getRecLoc());
+		venDeliver.setDeliverVendorid(order.getVendorId());
+		venDeliver.setDeliverDestinationid(order.getRecDestination());
+		super.saveOrUpdate(venDeliver);
+		
+		ExeState exeState=new ExeState();
+		exeState.setDeliverId(venDeliver.getDeliverId());
+		exeState.setExedate(new java.sql.Timestamp(new Date().getTime()));
+		exeState.setStateId(Long.valueOf(2));
+		exeState.setUserid(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
+		super.saveOrUpdate(exeState);
+		
+		hqlStr.delete(0, hqlStr.length());
+		hqlStr.append(" from OrderItm t where t.ordId=?");
+		List<OrderItm> orderItms=super.findByHql(hqlStr.toString(), orderId);
+		for(OrderItm tmpOrderItm:orderItms){
+			VenDeliveritm venDeliveritm=new VenDeliveritm();
+			venDeliveritm.setDeliveritmHopincid(tmpOrderItm.getIncId());
+			venDeliveritm.setDeliveritmOrderitmid(tmpOrderItm.getOrderitmId());
+			venDeliveritm.setDeliveritmParentid(venDeliver.getDeliverId());
+			venDeliveritm.setDeliveritmQty(tmpOrderItm.getReqqty());
+			venDeliveritm.setDeliveritmUom(tmpOrderItm.getUom());
+			venDeliveritm.setDeliveritmRp(tmpOrderItm.getRp());
+			super.saveOrUpdate(venDeliveritm);
+		}
 	}
-	
-	public void update(VenDeliver venDeliver){
-	
-		super.update(venDeliver);
-	}
-	
-	public VenDeliver findById(VenDeliver venDeliver){
-
-		return super.findById(venDeliver.getDeliverId());
-
-	} 
 }

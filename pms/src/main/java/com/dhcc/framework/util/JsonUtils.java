@@ -26,8 +26,11 @@ public class JsonUtils {
 	 */
 	private static ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 	static {
-		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		
+		
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
+		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 	}
 
 	public static String toJson(Object obj) {

@@ -146,7 +146,11 @@ public class ObjectRowMapper implements RowMapper {
 			} else if (elemType.indexOf("byte") != -1
 					|| elemType.indexOf("Byte") != -1) {
 					field.set(targetObj, rs.getByte(columnLabel));
+			}else if (elemType.indexOf("timestamp") != -1
+					|| elemType.indexOf("Timestamp") != -1) {
+					field.set(targetObj, rs.getTimestamp(columnLabel));
 			} else {
+				
 				setFieldValue(targetObj,field,rs.getString(columnLabel));
 
 			}

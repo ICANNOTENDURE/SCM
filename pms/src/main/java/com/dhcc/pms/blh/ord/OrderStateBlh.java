@@ -76,6 +76,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 		.getResponse()
 		.getWriter()
 		.write(JsonUtils.toJson(ordertateService.listOrderExeState(dto)));
+		dto.setOpFlg("1");
 	}
 	
 	/**
@@ -98,6 +99,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	public void listOrdItm(BusinessRequest res){
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
 		ordertateService.listOrderItm(dto);
+		dto.setOpFlg("1");
 	}
 	
 	/**

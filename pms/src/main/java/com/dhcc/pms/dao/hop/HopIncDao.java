@@ -22,7 +22,6 @@ import com.dhcc.framework.util.PingYinUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.hop.HopIncDto;
-import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopInc;
 import com.dhcc.pms.entity.hop.HopIncAlias;
 import com.dhcc.pms.entity.vo.hop.HopIncVo;
@@ -167,26 +166,7 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 		hqlBuffer.append("left join t_hop_manf t3 on t1.inc_manfid=t3.id ");
 		hqlBuffer.append("left join t_hop_inc_pic t4 on t4.inc_pic_incid=t1.inc_id ");
 		hqlBuffer.append(" where 1=1");
-		/*
-		hqlBuffer.append(" select new com.dhcc.pms.entity.vo.hop.HopIncVo(");
-		hqlBuffer.append(" h.incId, ");
-		hqlBuffer.append(" h.incCode, ");
-		hqlBuffer.append(" h.incName, ");
-		hqlBuffer.append(" h.incUomcode, ");
-		hqlBuffer.append(" h.incUomname, ");
-		hqlBuffer.append(" h.incBuomcode, ");
-		hqlBuffer.append(" h.incBuomname, ");
-		hqlBuffer.append(" h.incFac, ");
-		hqlBuffer.append(" h.incRp, ");
-		hqlBuffer.append(" h.incHospid, ");
-		hqlBuffer.append(" hs.hospitalName, ");
-		hqlBuffer.append(" h.incManfid, ");
-		hqlBuffer.append(" hm.manfName, ");
-		hqlBuffer.append(" h.incHissysid, ");
-		hqlBuffer.append(" h.) ");
-		hqlBuffer.append(" from HopInc h , Hospital hs ,HopManf hm ");		
-		hqlBuffer.append(" where h.incHospid=hs.hospitalId and h.incManfid=hm.hopManfId");
-		*/
+
 		HopInc hopInc=dto.getHopInc();
 		if (hopInc!=null) {			
 			String codeStr =hopInc.getIncCode();
@@ -224,68 +204,7 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 		dto.getPageModel().setHqlParamMap(hqlParamMap);
 		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), ShowHopIncVo.class, "INC_ID");
 		
-		//获取总页数
-		/*
-		pagerModel.setCountProName("INC_ID");
-		pagerModel.setQueryHql(hqlBuffer.toString());
-		int totalRows = pagerModel.getTotals();
-		if (totalRows == 0) {
-			totalRows = commonDao.getResultCountWithValuesMap(
-					pagerModel.getQueryHql(), pagerModel.getHqlParamMap(),
-					pagerModel.getCountProName(), false).intValue();
-		}
-		if (totalRows == 0) {
-			pagerModel.setPageData(new ArrayList<Object>(1));
-			return null;
-		}
-		pagerModel.setTotals(totalRows);
-		*/
-		//药品列表信息
-		//List<HopIncVo> hopIncList=(List<HopIncVo>)findByHqlWithValuesMap(hqlBuffer.toString(),pagerModel.getPageNo(),pagerModel.getPageSize(),hqlParamMap,true);
-		/*		
-		StringBuffer hqlBufferPic = new StringBuffer();		
-		hqlBufferPic.append(" select new com.dhcc.pms.entity.vo.hop.HopIncPicVo(");
-		hqlBufferPic.append(" hp.hopIncPicId, ");
-		hqlBufferPic.append(" hp.incPicIncid, ");
-		hqlBufferPic.append(" h.incName, ");
-		hqlBufferPic.append(" hp.incPicPath, ");
-		hqlBufferPic.append(" hp.incPicSeq) ");
-		hqlBufferPic.append(" from HopIncPic hp , HopInc  h ");
-		hqlBufferPic.append(" where hp.incPicIncid=h.incId ");
-		
-		//药品图片列表信息
-		List<HopIncPicVo> hopIncPicList=(List<HopIncPicVo>)findByHql(hqlBufferPic.toString());
-		
-		//return (List<HopIncVo>)findByHqlWithValuesMap(hqlBuffer.toString(), hqlParamMap, true);
-		
-		for(int i=0;i<hopIncList.size();i++){
-			HopIncPicVo e=new HopIncPicVo();
-			List<HopIncPicVo> list=hopIncList.get(i).getHopIncPicVos();
-			
-			//flag为[],只是用来作List比较的flag。
-			List<Object> flag=new ArrayList<Object>();
-			
-			for(int j=0;j<hopIncPicList.size();j++){
-				if(hopIncPicList.get(j).getIncPicIncid().equals(BigDecimal.valueOf(hopIncList.get(i).getIncId()))){					
-					try{
-						e=hopIncPicList.get(j);
-						list.add(e);
-					}catch(Exception ex){
-						ex.printStackTrace();
-					}
-					
-				}
-			}
-			//判判断list中有值，则将其赋值给HopIncVo的List<HopIncPic>，而当list为[]，即无子表数据
-			if(!list.equals(flag)){
-				hopIncList.get(i).setHopIncPicVos(list);
-			}
-			
-		}
-		*/
-		//return hopIncList;
-				
-		//return showHopIncVos;
+
 		
 	}
 	

@@ -296,7 +296,9 @@ $(document).ready(function () {
 				$(".admin-username").html(data);
 			}
 	);
-	
+	$("#hid").on('click',function(){
+		//$("#leftPanel").css('width',478);
+	});
 });
 
 </script>
@@ -308,13 +310,13 @@ $(document).ready(function () {
 		<div id="topPanel">
 
 			
-
+			<div id="hid">隐藏</div>
 		</div>
 	</div>
 
 	<div region="west" border="true" split="false" class="cs-west"
-		style="overflow: hidden;">
-		<div id="leftPanel">
+		style="overflow: hidden;" >
+		<div id="leftPanel" >
 	  
 			<div class="admin-info">
 				<div class="admin-thumb">

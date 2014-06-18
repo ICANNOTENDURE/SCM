@@ -21,11 +21,11 @@ import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.hop.HopInc;
-import com.dhcc.pms.entity.hop.Hospital;
 import com.dhcc.pms.entity.ord.ExeState;
 import com.dhcc.pms.entity.ord.OrdShopping;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
+import com.dhcc.pms.entity.vo.ord.ExportOrderVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartPicVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartVo;
 
@@ -36,35 +36,9 @@ public class OrderDao extends HibernatePersistentObjectDAO<Order> {
 	private JdbcTemplateWrapper jdbcTemplateWrapper;
 	
 	public void buildPagerModelQuery(PagerModel pagerModel,BaseDto dto) {
-	
-		OrderDto orderDto = (OrderDto) dto;
-		Order order = orderDto.getOrder();
 
-		pagerModel.setCountProName(super.getIdName(Order.class));
-		StringBuilder hqlStr = new StringBuilder();
-		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
-		
-		buildQuery(hqlParamMap, order, hqlStr);
-		pagerModel.setQueryHql(hqlStr.toString());
-		pagerModel.setHqlParamMap(hqlParamMap);
 	}
 
-	/** 
-	 * 拼接查询条件的方法  
-	 * @param hql
-	 * @return
-	 */
-	private void buildQuery(@SuppressWarnings("rawtypes") Map hqlParamMap,Order order,StringBuilder hqlStr){
-		//拼接查询条件
-		hqlStr.append(" from Order where 1=1 ");
-		//接下来拼接其他查询条件 如下示例代码所示
-		//hqlStr.append("WHERE YEAR=:year ");
-		//hqlParamMap.put("year", year);
-		//hqlStr.append("AND MONTH=:month ");
-		//hqlParamMap.put("month", month);
-		//hqlStr.append("AND DAY=:day ");
-		//hqlParamMap.put("day", day);
-	}
 		
 	public void save(Order order){
 	
@@ -289,7 +263,7 @@ public void saveOrUpdate(OrderDto dto){
 	   exeState.setRemark(dto.getOrder().getRemark());
 	   exeState.setUserid(dto.getOrder().getCreateUser());
 	   exeState.setOrdId(dto.getOrder().getOrderId());
-	   exeState.setExedate(new Date());
+	   exeState.setExedate(new java.sql.Timestamp(new Date().getTime()));
 	   super.save(exeState);
 	   //更新执行表Id
 	   Order order=new Order();
@@ -314,7 +288,7 @@ public void saveOrUpdate(OrderDto dto){
 		   orderItm.setIncId(ordShoppingList.get(i).getShopIncid());
 		   orderItm.setReqqty(ordShoppingList.get(i).getShopQty());
 		   orderItm.setUom(ordShoppingList.get(i).getShopUom());
-		   orderItm.setRp(super.get(HopInc.class, ordShoppingList.get(i).getShopIncid()).getIncRp().longValue());
+		   orderItm.setRp(super.get(HopInc.class, ordShoppingList.get(i).getShopIncid()).getIncRp().floatValue());
 		   super.save(orderItm);
 		   super.deleteById(OrdShopping.class, ordShoppingList.get(i).getShopId());
 	   }
@@ -330,114 +304,31 @@ public void saveOrUpdate(OrderDto dto){
    * @date 2014年6月3日 下午3:53:06
    * @version V1.0
     */
-   @SuppressWarnings("unchecked")
 public void impOrder(OrderDto dto){
 	   dto.setOpFlg("0");
-	   StringBuffer hqlBuffer = new StringBuffer(); 
 	   
-	   if(dto.getOrder().getHopId()==null){
-		  Long hopId=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
-		  if(hopId!=null){
-			  dto.getOrder().setHopId(hopId);
-		  }else{
-			  //没有医院不能导入
-			  dto.setOpFlg("2");
-			  dto.setMsg("没有医院不能导入");
-			  return;
-		  }
+	   Long hopId=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+	   if(hopId!=null){
+		   dto.getOrder().setHopId(hopId);
 	   }else{
-		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
-		   hqlBuffer.delete(0, hqlBuffer.length());
-
-		   hqlBuffer.append(" from Hospital t ");
-		   hqlBuffer.append(" where t.hospitalHisdr = :hopid");
-		   hqlParamMap.put("hopid", dto.getOrder().getHopId());
-		   List<Hospital> hospitals=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
-		   if(hospitals.size()>0){
-			   dto.getOrder().setHopId(hospitals.get(0).getHospitalId());
-		   }else{
-			   dto.setOpFlg("2");
-			   dto.setMsg("医院标示在平台没有维护");
-			   return;
-		   }
-	   }
-//	   //入库科室
-//	   if(dto.getOrder().getPurLoc()!=null){
-//		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
-//		   hqlBuffer.delete(0, hqlBuffer.length());
-//
-//		   hqlBuffer.append(" from HopCtloc t ");
-//		   hqlBuffer.append(" where t.hisid = :hisid");
-//		   hqlParamMap.put("hisid", dto.getOrder().getPurLoc());
-//		   hqlBuffer.append(" and t.hospid = :hopid");
-//		   hqlParamMap.put("hopid", dto.getOrder().getHopId());
-//		   List<HopCtloc> ctlocs=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
-//		   if(ctlocs.size()>0){
-//			   dto.getOrder().setPurLoc(ctlocs.get(0).getHopCtlocId());
-//		   }else{
-//			   //没有入库科室，或者科室在平台没有
-//			   dto.setOpFlg("5");
-//			   dto.setMsg("没有入库科室，或者科室在平台没有");
-//			   return;
-//		   }
-//	   }
-//	   //收货科室
-//	   if(dto.getOrder().getRecLoc()!=null){
-//		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
-//		   hqlBuffer.delete(0, hqlBuffer.length());
-//
-//		   hqlBuffer.append(" from HopCtloc t ");
-//		   hqlBuffer.append(" where t.hisid = :hisid");
-//		   hqlParamMap.put("hisid", dto.getOrder().getRecLoc());
-//		   hqlBuffer.append(" and t.hospid = :hopid");
-//		   hqlParamMap.put("hopid", dto.getOrder().getHopId());
-//		   List<HopCtloc> ctlocs=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
-//		   if(ctlocs.size()>0){
-//			   dto.getOrder().setRecLoc(ctlocs.get(0).getHopCtlocId());
-//		   }else{
-//			   //没有入库科室，或者科室在平台没有
-//			   dto.setOpFlg("5");
-//			   dto.setMsg("没有接收科室，或者科室在平台没有");
-//			   //return;
-//		   }
-//	   }
-//	   
-//	   
-//	 //供应商
-//	   if(dto.getOrder().getVendorId()!=null){
-//		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
-//		   hqlBuffer.delete(0, hqlBuffer.length());
-//
-//		   hqlBuffer.append(" from Vendor t ");
-//		   hqlBuffer.append(" where t.hisId = :hisid");
-//		   hqlParamMap.put("hisid", dto.getOrder().getVendorId());
-//		   List<Vendor> vendors=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
-//		   if(vendors.size()>0){
-//			   dto.getOrder().setVendorId(vendors.get(0).getVendorId());
-//		   }else{
-//			   //没有入库科室，或者科室在平台没有
-//			   dto.setOpFlg("6");
-//			   dto.setMsg("供应商在平台没有维护");
-//			   return;
-//		   }
-//	   }else{
-//		   dto.setOpFlg("6");
-//		   dto.setMsg("供应商不能为空");
-//		   return;
-//	   }
-	   
+		  //没有医院不能导入
+		  dto.setOpFlg("2");
+		  dto.setMsg("没有医院不能导入");
+		  return;
+	   }   
 	   if(dto.getOrder().getOrderNo()==null){
 		   //his订单号不能为空
 		   dto.setOpFlg("3"); 
 		   return;
 	   }
 	   
-	   if(Integer.valueOf(dto.getOpFlg())>1){
+	   if(Integer.valueOf(dto.getOpFlg())>0){
 		   return;
 	   }
 	   Order order=dto.getOrder();
 	   order.setCreateUser(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
 	   order.setPlanDate(new Date());
+	   
 	   super.save(order);
 	   
 	   
@@ -449,30 +340,7 @@ public void impOrder(OrderDto dto){
 			   orderItms.remove(i);
 		   }
 	   }	   
-//		   Long hisIncIdLong= orderItms.get(i).getIncId();
-//		   hqlBuffer.delete(0, hqlBuffer.length());
-//		   Map<String, Object> hqlParamMap = new HashMap<String, Object>();
-//		   hqlBuffer.append(" from HopInc t ");
-//		   hqlBuffer.append(" where t.incHospid = :hopid");
-//		   hqlParamMap.put("hopid", order.getHopId());
-//		   hqlBuffer.append(" and t.incHissysid = :incHissysid");
-//		   hqlParamMap.put("incHissysid", hisIncIdLong);
-//		   List<HopInc> hopIncs=super.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,true);
-//		   if(hopIncs.size()>0){
-//			   orderItms.get(i).setIncId(hopIncs.get(0).getIncId());
-//		   }else{
-//			   orderItms.remove(i);
-//			   if(StringUtils.isNullOrEmpty(dto.getMsg())){
-//				   dto.setMsg(hisIncIdLong.toString()+":在平台里有没");
-//			   }else{
-//				   dto.setMsg(dto.getMsg()+"."+hisIncIdLong.toString()+":在平台里有没");
-//				   dto.setOpFlg("4");
-//			   }
-//		   }
-//	   }
-//	   if(orderItms.size()>0){
-//		  
-//	   }
+
 	   super.batchSaveOrUpdate(orderItms);
 	   dto.setOpFlg("1");
    }
@@ -522,14 +390,19 @@ public void impOrder(OrderDto dto){
    public void complete(OrderDto dto){
 	   
 	   ExeState exeState=new ExeState();
+	   Order order=super.get(Order.class,dto.getOrder().getOrderId());
+	   if(order.getExeStateId()!=null){
+		   dto.setOpFlg("2");
+		   return;
+	   }
 	   exeState.setStateId(Long.valueOf(1));
 	   exeState.setRemark(dto.getOrder().getRemark());
 	   exeState.setUserid(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
 	   exeState.setOrdId(dto.getOrder().getOrderId());
-	   exeState.setExedate(new Date());
+	   exeState.setExedate(new java.sql.Timestamp(new Date().getTime()));
 	   super.save(exeState);
 	   
-	   Order order=super.get(Order.class,dto.getOrder().getOrderId());
+	   
 	   order.setExeStateId(exeState.getExestateId());
 	   super.saveOrUpdate(order);
 	   dto.setOpFlg("1");
@@ -553,5 +426,76 @@ public void impOrder(OrderDto dto){
 	   super.deleteById(ExeState.class, order.getExeStateId());
 	   order.setExeStateId(null);
 	   super.saveOrUpdate(order);
+   }
+   
+   
+   /**
+    * 
+   * @Title: OrderDao.java
+   * @Description: TODO(执行订单)
+   * @param dto
+   * @return:void 
+   * @author zhouxin  
+   * @date 2014年6月17日 下午8:41:51
+   * @version V1.0
+    */
+   public void exeOrder(OrderDto dto){
+	   
+	   ExeState exeState=new ExeState();
+	   Order order=super.get(Order.class,dto.getOrder().getOrderId());
+
+	   exeState.setStateId(dto.getStateId());
+	   exeState.setRemark(dto.getOrder().getRemark());
+	   exeState.setUserid(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
+	   exeState.setOrdId(dto.getOrder().getOrderId());
+	   exeState.setExedate(new java.sql.Timestamp(new Date().getTime()));
+	   super.save(exeState);
+	   
+	   
+	   order.setExeStateId(exeState.getExestateId());
+	   super.saveOrUpdate(order);
+	   dto.setOpFlg("1");
+   }
+   
+   /**
+    * 
+   * @Title: OrderDao.java
+   * @Description: TODO(导出订单)
+   * @param dto
+   * @return
+   * @return:List<ExportOrderVo> 
+   * @author zhouxin  
+   * @date 2014年6月18日 下午1:56:18
+   * @version V1.0
+    */
+   @SuppressWarnings("unchecked")
+public List<ExportOrderVo> ExportOrder(Long orderId){
+	   
+	   StringBuffer hqlBuffer = new StringBuffer();
+		hqlBuffer.append("select ");
+		hqlBuffer.append("t2.order_no as no, ");
+		hqlBuffer.append("t4.ctloc_name as purloc, ");
+		hqlBuffer.append("t3.ctloc_name as recloc, ");
+		hqlBuffer.append("t7.ven_inc_venid as venincid, ");
+		hqlBuffer.append("t7.ven_inc_name as venincname, ");
+		hqlBuffer.append("t5.inc_id as hopincid, ");
+		hqlBuffer.append("t5.inc_name as hopincname, ");
+		hqlBuffer.append("t1.reqqty as qty , ");
+		hqlBuffer.append("t1.rp as rp, ");
+		hqlBuffer.append("t1.uom as uom ");
+		hqlBuffer.append("from t_ord_orderitm t1 ");
+		hqlBuffer.append("left join t_ord_order t2 on t1.ord_id=t2.order_id  ");
+		hqlBuffer.append("left join t_sys_ctloc t3 on t3.ctloc_id=t2.recloc ");
+		hqlBuffer.append("left join t_sys_ctloc t4 on t4.ctloc_id=t2.purloc ");
+		hqlBuffer.append("left join t_hop_inc t5 on t5.inc_id=t1.inc_id ");
+		hqlBuffer.append("left join t_ven_hop_inc t6 on t6.hop_inc_id=t1.inc_id ");
+		hqlBuffer.append("left join t_ven_inc t7 on t7.ven_inc_rowid=t6.ven_inc_id ");
+		hqlBuffer.append("where 1=1 ");
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+		
+		hqlBuffer.append("and t1.ord_id=:ord ");
+		hqlParamMap.put("ord", orderId);
+
+		return (List<ExportOrderVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ExportOrderVo.class, hqlParamMap);
    }
 }

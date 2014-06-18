@@ -115,8 +115,8 @@ $(function (){
     	    	$("#purId").combobox('setValue',obj.order.purLoc);
     	    	
     	    	$("#vendorId").combobox('setValue',obj.order.vendorId);
-    	    	$("#vendor").val(obj.order.vendorId);
     	    	$("#orderId").val(obj.order.orderId);
+    	    	
     	    	if(obj.order.recLoc!=null){ 
     	    		$("#locId").combobox('setValue',obj.order.recLoc);	
 	    	    	$("#recDestination").combobox({
@@ -311,6 +311,7 @@ function searchOrder(){
 	    	$("#vendorId").combobox('setValue',rowData.vendor);
 	    	$("#vendor").val(rowData.vendorid);
 	    	$("#orderId").val(rowData.orderid);
+	    	$("#orderState").val(rowData.statedesc);
 	    	$("#recDestination").combobox({
 				url:$WEB_ROOT_PATH+'/ord/orderCtrl!findLocDesctionComboList.htm?dto.loc='+rowData.reclocid,
 				valueField:'hopCtlocDestinationId',							
@@ -410,8 +411,9 @@ function onAfterEdit(rowIndex, rowData, changes){
 }
 
 
-function deleteR(value,row,index){  
-	return '<a href="#" onclick="deleterow('+index+')">删除</a>';
+function deleteR(value,row,index){
+	return '<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:deleterow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-cancel l-btn-icon-left">删除</span></span></a>';
+	//return '<a href="#" onclick="deleterow('+index+')">删除</a>';
 }
 function deleterow(index){
 	orderitmid=$('#datagrid').datagrid('getRows')[index]['orderitmid'];
@@ -440,6 +442,11 @@ function deleterow(index){
 }
 
 function saveMain(){
+	if($("#orderState").val()!=""){
+		$CommonUI.alert("该订单已经完成");
+		return;
+	}
+	
 	var isValid = $CommonUI.getForm('#saveOrUpdate').form('validate');
 	if(!isValid){
 		return isValid;
@@ -451,7 +458,7 @@ function saveMain(){
            	 	"dto.order.deliveryDate":$("#deliveryDate").datebox('getValue'),
            	    "dto.order.emFlag":$("#emFlag").attr("checked"),
            	    "dto.order.remark":$("#remark").val(),
-           	    "dto.order.vendorId":$('#vendor').val(),
+           	    "dto.order.vendorId":$("#vendorId").combobox('getValue'),
            	    "dto.order.recLoc":$("#locId").combobox('getValue'),
            	    "dto.order.recDestination":$("#recDestination").combobox('getValue'),
            	    "dto.order.purLoc":$("#purId").combobox('getValue'),
@@ -513,6 +520,8 @@ function clearData(){
     $("#vendorId").combobox('setValue',"");
     $("#orderId").val(undefined);
     $("#remark").val("");
+    $("#orderState").val("");
+    
 }
 
 function complete(){
@@ -525,6 +534,10 @@ function complete(){
 		$CommonUI.alert("请选择订单");
 		return;
 	}
+	if($("#orderState").val()!=""){
+		$CommonUI.alert("该订单已经完成");
+		return;
+	}
 	$.post(
 			 $WEB_ROOT_PATH+'/ord/orderCtrl!complete.htm',
 			 {
@@ -535,6 +548,7 @@ function complete(){
 				 if(data.dto.opFlg=="1"){
 	
 					 $CommonUI.alert("确认成功");
+					 $("#orderState").val("新建");
 				 }else{
 					 $CommonUI.alert("确认失败");
 				 }
@@ -564,6 +578,7 @@ function canclecomplete(){
 				 if(data.dto.opFlg=="1"){
 	
 					 $CommonUI.alert("操作成功");
+					 $("#orderState").val("");
 				 }else{
 					 $CommonUI.alert("操作失败");
 				 }

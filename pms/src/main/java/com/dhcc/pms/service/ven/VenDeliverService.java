@@ -4,20 +4,19 @@
  */
 package com.dhcc.pms.service.ven;
 
-import com.dhcc.pms.dto.ven.VenDeliverDto;
-import com.dhcc.pms.entity.ven.VenDeliver;
 
 public interface VenDeliverService {
-
-	public void list(VenDeliverDto dto);
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(根据订单生成发货单)
+	* @param orderId
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月18日 下午4:26:10
+	* @version V1.0
+	 */
+	public void AccectOrder(Long orderId);
 	
-	public void save(VenDeliverDto dto);
 	
-	public void delete(VenDeliverDto dto);
-	
-	public void update(VenDeliverDto dto);
-	
-	public VenDeliver findById(VenDeliverDto dto);
-	
-
 }

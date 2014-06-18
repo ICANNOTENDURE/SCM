@@ -43,9 +43,25 @@ public class OrderStateVo implements java.io.Serializable{
 	
 	private String remark;
 	
+	private String hopname;
 	
 	
 	
+	
+	/**
+	 * @return the hopname
+	 */
+	public String getHopname() {
+		return hopname;
+	}
+
+	/**
+	 * @param hopname the hopname to set
+	 */
+	public void setHopname(String hopname) {
+		this.hopname = hopname;
+	}
+
 	/**
 	 * @return the remark
 	 */

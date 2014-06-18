@@ -22,8 +22,7 @@ import com.dhcc.pms.dto.ven.VenDeliverDto;
 @Namespace(value = "/ven")
 @Scope("prototype")
 @Action(value = "venDeliverCtrl", results = {
-		@Result(name = "list", location = "/WEB-INF/jsp/ven/VenDeliver.jsp"),
-		@Result(name = "listMain", location = "/WEB-INF/jsp/ven/VenDeliver.jsp")})
+		@Result(name = "deliver", location = "/WEB-INF/jsp/ven/Deliver.jsp")})
 @Blh("venDeliverBlh")
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.venDeliver")})
 public class VenDeliverAction extends BaseAction {
@@ -35,8 +34,8 @@ public class VenDeliverAction extends BaseAction {
 	@Override
 	public String directlyJump() {
 		//直接返回jsp
-		if("listMain".equals(super.getBusinessFlow())){
-			return "listMain";
+		if("deliver".equals(super.getBusinessFlow())){
+			return "deliver";
 		}
 		return null;
 	}

@@ -45,13 +45,36 @@ public class OrderItm implements Serializable {
 	private Long reqqty;
 	
 	@Column(name="RP")
-	private Long rp;
+	private Float rp;
 	
 	@Column(name="UOM")
 	private String uom;
-
+	
+	@Column(name="flag")
+	private String flag;
+	
 	public OrderItm() {
 	}
+	
+	
+	
+	/**
+	 * @return the flag
+	 */
+	public String getFlag() {
+		return flag;
+	}
+
+
+
+	/**
+	 * @param flag the flag to set
+	 */
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+
+
 
 	public Long getOrderitmId() {
 		return this.orderitmId;
@@ -109,11 +132,11 @@ public class OrderItm implements Serializable {
 		this.reqqty = reqqty;
 	}
 
-	public Long getRp() {
+	public Float getRp() {
 		return this.rp;
 	}
 
-	public void setRp(Long rp) {
+	public void setRp(Float rp) {
 		this.rp = rp;
 	}
 

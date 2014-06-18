@@ -77,7 +77,8 @@
 					<td class="textLabel">his订单号:</td>
 					<td class="textParent"><input style="width: 250px;"
 						id="hisNO"/></td>					
-				
+					<td class="textLabel">状态:</td>
+					<td class="textParent"><input readonly="readonly" id="orderState" style="width: 250px;"/></td>
 				</tr>
 				<tr>
 					<td class="textLabel">备注:</td>

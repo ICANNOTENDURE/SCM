@@ -22,7 +22,8 @@ import com.dhcc.pms.dto.ord.OrderStateDto;
 @Namespace(value = "/ord")
 @Scope("prototype")
 @Action(value = "orderStateCtrl", results = {
-		@Result(name = "listMain", location = "/WEB-INF/jsp/ord/OrderState.jsp")})
+		@Result(name = "listMain", location = "/WEB-INF/jsp/ord/OrderState.jsp"),
+		@Result(name = "listVenOrder", location = "/WEB-INF/jsp/ord/VenOrderState.jsp")})
 @Blh("orderStateBlh")
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="findById")})
 public class OrderStateAction extends BaseAction {
@@ -36,6 +37,10 @@ public class OrderStateAction extends BaseAction {
 		//直接返回jsp
 		if("listMain".equals(super.getBusinessFlow())){
 			return "listMain";
+		}
+		//直接返回jsp
+		if("listVenOrder".equals(super.getBusinessFlow())){
+			return "listVenOrder";
 		}
 		return null;
 	}

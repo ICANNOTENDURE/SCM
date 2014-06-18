@@ -9,6 +9,7 @@ import java.util.List;
 import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.vo.ord.ExportOrderVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartPicVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartVo;
 
@@ -149,4 +150,29 @@ public interface OrderService {
 	* @version V1.0
 	 */
 	 public void cancleComplete(OrderDto dto);
+
+	 /**
+	  * 
+	 * @Title: OrderService.java
+	 * @Description: TODO(执行订单状态)
+	 * @param dto
+	 * @return:void 
+	 * @author zhouxin  
+	 * @date 2014年6月17日 下午8:44:28
+	 * @version V1.0
+	  */
+	 public void exeOrder(OrderDto dto);
+	 
+	 /**
+	  * 
+	 * @Title: OrderService.java
+	 * @Description: TODO(导出订单)
+	 * @param dto
+	 * @return
+	 * @return:List<ExportOrderVo> 
+	 * @author zhouxin  
+	 * @date 2014年6月18日 下午2:05:50
+	 * @version V1.0
+	  */
+	 public List<ExportOrderVo> ExportOrder(Long dto);
 }

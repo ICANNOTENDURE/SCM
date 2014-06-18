@@ -1,6 +1,7 @@
 package com.dhcc.pms.entity.vo.ord;
 
-import java.util.Date;
+import java.sql.Timestamp;
+
 
 
 
@@ -13,11 +14,29 @@ public class OrderExeStateVo implements java.io.Serializable{
 
 	private String statedesc;
 	
-	private Date exedate;
+	private Timestamp exedate;
 	
 	private String exeuser;
 	
 	private String remark;
+	
+	private String tel;
+	
+	
+	
+	/**
+	 * @return the tel
+	 */
+	public String getTel() {
+		return tel;
+	}
+
+	/**
+	 * @param tel the tel to set
+	 */
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
 
 	/**
 	 * @return the statedesc
@@ -36,14 +55,14 @@ public class OrderExeStateVo implements java.io.Serializable{
 	/**
 	 * @return the exedate
 	 */
-	public Date getExedate() {
+	public Timestamp getExedate() {
 		return exedate;
 	}
 
 	/**
 	 * @param exedate the exedate to set
 	 */
-	public void setExedate(Date exedate) {
+	public void setExedate(Timestamp exedate) {
 		this.exedate = exedate;
 	}
 
