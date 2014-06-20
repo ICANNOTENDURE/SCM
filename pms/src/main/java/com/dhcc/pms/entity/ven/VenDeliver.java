@@ -27,7 +27,10 @@ public class VenDeliver implements Serializable {
 	private String deliverRemark;
 	private Long deliverUserid;
 	private Long deliverVendorid;
-
+	private Timestamp deliverAccpecctDate;
+	private Long deliverAccpUserId;
+	private Long hopVendorId;
+	
 	public VenDeliver() {
 	}
 
@@ -35,7 +38,7 @@ public class VenDeliver implements Serializable {
 	@Id
 	@SequenceGenerator(name="T_VEN_DELIVER_DELIVERID_GENERATOR", sequenceName="SEQUENCE_VEN_DELIVER")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="T_VEN_DELIVER_DELIVERID_GENERATOR")
-	@Column(name="DELIVER_ID")
+	@Column(name="DELIVER_ROWID")
 	public Long getDeliverId() {
 		return this.deliverId;
 	}
@@ -174,4 +177,57 @@ public class VenDeliver implements Serializable {
 		this.deliverVendorid = deliverVendorid;
 	}
 
+
+	/**
+	 * @return the deliverAccpecctDate
+	 */
+	@Column(name="DELIVER_ACCPECTDATE")
+	public Timestamp getDeliverAccpecctDate() {
+		return deliverAccpecctDate;
+	}
+
+
+	/**
+	 * @param deliverAccpecctDate the deliverAccpecctDate to set
+	 */
+	public void setDeliverAccpecctDate(Timestamp deliverAccpecctDate) {
+		this.deliverAccpecctDate = deliverAccpecctDate;
+	}
+
+
+	/**
+	 * @return the deliverAccpUserId
+	 */
+	@Column(name="DELIVER_ACCPUSERID")
+	public Long getDeliverAccpUserId() {
+		return deliverAccpUserId;
+	}
+
+
+	/**
+	 * @param deliverAccpUserId the deliverAccpUserId to set
+	 */
+	public void setDeliverAccpUserId(Long deliverAccpUserId) {
+		this.deliverAccpUserId = deliverAccpUserId;
+	}
+
+
+	/**
+	 * @return the hopVendorId
+	 */
+	@Column(name="DELIVER_HOPVENDORID")
+	public Long getHopVendorId() {
+		return hopVendorId;
+	}
+
+
+	/**
+	 * @param hopVendorId the hopVendorId to set
+	 */
+	public void setHopVendorId(Long hopVendorId) {
+		this.hopVendorId = hopVendorId;
+	}
+	
+	
+	
 }

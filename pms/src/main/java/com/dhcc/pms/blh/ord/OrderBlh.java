@@ -365,7 +365,7 @@ public class OrderBlh extends AbstractBaseBlh {
 							break;
 						case "数量":
 							if(cell!=null){
-								orderItm.setReqqty(Math.round(cell.getNumericCellValue()));
+								orderItm.setReqqty((float)(cell.getNumericCellValue()));
 							}
 							break;
 						case "进价":
@@ -488,22 +488,21 @@ public class OrderBlh extends AbstractBaseBlh {
 		OrderDto dto = super.getDto(OrderDto.class, res);
 		Order order=new Order();
 		if(dto.getOrder().getOrderId()!=null){
-			order=commonService.get(Order.class, dto.getOrder().getOrderId());
-			order.setDeliveryDate(dto.getOrder().getDeliveryDate());
-			order.setEmFlag(dto.getOrder().getEmFlag());
-			order.setOrderNo(dto.getOrder().getOrderNo());
-			order.setRemark(dto.getOrder().getRemark());
-			order.setPlanDate(dto.getOrder().getPlanDate());
-			order.setPurLoc(dto.getOrder().getPurLoc());
-			order.setRecDestination(dto.getOrder().getRecDestination());
-			order.setRecLoc(dto.getOrder().getRecLoc());
-			order.setVendorId(dto.getOrder().getVendorId());
+			order=commonService.get(Order.class, dto.getOrder().getOrderId());	
 		}else{
 			order.setHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
 			order.setCreateUser(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
 			order.setPlanDate(new Date());
 		}
-			
+		order.setDeliveryDate(dto.getOrder().getDeliveryDate());
+		order.setEmFlag(dto.getOrder().getEmFlag());
+		order.setOrderNo(dto.getOrder().getOrderNo());
+		order.setRemark(dto.getOrder().getRemark());
+		order.setPlanDate(dto.getOrder().getPlanDate());
+		order.setPurLoc(dto.getOrder().getPurLoc());
+		order.setRecDestination(dto.getOrder().getRecDestination());
+		order.setRecLoc(dto.getOrder().getRecLoc());
+		order.setVendorId(dto.getOrder().getVendorId());	
 		commonService.saveOrUpdate(order);
 		
 		dto.setOpFlg("1");

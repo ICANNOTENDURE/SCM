@@ -19,20 +19,20 @@
 	<div id="toolbar" class="toolbar">
 	 	<div  style="margin-bottom:5px;margin-top:5px">
 			
-			<a id="addBt" class="linkbutton" onclick="javascript:importOrder()"
+			<a  class="linkbutton" onclick="javascript:importOrder()"
 				data-options="iconCls:'icon-add',plain:true">导入订单</a>
-			<a id="addBt" class="linkbutton" onclick="javascript:saveMain()"
+			<a  class="linkbutton" onclick="javascript:searchOrder()"
+				data-options="iconCls:'icon-search',plain:true">查询</a>		
+			<a  class="linkbutton" onclick="javascript:saveMain()"
 				data-options="iconCls:'icon-save',plain:true">保存</a>	
-			<a id="addBt" class="linkbutton" onclick="javascript:searchOrder()"
-				data-options="iconCls:'icon-search',plain:true">查询</a>	
-			<a id="addBt" class="linkbutton" onclick="javascript:complete()"
+			
+			<a  class="linkbutton" onclick="javascript:complete()"
 				data-options="iconCls:'icon-save',plain:true">确认完成</a>
-			<a id="addBt" class="linkbutton" onclick="javascript:append()"
-				data-options="iconCls:'icon-add',plain:true">新增一行</a>
-			<a id="addBt" class="linkbutton" onclick="javascript:deleteOrder()"
-				data-options="iconCls:'icon-remove',plain:true">删除</a>
-				<a id="addBt" class="linkbutton" onclick="javascript:canclecomplete()"
-				data-options="iconCls:'icon-remove',plain:true">取消完成状态</a>							
+			<a  class="linkbutton" onclick="javascript:canclecomplete()"
+				data-options="iconCls:'icon-remove',plain:true" >取消完成状态</a>		
+			<a  class="linkbutton" onclick="javascript:deleteOrder()"
+				data-options="iconCls:'icon-cancel',plain:true" style="float: right">删除</a>
+									
 		 </div>
 		 <div  style="margin-bottom:5px;margin-top:5px">
 		 	<form id="saveOrUpdate">
@@ -86,6 +86,10 @@
 				</tr>
 			</table>
 			</form>
+		 </div>
+		 <div>
+		 	<a  class="linkbutton" onclick="javascript:append()"
+				data-options="iconCls:'icon-add',plain:true">新增一行</a>
 		 </div>
 	</div>
 

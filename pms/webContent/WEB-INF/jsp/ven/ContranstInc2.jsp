@@ -173,11 +173,11 @@
 <body >
 	<div id="toolbar" style="height: auto">
 		  <div  style="margin-bottom:5px;margin-top:5px">
-			药品名称: <input id="incHopName" style="width: 100px;"
+			药品名称: <input id="incHopName" style="width: 200px;"
 			type="text" />
-			药品代码: <input id="incHopCode" style="width: 100px;"
+			药品代码: <input id="incHopCode" style="width: 200px;"
 			type="text" />
-			别名: <input id="incHopAlias" style="width: 100px;"
+			别名: <input id="incHopAlias" style="width: 200px;"
 			type="text" />
 			对应状态:
 			<select class="combobox" panelHeight="auto" style="width:100px" id="hopFlag">
@@ -190,12 +190,14 @@
 	</div>	
     <div id="toolbar2" style="height: auto">
 		  <div  style="margin-bottom:5px;margin-top:5px">
-			药品名称: <input id="incVenName" style="width: 100px;"
+			药品名称: <input id="incVenName" style="width: 200px;"
 			type="text" />
-			药品代码: <input id="incVenCode" style="width: 100px;"
+			药品代码: <input id="incVenCode" style="width: 200px;"
 			type="text" />
-			别名: <input id="incVenAlias" style="width: 100px;"
+			别名: <input id="incVenAlias" style="width: 200px;"
 			type="text" />
+			</div>
+			<div style="margin-bottom:5px;margin-top:5px">
 			对应状态:
 			<select class="combobox" panelHeight="auto" style="width:100px" id="venFlag">
 				<option value="0">空</option>

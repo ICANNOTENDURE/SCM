@@ -54,7 +54,7 @@
 				</tr>								
 				<tr>
 					<td class="textLabel">单位代码:</td>
-					<td class="textParent"><input style="width: 20px;"
+					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.venInc.venIncUomcode"
 						data-options="required:true" id="venIncUomcode" /></td>
 					<td class="textLabel">单位名称:</td>
@@ -152,7 +152,7 @@
 	<div id="searchIncWin" class="dialog" title="查询药品信息"
 		data-options="modal:true,width:400,height:250,closed:true,buttons:'#searchBtnDiv0'"
 		style="vertical-align: middle;">
-		<table style="width: 100%;" cellspacing="10">				
+		<table style="width: 100%;" >				
 			<tr>
 				<td class="textLabel">药品代码:</td>
 				<td class="textParent"><input style="width: 250px;"
@@ -178,10 +178,9 @@
 					id="venIncVenids" /></td>
 			</tr>
 			<tr>
-				<td class="textLabel">系统药品ID:</td>
+				<td class="textLabel">别名:</td>
 				<td class="textParent"><input style="width: 250px;"
-					type="text" name="dto.venInc.venIncVensysid"
-					id="venIncVensysids" /></td>
+					type="text" name="dto.venInc.venIncAlias" /></td>
 			</tr>
 		</table>
 		<div id="searchBtnDiv0" align="center">

@@ -157,16 +157,13 @@ public class VenIncBlh extends AbstractBaseBlh {
 		if(dto.getPageModel() == null){
 			dto.setPageModel(new PagerModel());
 		}
-
-		VenInc venInc=new VenInc();
-		venInc.setVenIncName(dto.getComgridparam());
-		dto.setVenInc(venInc);
+		if(dto.getVenInc()==null){
+			dto.setVenInc(new VenInc());
+		}
+		dto.getVenInc().setVenIncName(dto.getComgridparam());
 
 		venIncService.getListInfo(dto);
-		//List<VenIncVo> venIncVos=new ArrayList<VenIncVo>();		
-		//venIncVos=venIncService.getListInfo(dto);
-		//WebContext webContext = WebContextHolder.getContext();
-		//webContext.getResponse().getWriter().write(JsonUtils.toJson(venIncVos));
+
 				
 	}
 	
@@ -344,6 +341,7 @@ public class VenIncBlh extends AbstractBaseBlh {
 							if(cell!=null){
 								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 								venInc.setVenIncName(cell.toString());
+								venInc.setVenIncAlias(PingYinUtil.getFirstSpell(cell.toString()));
 							}
 							break;
 						case "规格":

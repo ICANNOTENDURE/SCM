@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.dhcc.pms.dao.ven.VenDeliverDao;
+import com.dhcc.pms.dto.ven.VenDeliverDto;
 import com.dhcc.pms.service.ven.VenDeliverService;
 
 @Service("venDeliverService")
@@ -24,6 +25,33 @@ public class VenDeliverServiceImpl implements VenDeliverService {
 	public void AccectOrder(Long orderId) {
 		// TODO Auto-generated method stub
 		venDeliverDao.AccectOrder(orderId);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#listDeliver(com.dhcc.pms.dto.ven.VenDeliverDto)
+	 */
+	@Override
+	public void listDeliver(VenDeliverDto dto) {
+		// TODO Auto-generated method stub
+		venDeliverDao.listDeliver(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#listDeliverItm(com.dhcc.pms.dto.ven.VenDeliverDto)
+	 */
+	@Override
+	public void listDeliverItm(VenDeliverDto dto) {
+		// TODO Auto-generated method stub
+		venDeliverDao.listDeliverItm(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#saveDeliverItm(com.dhcc.pms.dto.ven.VenDeliverDto)
+	 */
+	@Override
+	public void saveDeliverItm(VenDeliverDto dto) {
+		// TODO Auto-generated method stub
+		venDeliverDao.saveDeliverItm(dto);
 	}
 	
 

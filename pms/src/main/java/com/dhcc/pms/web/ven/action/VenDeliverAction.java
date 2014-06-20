@@ -24,7 +24,10 @@ import com.dhcc.pms.dto.ven.VenDeliverDto;
 @Action(value = "venDeliverCtrl", results = {
 		@Result(name = "deliver", location = "/WEB-INF/jsp/ven/Deliver.jsp")})
 @Blh("venDeliverBlh")
-@JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.venDeliver")})
+@JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.venDeliver"),
+			  @JResult(BlhMethod="saveDeliverItm",ognlExpress="dto"),
+			  @JResult(BlhMethod="delDeliverItm",ognlExpress="dto"),
+			  @JResult(BlhMethod="saveMain",ognlExpress="dto")})
 public class VenDeliverAction extends BaseAction {
 	
 	private static final long serialVersionUID = 1L;

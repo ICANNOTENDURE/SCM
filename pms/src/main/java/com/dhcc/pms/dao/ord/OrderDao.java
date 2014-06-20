@@ -286,7 +286,7 @@ public void saveOrUpdate(OrderDto dto){
 		   OrderItm orderItm=new OrderItm();
 		   orderItm.setOrdId(dto.getOrder().getOrderId());
 		   orderItm.setIncId(ordShoppingList.get(i).getShopIncid());
-		   orderItm.setReqqty(ordShoppingList.get(i).getShopQty());
+		   orderItm.setReqqty((float)ordShoppingList.get(i).getShopQty());
 		   orderItm.setUom(ordShoppingList.get(i).getShopUom());
 		   orderItm.setRp(super.get(HopInc.class, ordShoppingList.get(i).getShopIncid()).getIncRp().floatValue());
 		   super.save(orderItm);

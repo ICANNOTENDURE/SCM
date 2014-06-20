@@ -20,7 +20,7 @@ public class VenDeliveritm implements Serializable {
 	private String deliveritmInvnoe;
 	private Long deliveritmOrderitmid;
 	private Long deliveritmParentid;
-	private Long deliveritmQty;
+	private Float deliveritmQty;
 	private Float deliveritmRp;
 	private Float deliveritmRpamt;
 	private String deliveritmUom;
@@ -105,11 +105,11 @@ public class VenDeliveritm implements Serializable {
 
 
 	@Column(name="DELIVERITM_QTY")
-	public Long getDeliveritmQty() {
+	public Float getDeliveritmQty() {
 		return this.deliveritmQty;
 	}
 
-	public void setDeliveritmQty(Long deliveritmQty) {
+	public void setDeliveritmQty(Float deliveritmQty) {
 		this.deliveritmQty = deliveritmQty;
 	}
 

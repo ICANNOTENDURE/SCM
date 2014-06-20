@@ -27,7 +27,7 @@ public class OrderItm implements Serializable {
 	private Long orderitmId;
 	
 	@Column(name="DELIVERQTY")
-	private Long deliverqty;
+	private Float deliverqty;
 
 	@Column(name="INC_ID")
 	private Long incId;
@@ -42,7 +42,7 @@ public class OrderItm implements Serializable {
 	private Long recloc;
 	
 	@Column(name="REQQTY")
-	private Long reqqty;
+	private Float reqqty;
 	
 	@Column(name="RP")
 	private Float rp;
@@ -84,11 +84,11 @@ public class OrderItm implements Serializable {
 		this.orderitmId = orderitmId;
 	}
 
-	public Long getDeliverqty() {
+	public Float getDeliverqty() {
 		return this.deliverqty;
 	}
 
-	public void setDeliverqty(Long deliverqty) {
+	public void setDeliverqty(Float deliverqty) {
 		this.deliverqty = deliverqty;
 	}
 
@@ -124,11 +124,11 @@ public class OrderItm implements Serializable {
 		this.recloc = recloc;
 	}
 
-	public Long getReqqty() {
+	public Float getReqqty() {
 		return this.reqqty;
 	}
 
-	public void setReqqty(Long reqqty) {
+	public void setReqqty(Float reqqty) {
 		this.reqqty = reqqty;
 	}
 

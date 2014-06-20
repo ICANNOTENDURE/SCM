@@ -136,23 +136,7 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 	public void getListInfo(PagerModel pagerModel,List<ShowVenIncVo> showVenIncVos, VenInc venInc) {
 		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
 		StringBuffer hqlBuffer = new StringBuffer();
-//		hqlBuffer.append(" select new com.dhcc.pms.entity.vo.ven.VenIncVo(");
-//		hqlBuffer.append(" h.venIncId, ");
-//		hqlBuffer.append(" h.venIncCode, ");
-//		hqlBuffer.append(" h.venIncName, ");
-//		hqlBuffer.append(" h.venIncUomcode, ");
-//		hqlBuffer.append(" h.venIncUomname, ");
-//		hqlBuffer.append(" h.venIncBuomcode, ");
-//		hqlBuffer.append(" h.venIncBuomname, ");
-//		hqlBuffer.append(" h.venIncPrice, ");
-//		hqlBuffer.append(" h.venIncFac, ");
-//		hqlBuffer.append(" h.venIncManfid, ");
-//		hqlBuffer.append(" hm.manfName, ");
-//		hqlBuffer.append(" h.venIncVenid, ");
-//		hqlBuffer.append(" v.name, ");
-//		hqlBuffer.append(" h.venIncVensysid) ");
-//		hqlBuffer.append(" from VenInc h , Vendor v ,HopManf hm ");		
-//		hqlBuffer.append(" where h.venIncVenid=v.vendorId and h.venIncManfid=hm.hopManfId");
+
 		hqlBuffer.append("select ");
 		hqlBuffer.append("t1.VEN_INC_CODE     as  veninccode, ");
 		hqlBuffer.append("t1.VEN_INC_NAME     as  venincname, ");
@@ -184,11 +168,11 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 			Long venDr=venInc.getVenIncVenid();
 			String vensysDr=venInc.getVenIncVensysid();
 			if(!StringUtils.isNullOrEmpty(codeStr)){
-				hqlBuffer.append(" AND t1.VEN_INC_CODE  like:codeStr ");
+				hqlBuffer.append(" AND t1.VEN_INC_CODE  like :codeStr ");
 				hqlParamMap.put("codeStr","%"+codeStr+"%");
 			}
 			if(!StringUtils.isNullOrEmpty(nameStr)){
-				hqlBuffer.append(" AND t1.VEN_INC_NAME like:nameStr ");
+				hqlBuffer.append(" AND t1.VEN_INC_NAME like :nameStr ");
 				hqlParamMap.put("nameStr","%"+nameStr+"%");
 			}
 			if(manfDr!=null){
@@ -202,6 +186,10 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 			if(vensysDr!=null){
 				hqlBuffer.append(" AND t1.VEN_INC_VENSYSID =:vensysDr ");
 				hqlParamMap.put("vensysDr",vensysDr);
+			}
+			if(!StringUtils.isNullOrEmpty(venInc.getVenIncAlias())){
+				hqlBuffer.append(" AND t1.VEN_INC_ALIAS  like :alias ");
+				hqlParamMap.put("alias","%"+venInc.getVenIncAlias().toLowerCase()+"%");
 			}
 							
 		}
@@ -374,7 +362,7 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 		if(dto.getVenIncContranstDto()!=null){
 
 			if(!StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncName())){
-				hqlBuffer.append(" AND t1.inc_name  like :venincname ");
+				hqlBuffer.append(" AND t1.VEN_INC_NAME  like :venincname ");
 				hqlParamMap.put("venincname","%"+dto.getVenIncContranstDto().getIncName()+"%");
 			}
 			if(!StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncCode())){
