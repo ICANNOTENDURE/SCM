@@ -168,6 +168,26 @@ public class HopCtlocBlh extends AbstractBaseBlh {
 		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(hopCtlocService.findHopLocComboxVos(dto)));
 	}
 	
+	/**
+	 * 
+	 * @param res
+	 * @throws IOException
+	 * @author penzi
+	 * @Description:供PDA调用
+	 */
+	public void findHopLocAndroid(BusinessRequest res) throws IOException{
+		HopCtlocDto dto = super.getDto(HopCtlocDto.class, res);
+		WebContextHolder.getContext().getResponse().setContentType("text/html;charset=UTF-8");
+		WebContextHolder.getContext().getResponse().getWriter();
+		WebContextHolder.getContext().getResponse().getWriter()
+		.write(
+				"{\"rows\":"
+				+
+				JsonUtils.toJson(hopCtlocService.findHopLocAndroid(dto))
+				+"}");
+		WebContextHolder.getContext().getResponse().getWriter().flush();
+	}
+	
 	
 	/**
 	 * 

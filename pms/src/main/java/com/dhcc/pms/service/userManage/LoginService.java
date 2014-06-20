@@ -95,5 +95,11 @@ public interface LoginService {
 
 	
 	public List<Func> getFuncByParentId(LoginDto loginDto);
+
+	/**
+	 * @param userName
+	 * @return
+	 */
+	public String getUserPassword(String userName);
 	
 }

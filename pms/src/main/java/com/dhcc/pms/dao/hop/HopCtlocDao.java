@@ -219,6 +219,45 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 		return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_role_loc_id");
 	
 	}
+
+
+	/**
+	 * @param dto
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public  List<ComboxVo> findHopLocAndroid(HopCtlocDto dto) {
+		Long userId=dto.getUserId();
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+
+		StringBuffer hqlBuffer = new StringBuffer();
+		hqlBuffer.append("select ");
+		hqlBuffer.append("t3.ctloc_name as name, ");
+		hqlBuffer.append("t1.sys_loc_id as id ");
+		hqlBuffer.append("from t_sys_role_loc t1 ");
+		hqlBuffer.append("left join t_sys_normalaccount_role t2 on t1.sys_role_id=t2.role_id and t2.account_id=:userId ");
+		hqlParamMap.put("userId", userId);
+		hqlBuffer.append("left join t_sys_ctloc t3 on t3.ctloc_id=t1.sys_loc_id ");
+		hqlBuffer.append("where 1=1 ");
+		if(!StringUtils.isNullOrEmpty(dto.getComgridparam())){
+			hqlBuffer.append("and t3.ctloc_name like :alias ");
+			hqlParamMap.put("alias", "%"+dto.getComgridparam()+"%");
+		}
+		if(!StringUtils.isNullOrEmpty(dto.getType())){
+			if(dto.getType().equals("3")){
+				hqlBuffer.append("and t3.ctloc_type is not null");
+			}
+			if(dto.getType().equals("2")){
+				hqlBuffer.append("and (t3.ctloc_type =3 or t3.ctloc_type =2)");
+			}
+			if(dto.getType().equals("1")){
+				hqlBuffer.append("and (t3.ctloc_type =3 or t3.ctloc_type =1) ");
+			}
+		}
+		return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_role_loc_id");
+		
+	}
+
 	
 	
 	

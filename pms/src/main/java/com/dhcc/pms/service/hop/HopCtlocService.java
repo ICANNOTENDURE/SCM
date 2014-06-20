@@ -62,4 +62,12 @@ public interface HopCtlocService {
 	 */
 	public Long getLocIdByName(String name);
 
+	/**
+	 * @param dto
+	 * @return
+	 */
+	public List<ComboxVo> findHopLocAndroid(HopCtlocDto dto);
+
+
+
 }
