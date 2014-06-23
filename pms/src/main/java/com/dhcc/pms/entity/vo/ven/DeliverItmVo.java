@@ -20,6 +20,8 @@ public class DeliverItmVo implements java.io.Serializable{
 	
 	private String hopincname;
 	
+	private Long hopincid;
+	
 	private String uom;
 	
 	private Float deliverqty;
@@ -39,6 +41,23 @@ public class DeliverItmVo implements java.io.Serializable{
 	private Float rpamt;
 	
 	private String manf;
+	
+	
+	
+	
+	/**
+	 * @return the hopincid
+	 */
+	public Long getHopincid() {
+		return hopincid;
+	}
+
+	/**
+	 * @param hopincid the hopincid to set
+	 */
+	public void setHopincid(Long hopincid) {
+		this.hopincid = hopincid;
+	}
 
 	/**
 	 * @return the deliveritmid

@@ -25,6 +25,7 @@ import com.dhcc.pms.dto.hop.HopIncDto;
 import com.dhcc.pms.entity.hop.HopInc;
 import com.dhcc.pms.entity.hop.HopIncAlias;
 import com.dhcc.pms.entity.ven.VenHopInc;
+import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.vo.hop.HopIncVo;
 import com.dhcc.pms.entity.vo.hop.ShowHopIncVo;
 
@@ -300,6 +301,41 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 		List<VenHopInc> venHopIncs=(List<VenHopInc>)this.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,false);
 		if(venHopIncs.size()>0){
 			return venHopIncs.get(0).getVenIncId();
+		}
+		return null;
+	}
+	
+	
+	public Long getVenIncByCode(String code){
+		StringBuffer hqlBuffer = new StringBuffer();
+		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
+		hqlBuffer.append(" from VenInc h");
+		hqlBuffer.append(" where 1=1 ");
+		hqlBuffer.append(" and h.venIncCode = :code ");
+		hqlParamMap.put("code",code);
+		hqlBuffer.append(" and h.venIncVenid = :venid ");
+		hqlParamMap.put("venid",WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
+		@SuppressWarnings("unchecked")
+		List<VenInc> venHopIncs=(List<VenInc>)this.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,false);
+		if(venHopIncs.size()>0){
+			return venHopIncs.get(0).getVenIncId();
+		}
+		return null;
+	}
+	
+	
+	public Long getHopIncByVenInc(Long inc){
+		StringBuffer hqlBuffer = new StringBuffer();
+		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
+		hqlBuffer.append(" from VenHopInc h");
+		hqlBuffer.append(" where 1=1 ");
+		hqlBuffer.append(" and h.venIncId = :inc ");
+		hqlParamMap.put("inc",inc);
+
+		@SuppressWarnings("unchecked")
+		List<VenHopInc> venHopIncs=(List<VenHopInc>)this.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,false);
+		if(venHopIncs.size()>0){
+			return venHopIncs.get(0).getHopIncId();
 		}
 		return null;
 	}

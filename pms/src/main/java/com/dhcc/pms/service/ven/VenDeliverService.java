@@ -55,4 +55,28 @@ public interface VenDeliverService {
 	* @version V1.0
 	 */
 	public void saveDeliverItm(VenDeliverDto dto);
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(导入发票)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月20日 下午2:53:34
+	* @version V1.0
+	 */
+	public void impInv(VenDeliverDto dto);
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(导入发票，按照订单号)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月23日 下午1:18:22
+	* @version V1.0
+	 */
+	public void impByOrder(VenDeliverDto dto);
 }

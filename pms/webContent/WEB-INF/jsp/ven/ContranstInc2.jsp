@@ -71,8 +71,43 @@
         		    	'dto.venHopInc.hopIncId': rowData.hopincid,
         			}
     			});
+    			$("#venFlag").combobox('setValue',1);
     		}
 
+    	});
+    	
+    	$('#incVenName').keydown(function(e){ 
+    		if(e.keyCode==13){ 
+    			$("#searchVenInc").click();
+    		} 
+    	});
+    	$('#incVenCode').keydown(function(e){ 
+    		if(e.keyCode==13){ 
+    			$("#searchVenInc").click();
+    		} 
+    	}); 
+    	$('#incVenAlias').keydown(function(e){ 
+    		if(e.keyCode==13){ 
+    			$("#searchVenInc").click();
+    		} 
+    	});
+    	
+    	$('#incHopName').keydown(function(e){ 
+    		if(e.keyCode==13){ 
+    			$("#searchHopInc").click();
+    		} 
+    	});
+    	
+    	$('#incHopCode').keydown(function(e){ 
+    		if(e.keyCode==13){ 
+    			$("#searchHopInc").click();
+    		} 
+    	});
+    	
+    	$('#incHopAlias').keydown(function(e){ 
+    		if(e.keyCode==13){ 
+    			$("#searchHopInc").click();
+    		} 
     	});
     });
     function ConT(value,row,index){
@@ -177,7 +212,7 @@
 			type="text" />
 			药品代码: <input id="incHopCode" style="width: 200px;"
 			type="text" />
-			别名: <input id="incHopAlias" style="width: 200px;"
+			拼音码: <input id="incHopAlias" style="width: 200px;"
 			type="text" />
 			对应状态:
 			<select class="combobox" panelHeight="auto" style="width:100px" id="hopFlag">
@@ -194,7 +229,7 @@
 			type="text" />
 			药品代码: <input id="incVenCode" style="width: 200px;"
 			type="text" />
-			别名: <input id="incVenAlias" style="width: 200px;"
+			拼音码: <input id="incVenAlias" style="width: 200px;"
 			type="text" />
 			</div>
 			<div style="margin-bottom:5px;margin-top:5px">
@@ -228,9 +263,9 @@
 					<thead>
 						<tr>
 							<th data-options="field:'venincid',hidden:true">IncId ID</th>
-							<th data-options="field:'venname',width:100,sortable:true">供应商</th>
-							<th data-options="field:'veninccode',width:120,sortable:true">药品代码</th>
-							<th data-options="field:'venincname',width:100,sortable:true">药品名称</th>
+							<th data-options="field:'venname',width:150,sortable:true">供应商</th>
+							<th data-options="field:'veninccode',width:50,sortable:true">药品代码</th>
+							<th data-options="field:'venincname',width:150,sortable:true">药品名称</th>
 							<th data-options="field:'manf',width:100,sortable:true">产地</th>
 							<th data-options="field:'spec',width:100,sortable:true">规格</th>
 							<th data-options="field:'uom',width:50,sortable:true">单位</th>

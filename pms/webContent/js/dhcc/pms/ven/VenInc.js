@@ -15,9 +15,11 @@ $(function (){
 	var venCombox=[$CommonUI.getComboBox('#venIncVenid'),$CommonUI.getComboBox('#venIncVenids')];
 	for(var i=0;i<venCombox.length;i++){
 		venCombox[i].combobox({
-			url:$WEB_ROOT_PATH+'/ven/vendorCtrl!getVenCombox.htm?dto.vendor.name=',
-			valueField:'vendorId',							
-			textField:'name'
+			url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm",
+	    	panelHeight:"auto",
+	        valueField:'vendorId',  
+	        textField:'name',
+	        mode: 'remote',
 		});
 	}
 	

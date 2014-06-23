@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.PagerModel;
+import com.dhcc.pms.dao.hop.HopIncDao;
 import com.dhcc.pms.dao.ven.VenIncDao;
 import com.dhcc.pms.dto.ven.VenIncDto;
 import com.dhcc.pms.entity.ven.VenInc;
@@ -22,6 +23,8 @@ public class VenIncServiceImpl implements VenIncService {
 
 	@Resource
 	private VenIncDao venIncDao;
+	@Resource
+	private HopIncDao hopIncDao;
 	@Resource
 	private CommonService commonService;
 
@@ -103,6 +106,19 @@ public class VenIncServiceImpl implements VenIncService {
 	public void exportVenInc(VenIncDto dto) {
 		// TODO Auto-generated method stub
 		venIncDao.exportVenInc(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenIncService#getHopIncByVenIncCode(java.lang.String)
+	 */
+	@Override
+	public Long getHopIncByVenIncCode(String code) {
+		// TODO Auto-generated method stub
+		Long venincidLong=hopIncDao.getVenIncByCode(code);
+		if(venincidLong==null){
+			return null;
+		}
+		return hopIncDao.getHopIncByVenInc(venincidLong);
 	}
 
 }

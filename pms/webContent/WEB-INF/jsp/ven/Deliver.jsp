@@ -19,8 +19,8 @@
 	<div id="toolbar" class="toolbar">
 	 	<div  style="margin-bottom:5px;margin-top:5px">
 			
-			<a  class="linkbutton" onclick="javascript:importDel()"
-				data-options="iconCls:'icon-add',plain:true">导入发票</a>
+			<a  class="linkbutton" onclick="javascript:importInv()"
+				data-options="iconCls:'icon-add',plain:true">导入发票(按订单)</a>
 			<a  class="linkbutton" onclick="javascript:saveMain()"
 				data-options="iconCls:'icon-save',plain:true">保存</a>	
 			<a  class="linkbutton" onclick="javascript:searchDeliver()"
@@ -81,13 +81,7 @@
 				<th data-options="field:'deliveritmid',hidden:true"></th>
 				<th data-options="field:'venincncode',width:90">代码</th>
 				<th data-options="field:'venincname',width:200,formatter:GetName,styler:GetNameStyle">药品</th>
-				<th data-options="field:'deliverqty',width:50,align:'center',editor : {
-							type : 'numberbox',
-                            options : {
-                                required : true
-                            }
-                        }
-					,sortable:true">数量</th>
+				<th data-options="field:'deliverqty',width:50,align:'center',editor : 'numberbox'">数量</th>
 				<th data-options="field:'batno',width:100,align:'center',editor:'text'">批号</th>
 				<th data-options="field:'expdate',width:100,align:'center',editor:'datebox'">效期</th>
 				<th data-options="field:'invno',width:100,align:'center',editor:'text'">发票</th>	
@@ -103,12 +97,12 @@
 				">价格</th>
 				
 				<th data-options="field:'manf',width:150">产地</th>
-				<th data-options="field:'delte',width:50,formatter:deleteR">编辑</th>
+				<th data-options="field:'delte',width:140,formatter:deleteR">编辑</th>
 			</tr>
 		</thead>
 	</table>
 
-	<div id="importDialog" class="dialog" title="导入订单"
+	<div id="importDialog" class="dialog" title="导入发票"
 		style="width:400px;height: 200px; background-color: #F5FAFD;"
 		data-options="
 				modal:true,
@@ -116,12 +110,12 @@
 				collapsible:false,
 				minimizable:false,
 				maximizable:false">
-			<table id="addFuncsTable" style="width: 100%;">
+			<table style="width: 100%;">
 				<tr>
 					<td class="textLabel" style="text-align: right; width: 40%">导入Excel文件:</td>
 					<td class="textParent" style="text-align: left; width: 60%"><input
 						style="width: 250px;" class="validatebox" type="file"
-						name="upload" id="orderUpload"></input></td>
+						name="upload" id="upload"></input></td>
 				</tr>
 			</table>
 	</div>

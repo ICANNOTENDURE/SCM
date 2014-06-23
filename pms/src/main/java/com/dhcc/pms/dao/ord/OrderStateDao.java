@@ -21,6 +21,7 @@ import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderStateDto;
 import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.ord.State;
 import com.dhcc.pms.entity.vo.ord.OrderExeStateVo;
 import com.dhcc.pms.entity.vo.ord.OrderItmVo;
@@ -263,5 +264,29 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 	 */
 	public List<State> getComboList(){
 		return (List<State>)super.getAll(State.class, "stateSeq",true);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<OrderItm> getOrderItms(Long orderId){
+		StringBuffer hql = new StringBuffer();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		hql.append(" from ");
+		hql.append(" OrderItm t ");
+		hql.append(" where 1=1 ");
+		hql.append(" and t.ordId = :key ");
+		paramMap.put("key", orderId);	
+		return (List<OrderItm>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Order> getOrderByNo(String no){
+		StringBuffer hql = new StringBuffer();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		hql.append(" from ");
+		hql.append(" Order t ");
+		hql.append(" where 1=1 ");
+		hql.append(" and t.orderNo = :key ");
+		paramMap.put("key", no);
+		return (List<Order>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
 	}
 }

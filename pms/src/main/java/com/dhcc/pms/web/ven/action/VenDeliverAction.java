@@ -5,6 +5,8 @@
 package com.dhcc.pms.web.ven.action;
 
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
+import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
@@ -22,8 +24,10 @@ import com.dhcc.pms.dto.ven.VenDeliverDto;
 @Namespace(value = "/ven")
 @Scope("prototype")
 @Action(value = "venDeliverCtrl", results = {
-		@Result(name = "deliver", location = "/WEB-INF/jsp/ven/Deliver.jsp")})
+		@Result(name = "deliver", location = "/WEB-INF/jsp/ven/Deliver.jsp"),
+		@Result(name = "importInv", location = "/WEB-INF/jsp/ven/importInv.jsp"),})
 @Blh("venDeliverBlh")
+@InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.venDeliver"),
 			  @JResult(BlhMethod="saveDeliverItm",ognlExpress="dto"),
 			  @JResult(BlhMethod="delDeliverItm",ognlExpress="dto"),
@@ -39,6 +43,9 @@ public class VenDeliverAction extends BaseAction {
 		//直接返回jsp
 		if("deliver".equals(super.getBusinessFlow())){
 			return "deliver";
+		}
+		if("importInv".equals(super.getBusinessFlow())){
+			return "importInv";
 		}
 		return null;
 	}

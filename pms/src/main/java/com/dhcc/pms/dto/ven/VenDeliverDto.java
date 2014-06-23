@@ -4,8 +4,11 @@
  */
 package com.dhcc.pms.dto.ven;
 
-import java.sql.Timestamp;
+import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.pms.entity.ven.VenDeliver;
@@ -19,6 +22,7 @@ public class VenDeliverDto extends BaseDto {
 	private static final long serialVersionUID = 1L;
 	private VenDeliver venDeliver;
 	private VenDeliveritm venDeliveritm;
+	private List<VenDeliveritm> venDeliveritms;
 	private Date stDate;
 	private Date edDate;
 	private Date accpStDate;
@@ -27,10 +31,60 @@ public class VenDeliverDto extends BaseDto {
 	private Long purLocId;
 	private String emFlag;
 	private Long state;
+	private File upload;
+	private Map<String,List<VenDeliveritm>> orderMap=new HashMap<String, List<VenDeliveritm>>();
 	
 	
 	
 	
+	/**
+	 * @return the orderMap
+	 */
+	public Map<String, List<VenDeliveritm>> getOrderMap() {
+		return orderMap;
+	}
+
+
+	/**
+	 * @param orderMap the orderMap to set
+	 */
+	public void setOrderMap(Map<String, List<VenDeliveritm>> orderMap) {
+		this.orderMap = orderMap;
+	}
+
+
+	/**
+	 * @return the upload
+	 */
+	public File getUpload() {
+		return upload;
+	}
+
+
+	/**
+	 * @param upload the upload to set
+	 */
+	public void setUpload(File upload) {
+		this.upload = upload;
+	}
+
+
+	/**
+	 * @return the venDeliveritms
+	 */
+	public List<VenDeliveritm> getVenDeliveritms() {
+		return venDeliveritms;
+	}
+
+
+	/**
+	 * @param venDeliveritms the venDeliveritms to set
+	 */
+	public void setVenDeliveritms(List<VenDeliveritm> venDeliveritms) {
+		this.venDeliveritms = venDeliveritms;
+	}
+
+
 	/**
 	 * @return the venDeliveritm
 	 */
