@@ -1,25 +1,6 @@
 // zxx 2014-04-19
 $(function (){
-//	$.extend($.fn.datagrid.methods, {
-//		 editCell: function(jq,param){
-//			 return jq.each(function(){
-//			 opts = $(this).datagrid('options');
-//			 var fields = $(this).datagrid('getColumnFields',true).concat($(this).datagrid('getColumnFields'));
-//			 for(var i=0; i<fields.length; i++){
-//				 var col = $(this).datagrid('getColumnOption', fields[i]);
-//				 col.editor1 = col.editor;
-//				 if (fields[i] != param.field){
-//					 col.editor = null;
-//				 }
-//			 }
-//			 $(this).datagrid('beginEdit', param.index);
-//			 	for(var i=0; i<fields.length; i++){
-//			 		var col = $(this).datagrid('getColumnOption', fields[i]);
-//			 		col.editor = col.editor1;
-//			 	}
-//			 });
-//		 }
-//	 });
+
 	$("#upload").uploadify({
         'swf': $WEB_ROOT_PATH + '/images/uploadify.swf',
         'uploader': $WEB_ROOT_PATH + '/ven/venDeliverCtrl!upload.htm',
@@ -99,8 +80,12 @@ $(function (){
 		textField:'hospitalName'
 	});
 	
-	
-	
+	$('#delFlag').combobox({
+		url:getContextPath()+'/ord/orderStateCtrl!getComboList.htm',
+		valueField:'stateSeq',							
+		textField:'stateName'	
+	});
+	$('#delFlag').combobox('setValue',2);
 	
 
 });
@@ -200,7 +185,9 @@ function searchDeliver(){
 
 //编辑完就保存
 function onAfterEdit(rowIndex, rowData, changes){
-	 
+	if($("#deliveryState").val()!="接收"){
+		return;
+	}
 	 var changes=$CommonUI.getDataGrid('#datagrid').datagrid('getChanges');
 	 
 	 if(changes.length==0){
@@ -237,11 +224,20 @@ function onAfterEdit(rowIndex, rowData, changes){
 
 
 function deleteR(value,row,index){
-	str='<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:deleterow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-cancel l-btn-icon-left">删除</span></span></a>';
-	str=str+'<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:addrow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-add l-btn-icon-left">增加批次</span></span></a>';
-    return str;
+	str="";
+	if($("#deliveryState").val()=="接收"){
+		str='<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:deleterow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-cancel l-btn-icon-left">删除</span></span></a>';
+		str=str+'<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:addrow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-add l-btn-icon-left">增加批次</span></span></a>';
+	    
+	}
+	return str;
 }
 function deleterow(index){
+	if($("#deliveryState").val()!="接收"){
+		$CommonUI.alert("该发货单已经发货");
+		return;
+	}
+	
 	deliveritmid=$('#datagrid').datagrid('getRows')[index]['deliveritmid'];
 	if(deliveritmid==undefined){
 		$('#datagrid').datagrid('deleteRow',index);
@@ -260,6 +256,9 @@ function deleterow(index){
 						 if(data.dto.opFlg=="1"){					 
 							$CommonUI.getDataGrid('#datagrid').datagrid('reload');
 						 }
+						 if(data.dto.opFlg=="2"){
+							 $CommonUI.alert("已发货，不能删除");
+						 }
 			        },
 					 'json'
 			);
@@ -268,6 +267,12 @@ function deleterow(index){
 }
 
 function saveMain(){
+	
+	if($("#deliveryId").val()==""){
+		$CommonUI.alert("请选择发货单");
+		return;
+	}
+	
 	if($("#deliveryState").val()!="接收"){
 		$CommonUI.alert("该发货单已经发货");
 		return;
@@ -288,9 +293,9 @@ function saveMain(){
             },
             function(data){
                if(data.dto.opFlg=="1"){
-            	   $CommonUI.alert("订单保存成功");
+            	   $CommonUI.alert("保存成功");
                }else{
-            	   $CommonUI.alert("订单保存失败");
+            	   $CommonUI.alert("保存失败");
                }
             },
             "json"
@@ -298,8 +303,14 @@ function saveMain(){
 }
 
 function deleteOrder(){
-	if($("#orderId").val()==undefined){
-		$CommonUI.alert("请查找订单");
+
+	if($("#deliveryId").val()==""){
+		$CommonUI.alert("请选择发货单");
+		return;
+	}
+	
+	if($("#deliveryState").val()!="接收"){
+		$CommonUI.alert("该发货单已经发货");
 		return;
 	}
 	$CommonUI.loadUIM('messager');
@@ -307,16 +318,18 @@ function deleteOrder(){
 		if (r){
 			
 			$.post(
-					 $WEB_ROOT_PATH+'/ord/orderCtrl!delete.htm',
+					 $WEB_ROOT_PATH+'/ven/venDeliverCtrl!delete.htm',
 					 {
-						 "dto.order.orderId":$("#orderId").val(),
+						 "dto.venDeliver.deliverId":$("#deliveryId").val(),
 					 },
 					 function(data){
 						 if(data.dto.opFlg=="1"){
-							 $CommonUI.getDataGrid('#datagrid').datagrid('load',{
-						    		'dto.exeState.ordId':0
-					    	 });
-							 clearData();
+							 $CommonUI.getDataGrid('#datagrid').datagrid('reload');
+							 $("#deliveryDate").datebox('setValue',""),
+				           	 $("#deliveryId").val(""),
+				           	 $("#remark").val(""),
+				           	 $("#deliverInfo").val(""),
+				           	 $("#deliveryState").val(""),
 							 $CommonUI.alert("删除成功");
 						 }else{
 							 $CommonUI.alert("删除失败");
@@ -330,61 +343,63 @@ function deleteOrder(){
 
 
 
-function complete(){
+function send(){
+	if($("#deliveryId").val()==""){
+		$CommonUI.alert("请选择发货单");
+		return;
+	}
+	if($("#deliveryState").val()!="接收"){
+		$CommonUI.alert("该发货单已经发货");
+		return;
+	}
 	
-	if($("#orderId").val()==undefined){
-		$CommonUI.alert("请选择订单");
-		return;
-	}
-	if($("#orderId").val()==""){
-		$CommonUI.alert("请选择订单");
-		return;
-	}
-	if($("#orderState").val()!=""){
-		$CommonUI.alert("该订单已经完成");
-		return;
-	}
+	$("#send").hide();
+	
 	$.post(
-			 $WEB_ROOT_PATH+'/ord/orderCtrl!complete.htm',
-			 {
-				 "dto.order.orderId":$("#orderId").val(),
-				 "dto.order.remark":$("#remark").val(),
-			 },
-			 function(data){
-				 if(data.dto.opFlg=="1"){
-	
-					 $CommonUI.alert("确认成功");
-					 $("#orderState").val("新建");
-				 }else{
-					 $CommonUI.alert("确认失败");
-				 }
-	        },
-			 'json'
-	);
+			$WEB_ROOT_PATH+'/ven/venDeliverCtrl!sendDeliver.htm',
+            {
+           	    "dto.venDeliver.deliverId":$("#deliveryId").val(),
+           	    
+            },
+            function(data){
+               $("#send").show();
+               if(data.dto.opFlg=="1"){
+            	   $("#deliveryState").val("送货中"),
+            	   $CommonUI.getDataGrid('#datagrid').datagrid('reload');
+            	   $CommonUI.alert("发货成功");
+            	   
+               }else{
+            	   $CommonUI.alert("发货失败");
+               }
+            },
+            "json"
+    );
 }
 
 
 
 function canclecomplete(){
 	
-	if($("#orderId").val()==undefined){
-		$CommonUI.alert("请选择订单");
+	if($("#deliveryId").val()==""){
+		$CommonUI.alert("请选择发货单");
 		return;
 	}
-	if($("#orderId").val()==""){
-		$CommonUI.alert("请选择订单");
+	if($("#deliveryState").val()!="送货中"){
+		$CommonUI.alert("该发货单状态不是送货中");
 		return;
 	}
+	
 	$.post(
-			 $WEB_ROOT_PATH+'/ord/orderCtrl!cancleComplete.htm',
+			$WEB_ROOT_PATH+'/ven/venDeliverCtrl!cancelComplete.htm',
 			 {
-				 "dto.order.orderId":$("#orderId").val(),
+				"dto.venDeliver.deliverId":$("#deliveryId").val(),
 			 },
 			 function(data){
 				 if(data.dto.opFlg=="1"){
 	
 					 $CommonUI.alert("操作成功");
-					 $("#orderState").val("");
+					 $("#deliveryState").val("接收");
+					 $CommonUI.getDataGrid('#datagrid').datagrid('reload');
 				 }else{
 					 $CommonUI.alert("操作失败");
 				 }
@@ -414,7 +429,10 @@ function GetNameStyle(value,row,index){
 }
 
 function addrow(index){
-
+	if($("#deliveryState").val()!="接收"){
+		$CommonUI.alert("该发货单已经发货");
+		return;
+	}
 	if (endEditing()) {
 		hopincid=$('#datagrid').datagrid('getRows')[index]['hopincid'];
 		orderqty=$('#datagrid').datagrid('getRows')[index]['orderqty'];
@@ -458,6 +476,62 @@ function addrow(index){
 			 );
 
 	}
+	
+	
+	
+	
+	//查询订单
+	function searchOrder(){
+		
+		$('#searchOrder').dialog('open');
+		
+
+		
+		$('#searchOrderTable').datagrid({  
+		    url:$WEB_ROOT_PATH+'/ven/venDeliverCtrl!listDeliver.htm',
+		    method:'post',
+		    fit:true,
+		    toolbar:'#searchOrdertoolbar',
+		    loadMsg:'加载数据中.....',
+		    pagination:true,
+		    fitColumns:true,
+		    rownumbers:true,
+		    queryParams:{
+		    	'dto.state':2
+		    },
+		    onDblClickRow:function(rowIndex, rowData){
+		    	$("#searchDeliver").dialog('close');
+		    	str="医院:"+rowData.hopname;
+		    	str=str+"\r\nHIS单号:"+rowData.hisno;
+		    	str=str+"\r\n入库科室:"+rowData.purloc;
+		    	str=str+"\r\n收货科室:"+rowData.recloc;
+		    	str=str+"\r\n收货地址:"+rowData.destination;
+		    	$("#deliverInfo").html(str);
+		    	$("#remark").val(rowData.remark);
+		    	$("#deliveryState").val(rowData.statedesc);
+		    	$("#deliveryId").val(rowData.deliverid);
+		    	$("#deliveryDate").datetimebox("setValue",rowData.deliveraccpectdate);
+		    	$CommonUI.getDataGrid('#datagrid').datagrid('load',{
+		    		'dto.venDeliver.deliverId':rowData.deliverid
+	    		});
+		    },
+		    columns:[[  
+		  	        {field:'deliverid',hidden:true},
+		  	        {field:'hisno',title:'HIS单号',width:100},
+		  	        {field:'statedesc',title:'状态',width:100,sortable:true},
+		  	        {field:'emflag',title:'加急',width:100,sortable:true},
+		  	        {field:'purloc',title:'入库科室',width:150,sortable:true},  
+		  	        {field:'recloc',title:'收货科室',width:150,sortable:true},
+		  	        {field:'destination',title:'收货地址',width:200,sortable:true},
+		  	        {field:'hopname',title:'医院',width:150,sortable:true},
+		  	        {field:'deliverydate',title:'发货时间',width:100,sortable:true},
+		  	        {field:'deliveraccpectdate',title:'接收时间',width:100,sortable:true}
+		  	 ]]
+		});
+		
+		
+	}	
+	
 	
 }
 

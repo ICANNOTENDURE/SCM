@@ -19,6 +19,7 @@ import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderDto;
+import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.hop.HopInc;
 import com.dhcc.pms.entity.ord.ExeState;
@@ -38,6 +39,7 @@ public class OrderDao extends HibernatePersistentObjectDAO<Order> {
 	@Resource
 	private JdbcTemplateWrapper jdbcTemplateWrapper;
 	
+	
 	public void buildPagerModelQuery(PagerModel pagerModel,BaseDto dto) {
 
 	}
@@ -48,8 +50,12 @@ public class OrderDao extends HibernatePersistentObjectDAO<Order> {
 		super.save(order);
 	}
 	
-	public void delete(Order order){
-		
+	public void delete(OrderDto dto){
+		Order order=super.get(Order.class, dto.getOrder().getOrderId());
+		if(order.getExeStateId()!=null){
+			dto.setOpFlg("2");
+			return;
+		}
 		super.delete(order);
 		StringBuilder hqlBuffer = new StringBuilder();
 		hqlBuffer.delete(0, hqlBuffer.length());
@@ -57,6 +63,10 @@ public class OrderDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append(" where t.ordId = ?");
 		this.updateByHqlWithFreeParam(hqlBuffer.toString(),order.getOrderId());
 		
+		hqlBuffer.delete(0, hqlBuffer.length());
+		hqlBuffer.append(" delete from ExeState t ");
+		hqlBuffer.append(" where t.ordId = ?");
+		this.updateByHqlWithFreeParam(hqlBuffer.toString(),order.getOrderId());
 		
 	}
 	
@@ -330,9 +340,12 @@ public void impOrder(OrderDto dto){
 	   }
 	   Order order=dto.getOrder();
 	   order.setCreateUser(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
+	   order.setRecLoc(WebContextHolder.getContext().getVisit().getUserInfo().getLocId());
+	   HopCtloc HopCtloc=super.get(HopCtloc.class,WebContextHolder.getContext().getVisit().getUserInfo().getLocId());
+	   order.setRecDestination(HopCtloc.getCtlocDest());
 	   order.setPlanDate(new Date());
 	   
-	   super.save(order);
+	   super.saveOrUpdate(order);
 	   
 	   
 	   

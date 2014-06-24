@@ -12,7 +12,7 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/easyui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/dhcc/pms/ord/datagrid-detailview.js"></script>	
-
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/common.js"></script>	
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/dhcc/pms/ven/VenOrderState.js"></script>
 <!--  -->	
 <link href="<%=request.getContextPath()%>/js/easyui/themes/icon.css" rel="stylesheet" type="text/css" />	
@@ -21,17 +21,10 @@
 </head>
 <body>
 	
-	<table id="datagrid" />
+	<table id="datagrid" ></table>
    
    
-   <div id="selectWin" class="dialog" title="条件查询"
-		data-options="modal:true,width:350,height:150,closed:true"
-		>
-		<table id="saveOrUpdateTable" style="width: 100%;">
-
-			</table>	
-
-	</div>
+   
    
 	<div id="detail" class="dialog" title="订单明细"
 		data-options="modal:true,width:700,height:350,closed:true,maximizable:true"
@@ -42,8 +35,8 @@
 	
 	<div id="toolbar" style="height: auto">
 		  <div  style="margin-bottom:5px;margin-top:5px">
-			订单开始日期: <input class="datebox" style="width:100px" id="stdate">
-			结束日期: <input class="datebox" style="width:100px" id="eddate">
+			订单开始日期: <input class="datetimebox" style="width:200px" id="stdate">
+			结束日期: <input class="datetimebox" style="width:200px" id="eddate">
 			状态:
 			<input class="combobox" panelHeight="auto" style="width:150px" id="state"/>
 			医院:
@@ -52,8 +45,8 @@
 			
 		 </div>
 		 <div style="margin-bottom:5px">
-			要求到达日期: <input class="datebox" style="width:100px" id="reqStDate">
-			结束日期: <input class="datebox" style="width:100px" id="reqEdDate">
+			要求到达日期: <input class="datetimebox" style="width:200px" id="reqStDate">
+			结束日期: <input class="datetimebox" style="width:200px" id="reqEdDate">
 			加急:<input type="checkbox" id="emflag"/>
 		</div>
 		<div>	

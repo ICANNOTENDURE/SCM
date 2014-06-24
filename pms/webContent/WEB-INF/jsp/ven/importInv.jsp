@@ -28,7 +28,7 @@
  	        'fileObjName':'dto.upload',
  	        'auto': true,
  	        'removeCompleted':false,
- 	        'onOpen': function(){  
+ 	        'onSelect': function(){  
  	        	$("#gg").dialog("open");	
             }, 
  	        //上传成功

@@ -51,7 +51,7 @@ public class OrderItm implements Serializable {
 	private String uom;
 	
 	@Column(name="flag")
-	private String flag;
+	private Long flag;
 	
 	public OrderItm() {
 	}
@@ -61,7 +61,7 @@ public class OrderItm implements Serializable {
 	/**
 	 * @return the flag
 	 */
-	public String getFlag() {
+	public Long getFlag() {
 		return flag;
 	}
 
@@ -70,7 +70,7 @@ public class OrderItm implements Serializable {
 	/**
 	 * @param flag the flag to set
 	 */
-	public void setFlag(String flag) {
+	public void setFlag(Long flag) {
 		this.flag = flag;
 	}
 

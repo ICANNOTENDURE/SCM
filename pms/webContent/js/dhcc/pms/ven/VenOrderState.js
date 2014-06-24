@@ -1,5 +1,10 @@
 // zxx 2014-04-19
 $(function (){
+	date=new Date();
+	dateAdd(date,'D',-1);
+	$('#stdate').datetimebox('setValue',date.format("yyyy-MM-dd HH:mm:ss"));
+	$('#eddate').datetimebox('setValue',new Date().format("yyyy-MM-dd HH:mm:ss"));
+	
 	$('#datagrid').datagrid({  
 	    url:'orderStateCtrl!list.htm',
 	    iconCls:'icon-edit',//图标
@@ -13,6 +18,8 @@ $(function (){
 	    title:'订单状态查询(双击行查看明细)',
 	    queryParams: {
 			'dto.state': 1,
+			"dto.reqStDate":$("#reqStDate").datebox('getValue'),
+			"dto.reqEdDate":$("#reqEdDate").datebox('getValue'),
 		},
 	    onDblClickRow: function(rowIndex, rowData){
 	    	$('#detail').dialog('open');

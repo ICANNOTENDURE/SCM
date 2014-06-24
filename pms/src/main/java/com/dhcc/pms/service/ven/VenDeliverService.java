@@ -79,4 +79,41 @@ public interface VenDeliverService {
 	* @version V1.0
 	 */
 	public void impByOrder(VenDeliverDto dto);
+	
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(供应商发货)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月24日 上午11:43:13
+	* @version V1.0
+	 */
+	public void deliver(VenDeliverDto dto);
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(删除发货单)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月24日 下午4:51:00
+	* @version V1.0
+	 */
+	public void delete(VenDeliverDto dto);
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(取消发货状态)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月24日 下午4:56:25
+	* @version V1.0
+	 */
+	public void cancelComplete(VenDeliverDto dto);
 }

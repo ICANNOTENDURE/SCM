@@ -25,7 +25,7 @@ import com.dhcc.pms.dto.ord.OrderStateDto;
 		@Result(name = "listMain", location = "/WEB-INF/jsp/ord/OrderState.jsp"),
 		@Result(name = "listVenOrder", location = "/WEB-INF/jsp/ord/VenOrderState.jsp")})
 @Blh("orderStateBlh")
-@JsonResults({@JResult(BlhMethod="findById",ognlExpress="findById")})
+@JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.exeState")})
 public class OrderStateAction extends BaseAction {
 	
 	private static final long serialVersionUID = 1L;

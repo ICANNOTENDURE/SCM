@@ -31,6 +31,7 @@ import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.sys.SysImpModelDto;
 import com.dhcc.pms.dto.ven.VenDeliverDto;
+import com.dhcc.pms.entity.ord.ExeState;
 import com.dhcc.pms.entity.sys.ImpModel;
 import com.dhcc.pms.entity.ven.VenDeliver;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
@@ -118,8 +119,13 @@ public class VenDeliverBlh extends AbstractBaseBlh {
 	 */
 	public void delDeliverItm(BusinessRequest res){
 		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
-		commonService.delete(commonService.get(VenDeliveritm.class, dto.getVenDeliveritm().getDeliveritmId()));
-		dto.setOpFlg("1");
+		
+		VenDeliveritm venDeliveritm=commonService.get(VenDeliveritm.class, dto.getVenDeliveritm().getDeliveritmId());
+		if(commonService.get(ExeState.class, venDeliveritm.getDeliveritmParentid()).getStateId().toString().equals("6")){
+			dto.setOpFlg("2");
+			return;
+		}
+		commonService.delete(venDeliveritm);
 	}
 	
 	/**
@@ -423,5 +429,50 @@ public void upload(BusinessRequest res){
 			throw new DataBaseException(e.getMessage(), e);
 		}
 
+	}
+
+	/**
+	 * 
+	* @Title: VenDeliverBlh.java
+	* @Description: TODO(发货)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月24日 上午11:44:37
+	* @version V1.0
+	 */
+	public void sendDeliver(BusinessRequest res){
+		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
+		venDeliverService.deliver(dto);
+	}
+	
+	/**
+	 * 
+	* @Title: VenDeliverBlh.java
+	* @Description: TODO(删除发货单)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月24日 下午4:57:24
+	* @version V1.0
+	 */
+	public void delete(BusinessRequest res){
+		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
+		venDeliverService.delete(dto);
+	}
+	
+	/**
+	 * 
+	* @Title: VenDeliverBlh.java
+	* @Description: TODO(取消发货状态)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月24日 下午4:57:21
+	* @version V1.0
+	 */
+	public void cancelComplete(BusinessRequest res){
+		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
+		venDeliverService.cancelComplete(dto);
 	}
 }

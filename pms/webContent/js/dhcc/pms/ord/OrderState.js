@@ -1,8 +1,12 @@
 // zxx 2014-04-19
 $(function (){
+	date=new Date();
+	dateAdd(date,'D',-1);
+	$('#stdate').datebox('setValue',date.format("yyyy-MM-dd"));
+	$('#eddate').datebox('setValue',new Date().format("yyyy-MM-dd"));
+
 	$('#datagrid').datagrid({  
-	    url:'orderStateCtrl!list.htm',
-	    iconCls:'icon-edit',//图标
+	    url:getContextPath()+'/ord/orderStateCtrl!list.htm',
 	    method:'post',
 	    fit:true,
 	    loadMsg:'加载数据中.....',
@@ -10,7 +14,11 @@ $(function (){
 	    singleSelect:true,
 	    pagination:true,
 	    rownumbers:true,
-	    title:'订单状态查询(双击行查看明细)',
+	    queryParams: {
+	    	"dto.stdate":$("#stdate").datebox('getValue'),
+	   	    "dto.eddate":$("#eddate").datebox('getValue'),
+		},
+		title:'订单状态查询(双击行查看明细)',
 	    onDblClickRow: function(rowIndex, rowData){
 	    	$('#detail').dialog('open');
 	    	$('#detailgrid').datagrid({  
@@ -32,16 +40,16 @@ $(function (){
 	    	});
 	
 		},
-	    columns:[[  
-	        {field:'orderid',title:'单号',width:100},
-	        {field:'statedesc',title:'状态',width:100,sortable:true},
-	        {field:'emflag',title:'加急',width:100,sortable:true},
-	        {field:'purloc',title:'入库科室',width:150,sortable:true},  
-	        {field:'recloc',title:'收货科室',width:150,sortable:true},
-	        {field:'destination',title:'收货地址',width:200,sortable:true},
-	        {field:'vendor',title:'供应商',width:150,sortable:true},
-	        {field:'deliverydate',title:'要求送达日期',width:100,sortable:true}
-	    ]],
+		 columns:[[  
+				{field:'orderid',title:'单号',width:100},
+				{field:'statedesc',title:'状态',width:100,sortable:true},
+				{field:'emflag',title:'加急',width:100,sortable:true},
+				{field:'purloc',title:'入库科室',width:150,sortable:true},  
+				{field:'recloc',title:'收货科室',width:150,sortable:true},
+				{field:'destination',title:'收货地址',width:200,sortable:true},
+				{field:'vendor',title:'供应商',width:150,sortable:true},
+				{field:'deliverydate',title:'要求送达日期',width:100,sortable:true}
+		 ]],
 	    
 	    view: detailview,
 	    detailFormatter:function(index,row){
@@ -96,7 +104,7 @@ $(function (){
 			 "dto.recLoc":$("#recloc").combobox('getValue'),
 			 "dto.emflag":$("#emflag").combobox('getValue')
 		 });
-		
+
 	});
 	
 	
@@ -113,13 +121,14 @@ $(function (){
 			textField:'name'
 		});
 	   $('#state').combobox({
-			url:'orderStateCtrl!getComboList.htm',
+			url:getContextPath()+'/ord/orderStateCtrl!getComboList.htm',
 			valueField:'stateSeq',							
 			textField:'stateName'	
 		});
 	   
 	   $('#vendor').combobox({
 		    url:getContextPath()+"/hop/hopVendorCtrl!findHopVenComboxVos.htm",
+	    	panelHeight:"auto",
 	        valueField:'id',  
 	        textField:'name',
 	        mode: 'remote',

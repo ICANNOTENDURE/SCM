@@ -103,7 +103,6 @@ public class OrderBlh extends AbstractBaseBlh {
 		
 		//调用对应的service方法
 		orderService.delete(dto);
-		dto.setOpFlg("1");
 	}
 	
 	//更新
@@ -498,7 +497,7 @@ public class OrderBlh extends AbstractBaseBlh {
 		order.setEmFlag(dto.getOrder().getEmFlag());
 		order.setOrderNo(dto.getOrder().getOrderNo());
 		order.setRemark(dto.getOrder().getRemark());
-		order.setPlanDate(dto.getOrder().getPlanDate());
+		order.setPlanArrDate(dto.getOrder().getPlanArrDate());
 		order.setPurLoc(dto.getOrder().getPurLoc());
 		order.setRecDestination(dto.getOrder().getRecDestination());
 		order.setRecLoc(dto.getOrder().getRecLoc());

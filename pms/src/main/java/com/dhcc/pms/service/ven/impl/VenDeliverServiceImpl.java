@@ -71,6 +71,33 @@ public class VenDeliverServiceImpl implements VenDeliverService {
 		// TODO Auto-generated method stub
 		venDeliverDao.impByOrder(dto);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#deliver(com.dhcc.pms.dto.ven.VenDeliverDto)
+	 */
+	@Override
+	public void deliver(VenDeliverDto dto) {
+		// TODO Auto-generated method stub
+		venDeliverDao.deliver(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#delete(com.dhcc.pms.dto.ven.VenDeliverDto)
+	 */
+	@Override
+	public void delete(VenDeliverDto dto) {
+		// TODO Auto-generated method stub
+		venDeliverDao.delete(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#cancelComplete(com.dhcc.pms.dto.ven.VenDeliverDto)
+	 */
+	@Override
+	public void cancelComplete(VenDeliverDto dto) {
+		// TODO Auto-generated method stub
+		venDeliverDao.cancelComplete(dto);
+	}
 	
 
 }

@@ -200,6 +200,19 @@
 			<input class="combobox" panelHeight="auto" style="width:250px" id="purlocSearch"/>
 			<a href="#" class="linkbutton" iconCls="icon-search" id="search">查询</a>
 		 </div>
-		</div>			
+		</div>
+		
+		 <div id="gg" class="dialog" title="请等待"  style="width:800px;height:400px;padding:10px;"
+				data-options="
+				modal:true,
+				draggable:false,
+				closable:false,
+				closed:true,
+				collapsible:false,
+				minimizable:false,
+				maximizable:false">
+				
+        		<p1>正在处理上传数据，请等待</p1>
+    	</div>			
 </body>
 </html>

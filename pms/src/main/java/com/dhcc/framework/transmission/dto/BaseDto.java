@@ -41,7 +41,7 @@ public class BaseDto implements Serializable {
 	/**
 	 * 操作标记：1成功；失败
 	 */
-	private String opFlg;
+	private String opFlg="1";
 	
 	/**
 	 * 交易号

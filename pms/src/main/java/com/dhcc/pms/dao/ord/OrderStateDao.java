@@ -20,6 +20,7 @@ import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderStateDto;
+import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.ord.State;
@@ -191,8 +192,12 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 				hqlBuffer.append("and t1.ord_id=:ord ");
 				hqlParamMap.put("ord", dto.getExeState().getOrdId());
 			}
+			if (dto.getExeState().getDeliverId()!=null){
+				hqlBuffer.append("and t1.DELIVER_ID=:deliverId ");
+				hqlParamMap.put("deliverId", dto.getExeState().getDeliverId());
+			}
 		}
-		
+
 		
 		hqlBuffer.append("order by t1.exestate_id  ");
 		
@@ -287,6 +292,17 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hql.append(" where 1=1 ");
 		hql.append(" and t.orderNo = :key ");
 		paramMap.put("key", no);
-		return (List<Order>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+		List<Order> orders=(List<Order>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+		List<Order> orders2=new ArrayList<Order>();
+		Long loginVendor=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
+		for(Order tmpOrder:orders){
+			HopVendor hopVendor=super.get(HopVendor.class, tmpOrder.getVendorId());
+			
+			if((hopVendor.getHopVenId()!=null)&&(hopVendor.getHopVenId().toString().equals(loginVendor.toString()))){
+				orders2.add(tmpOrder);
+			}
+		}
+		return orders2;
+		
 	}
 }

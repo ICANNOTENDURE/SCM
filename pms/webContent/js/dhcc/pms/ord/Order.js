@@ -99,9 +99,12 @@ $(function (){
         'auto': true,
         'removeCompleted':false,
         'checkExisting':false,
-
+        'onSelect': function(){  
+	        	$("#gg").dialog("open");	
+        }, 
         //上传成功
         'onUploadSuccess':function(file, data, response){
+        	$("#gg").dialog("close");
         	var obj=eval('('+data+')');
         	if(obj.opFlg=="1"){
         		$("#importDialog").dialog('close');
@@ -281,7 +284,7 @@ function importOrder(){
 //查询导入订单
 function searchOrder(){
 	
-	   $('#searchOrder').dialog('open');
+	 $('#searchOrder').dialog('open');
 	
 
 	

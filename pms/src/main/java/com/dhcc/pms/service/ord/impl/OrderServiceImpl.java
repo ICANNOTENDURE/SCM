@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
 	
 	public void delete(OrderDto dto){
 	
-		orderDao.delete(dto.getOrder());
+		orderDao.delete(dto);
 	}
 	
 	public void update(OrderDto dto){

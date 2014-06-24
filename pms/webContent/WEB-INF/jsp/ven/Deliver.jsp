@@ -27,8 +27,8 @@
 				data-options="iconCls:'icon-search',plain:true">查询发货单</a>
 			<a  class="linkbutton" onclick="javascript:searchOrder()"
 				data-options="iconCls:'icon-search',plain:true">查询订单</a>		
-			<a  class="linkbutton" onclick="javascript:complete()"
-				data-options="iconCls:'icon-save',plain:true">发货</a>
+			<a  class="linkbutton" onclick="javascript:send()"
+				data-options="iconCls:'icon-save',plain:true" id="send">发货</a>
 			<a  class="linkbutton" onclick="javascript:deleteOrder()"
 				data-options="iconCls:'icon-remove',plain:true">删除</a>
 			<a  class="linkbutton" onclick="javascript:canclecomplete()"
@@ -122,13 +122,13 @@
 	
 
 	
-	<!-- 弹出查询订单 -->
+	<!-- 弹出查询发货单 -->
 	<div id="searchDeliver" class="dialog" title="查询发货单（双击选择）"
 		data-options="modal:true,width:1000,height:450,closed:true,maximizable:true"
 		style="vertical-align: middle">
 		<table id="searchDeliverTable" />
 	</div>
-	<!-- 弹出查询订单toolbar-->
+	<!-- 弹出查询发货toolbar-->
 	<div id="searchDeltoolbar" style="height: auto">
 		  <div  style="margin-bottom:5px;margin-top:5px">
 			订单接收开始时间: <input class="datebox" style="width:100px" id="acpStDate">
@@ -147,12 +147,12 @@
 		 <div style="margin-bottom:5px">
 		 	加急:<input type="checkbox" id="emflag"/>
 			订单发货状态
-			<select class="combobox" panelHeight="auto" style="width:150px" id="delFlag">
-				<option value="2">已接收</option>
-				<option value="3">已发货</option>
-			</select>
+			<input class="combobox" panelHeight="auto" style="width:250px" id="delFlag"/>
 		 	<a href="#" class="linkbutton" iconCls="icon-search" id="search">查询</a>
 		 </div>
-		</div>			
+		</div>
+		
+		
+						
 </body>
 </html>
