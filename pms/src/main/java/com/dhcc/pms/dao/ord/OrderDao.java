@@ -421,6 +421,7 @@ public void impOrder(OrderDto dto){
 	   
 	   order.setExeStateId(exeState.getExestateId());
 	   super.saveOrUpdate(order);
+	   dto.setOrder(order);
 	   dto.setOpFlg("1");
    }
    

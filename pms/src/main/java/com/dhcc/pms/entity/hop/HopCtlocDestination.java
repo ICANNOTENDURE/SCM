@@ -29,7 +29,7 @@ public class HopCtlocDestination implements Serializable {
 	private Long hopCtlocDestinationId;
 
 	@Column(name="CTLOCDES_CONTACT")
-	private String contact;
+	private Long contact;
 
 	@Column(name="CTLOCDES_DESTINATION")
 	private String destination;
@@ -40,7 +40,8 @@ public class HopCtlocDestination implements Serializable {
 	@Column(name="CTLOCDES_CTLOCDR")
 	private String ctlocDr;
 
-	
+	@Column(name="CTLOCDES_MAIL")
+	private String mail;
 
 	public HopCtlocDestination() {
 	}
@@ -61,6 +62,30 @@ public class HopCtlocDestination implements Serializable {
 	}
 
 
+	
+
+
+
+	/**
+	 * @return the mail
+	 */
+	public String getMail() {
+		return mail;
+	}
+
+
+
+
+
+
+	/**
+	 * @param mail the mail to set
+	 */
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+
 
 
 
@@ -75,12 +100,12 @@ public class HopCtlocDestination implements Serializable {
 	}
 
 
-	public String getContact() {
+	public Long getContact() {
 		return contact;
 	}
 
 
-	public void setContact(String contact) {
+	public void setContact(Long contact) {
 		this.contact = contact;
 	}
 

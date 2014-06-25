@@ -4,12 +4,9 @@
  */
 package com.dhcc.pms.service.hop;
 
-import java.util.List;
-
 import com.dhcc.pms.dto.hop.HopCtlocDestinationDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
-import com.dhcc.pms.entity.vo.hop.HopDestinationVo;
 
 public interface HopCtlocDestinationService {
 
@@ -25,7 +22,7 @@ public interface HopCtlocDestinationService {
 
 	public HopCtloc getCtloc(HopCtlocDestinationDto dto) throws Exception;
 
-	public List<HopDestinationVo> getListInfo(HopCtlocDestinationDto dto);
+	public void getListInfo(HopCtlocDestinationDto dto);
 	
 
 }

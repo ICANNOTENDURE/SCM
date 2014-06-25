@@ -39,7 +39,9 @@ public class Hospital implements Serializable {
 
 	@Column(name="HOSPITAL_NAME", length=50)
 	private String hospitalName;
-
+	
+	@Column(name="HOSPITAL_DESTINATION")
+	private String hospitalDestination;
 
 	
 	public Hospital() {
@@ -83,6 +85,22 @@ public class Hospital implements Serializable {
 
 	public void setHospitalName(String hospitalName) {
 		this.hospitalName = hospitalName;
+	}
+
+
+	/**
+	 * @return the hospitalDestination
+	 */
+	public String getHospitalDestination() {
+		return hospitalDestination;
+	}
+
+
+	/**
+	 * @param hospitalDestination the hospitalDestination to set
+	 */
+	public void setHospitalDestination(String hospitalDestination) {
+		this.hospitalDestination = hospitalDestination;
 	}
 
 

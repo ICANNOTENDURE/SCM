@@ -32,31 +32,41 @@
 		<form id="ctlocDesDestail" method="post">
 			<table style="width: 100%;" >
 				<tr style="display: none">
-					<input type="hidden" name="dto.hopCtlocDestination.hopCtlocDestinationId" />
+					<input type="hidden" name="dto.hopCtlocDestination.hopCtlocDestinationId" id="hopCtlocDestinationId"/>
 				</tr>
 				<tr>
 					<td class="textLabel">科室:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="combobox" type="text" name="dto.hopCtlocDestination.ctlocDr"
-						data-options="required:true" id="comboCtloc" /></td>					
+						 id="comboCtloc" /></td>					
 				</tr>
 				<tr>
 					<td class="textLabel">联系人员:</td>
 					<td class="textParent"><input style="width: 250px;"
-						class="validatebox" type="text" name="dto.hopCtlocDestination.contact"
-						data-options="required:true" id="contact" /></td>					
+						class="combobox" type="text" name="dto.hopCtlocDestination.contact"
+						 id="contact" /></td>					
 				</tr>
 				<tr>
 					<td class="textLabel">联系电话:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.hopCtlocDestination.tel"
-						data-options="required:true" id="tel" /></td>					
+						 id="tel" /></td>					
+				</tr>
+				<tr>
+					<td class="textLabel">邮箱:</td>
+					<td class="textParent"><input style="width: 250px;"
+						class="validatebox" type="text" name="dto.hopCtlocDestination.mail"
+						 id="mail" /></td>					
 				</tr>
 				<tr>
 					<td class="textLabel">地址:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.hopCtlocDestination.destination"
 						data-options="required:true" id="destination" /></td>					
+				</tr>
+				<tr>
+					<td class="textLabel">默认收货地址:</td>
+					<td class="textParent"><input style="width: 50px;" type="checkbox" id="defaultFlag"/></td>					
 				</tr>
 			</table>			
 			<div id="btnDiv1" align="center">
@@ -74,9 +84,9 @@
 	</div>
 	
 	<div id="searchCtlocDesWin" class="dialog" title="条件查询"
-		data-options="modal:true,width:400,height:250,closed:true,buttons:'#searchBtnDivs'"
+		data-options="modal:true,width:400,height:150,closed:true,buttons:'#searchBtnDivs'"
 		style="vertical-align: middle;">
-		<table style="width: 100%;" cellspacing="10">				
+		<table style="width: 100%;" >				
 			<tr>
 				<td class="textLabel">科室描述:</td>
 				<td class="textParent"><input style="width: 250px;"
@@ -88,12 +98,6 @@
 				<td class="textParent"><input style="width: 250px;"
 					class="validatebox" type="text" name="dto.hopCtlocDestination.destination" 
 					id="destinations" /></td>					
-			</tr>
-			<tr>
-				<td class="textLabel">联系人:</td>
-				<td class="textParent"><input style="width: 250px;"
-					class="validatebox" type="text" name="dto.hopCtlocDestination.contact" 
-					id="ctlocDesContact" /></td>					
 			</tr>			
 		</table>		
 		<div id="searchBtnDivs" align="center">

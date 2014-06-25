@@ -6,6 +6,7 @@ package com.dhcc.pms.blh.ven;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.mail.EmailException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -27,14 +29,19 @@ import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
+import com.dhcc.framework.util.SendMailUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.sys.SysImpModelDto;
 import com.dhcc.pms.dto.ven.VenDeliverDto;
+import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.ord.ExeState;
+import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.sys.ImpModel;
+import com.dhcc.pms.entity.userManage.NormalUser;
 import com.dhcc.pms.entity.ven.VenDeliver;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.service.sys.SysImpModelService;
 import com.dhcc.pms.service.ven.VenDeliverService;
 import com.dhcc.pms.service.ven.VenIncService;
@@ -444,6 +451,40 @@ public void upload(BusinessRequest res){
 	public void sendDeliver(BusinessRequest res){
 		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
 		venDeliverService.deliver(dto);
+		//发送邮件
+		String sub="发货通知";
+		StringBuffer msg = new StringBuffer();
+		String address="";
+		VenDeliver VenDeliver=commonService.get(VenDeliver.class,dto.getVenDeliver().getDeliverId());
+		HopCtlocDestination ctlocDestination=commonService.get(HopCtlocDestination.class,VenDeliver.getDeliverDestinationid());
+		NormalUser normalUser=commonService.get(NormalUser.class, Long.valueOf(ctlocDestination.getContact()));
+		Order order=commonService.get(Order.class, VenDeliver.getDeliverOrderid());
+		Vendor vendor=commonService.get(Vendor.class, VenDeliver.getDeliverVendorid());
+		if(normalUser!=null){
+			address=normalUser.getEmail();
+		}
+		if(!StringUtils.isNullOrEmpty(address)){
+			address=address+BaseConstants.COMMA+ctlocDestination.getMail();
+		}else{
+			address=ctlocDestination.getMail();
+		}
+		msg.append("您的订单:<h1>"+order.getOrderNo()+"</h1>已经发货。");
+		if(VenDeliver.getDeliverArrdate()!=null){
+			msg.append("<br>预计送达时间:"+new SimpleDateFormat("yyyy-mm-dd").format(VenDeliver.getDeliverArrdate()));
+		}
+		msg.append("<br>收货地址:"+ctlocDestination.getDestination());
+		msg.append("<br>请注意收货.");
+		msg.append("<br><br><br><br><br><div 'float:right'>供应商:"+vendor.getName()+"</div>");
+		msg.append("<br>地址:"+vendor.getAddress());
+		msg.append("<br>传真:"+vendor.getFax());
+		msg.append("<br>电话:"+vendor.getTel());
+		try {
+			if(!StringUtils.isNullOrEmpty(address)){
+				SendMailUtil.sendEmail(sub, msg.toString(),address,60 * 1000);
+			}
+		} catch (EmailException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

@@ -51,6 +51,10 @@
 			<label>名称：</label> <input type="text" name="dto.vendor.name" />
 		</div>
 		<br>
+		<div align="center">
+			<label>别名：</label> <input type="text" name="dto.vendor.alias" />
+		</div>
+		<br>
 		<div id="searchBtnDiv" align="center">
 			<a id="selectBt" class="linkbutton"
 				data-options="iconCls:'icon-save'">提交</a> <a id="selectCanBt"

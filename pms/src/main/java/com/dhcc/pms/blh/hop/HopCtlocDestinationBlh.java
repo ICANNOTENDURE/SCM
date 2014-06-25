@@ -5,8 +5,6 @@
 package com.dhcc.pms.blh.hop;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -19,12 +17,10 @@ import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
-import com.dhcc.framework.util.JsonUtils;
-import com.dhcc.framework.web.context.WebContext;
+import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.hop.HopCtlocDestinationDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
-import com.dhcc.pms.entity.vo.hop.HopDestinationVo;
 import com.dhcc.pms.service.hop.HopCtlocDestinationService;
 
 
@@ -77,7 +73,12 @@ public class HopCtlocDestinationBlh extends AbstractBaseBlh {
 			hopCtlocDestinationService.save(dto);			
 		}else {
 			hopCtlocDestinationService.update(dto);
-		}	
+		}
+		if((!StringUtils.isNullOrEmpty(dto.getDefautFlag()))&&(dto.getDefautFlag().equals("1"))){
+			HopCtloc HopCtloc=commonService.get(HopCtloc.class, Long.valueOf(dto.getHopCtlocDestination().getCtlocDr()));
+			HopCtloc.setCtlocDest(dto.getHopCtlocDestination().getHopCtlocDestinationId());
+			commonService.saveOrUpdate(HopCtloc);
+		}
 		dto.setOpFlg("1");
 		
 	}
@@ -140,17 +141,17 @@ public class HopCtlocDestinationBlh extends AbstractBaseBlh {
 	public void listInfo(BusinessRequest res) throws Exception {
 			
 		HopCtlocDestinationDto dto = super.getDto(HopCtlocDestinationDto.class, res);		
-		List<HopDestinationVo> hopDestinationVos=new ArrayList<HopDestinationVo>();		
-		hopDestinationVos=hopCtlocDestinationService.getListInfo(dto);
-		WebContext webContext = WebContextHolder.getContext();
-		//webContext.getResponse().getWriter().write(JsonUtils.toJson(hopDestinationVos));
-		webContext.getResponse().getWriter().write(
-				"{\"total\":"
-						+ dto.getPageModel()
-								.getTotals()
-						+ ",\"rows\":"
-						+ JsonUtils.toJson(hopDestinationVos)
-						+ "}");
+//		List<HopDestinationVo> hopDestinationVos=new ArrayList<HopDestinationVo>();		
+		hopCtlocDestinationService.getListInfo(dto);
+//		WebContext webContext = WebContextHolder.getContext();
+//		//webContext.getResponse().getWriter().write(JsonUtils.toJson(hopDestinationVos));
+//		webContext.getResponse().getWriter().write(
+//				"{\"total\":"
+//						+ dto.getPageModel()
+//								.getTotals()
+//						+ ",\"rows\":"
+//						+ JsonUtils.toJson(hopDestinationVos)
+//						+ "}");
 			
 	}
 	

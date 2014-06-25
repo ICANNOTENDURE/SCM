@@ -10,61 +10,50 @@ package com.dhcc.pms.entity.vo.hop;
  */
 public class HopDestinationVo {
 	//科室收货信息表ID
-	private Long hopCtlocDestinationId;
+	private Long hopctlocdestinationid;
 	//收货地点
 	private String destination;
 	//收货联系人
-	private String desContact;
+	private String descontact;
 	//收货联系人电话
-	private String desTel;
+	private String destel;
 	//收货信息对应的科室ID
-	private String  desCtlocDr;
+	private String  desctlocdr;
 	//收货信息对应的科室描述
-	private String desCtlocName;
+	private String desctlocname;
 	
-	public HopDestinationVo(){		
-	}
-		
-	public HopDestinationVo(Long hopCtlocDestinationId, String destination,String desContact, String desTel,
-			String desCtlocDr, String desCtlocName) {
-		super();
-		this.hopCtlocDestinationId = hopCtlocDestinationId;
-		this.destination=destination;
-		this.desContact = desContact;
-		this.desTel = desTel;
-		this.desCtlocDr = desCtlocDr;
-		this.desCtlocName = desCtlocName;
+	private String mail;
+	
+	private Long defaultdestion;
+	
+	
+	
+	/**
+	 * @return the defaultDestion
+	 */
+	public Long getDefaultdestion() {
+		return defaultdestion;
 	}
 
-	public Long getHopCtlocDestinationId() {
-		return hopCtlocDestinationId;
+	/**
+	 * @param defaultDestion the defaultDestion to set
+	 */
+	public void setDefaultDestion(Long defaultdestion) {
+		this.defaultdestion = defaultdestion;
 	}
-	public void setHopCtlocDestinationId(Long hopCtlocDestinationId) {
-		this.hopCtlocDestinationId = hopCtlocDestinationId;
+
+	/**
+	 * @return the hopctlocdestinationid
+	 */
+	public Long getHopctlocdestinationid() {
+		return hopctlocdestinationid;
 	}
-	public String getDesContact() {
-		return desContact;
-	}
-	public void setDesContact(String desContact) {
-		this.desContact = desContact;
-	}
-	public String getDesTel() {
-		return desTel;
-	}
-	public void setDesTel(String desTel) {
-		this.desTel = desTel;
-	}
-	public String getDesCtlocDr() {
-		return desCtlocDr;
-	}
-	public void setDesCtlocDr(String desCtlocDr) {
-		this.desCtlocDr = desCtlocDr;
-	}
-	public String getDesCtlocName() {
-		return desCtlocName;
-	}
-	public void setDesCtlocName(String desCtlocName) {
-		this.desCtlocName = desCtlocName;
+
+	/**
+	 * @param hopctlocdestinationid the hopctlocdestinationid to set
+	 */
+	public void setHopctlocdestinationid(Long hopctlocdestinationid) {
+		this.hopctlocdestinationid = hopctlocdestinationid;
 	}
 
 	/**
@@ -80,7 +69,79 @@ public class HopDestinationVo {
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
+
+	/**
+	 * @return the descontact
+	 */
+	public String getDescontact() {
+		return descontact;
+	}
+
+	/**
+	 * @param descontact the descontact to set
+	 */
+	public void setDescontact(String descontact) {
+		this.descontact = descontact;
+	}
+
+	/**
+	 * @return the destel
+	 */
+	public String getDestel() {
+		return destel;
+	}
+
+	/**
+	 * @param destel the destel to set
+	 */
+	public void setDestel(String destel) {
+		this.destel = destel;
+	}
+
+	/**
+	 * @return the desctlocdr
+	 */
+	public String getDesctlocdr() {
+		return desctlocdr;
+	}
+
+	/**
+	 * @param desctlocdr the desctlocdr to set
+	 */
+	public void setDesctlocdr(String desctlocdr) {
+		this.desctlocdr = desctlocdr;
+	}
+
+	/**
+	 * @return the desctlocname
+	 */
+	public String getDesctlocname() {
+		return desctlocname;
+	}
+
+	/**
+	 * @param desctlocname the desctlocname to set
+	 */
+	public void setDesctlocname(String desctlocname) {
+		this.desctlocname = desctlocname;
+	}
+
+	/**
+	 * @return the mail
+	 */
+	public String getMail() {
+		return mail;
+	}
+
+	/**
+	 * @param mail the mail to set
+	 */
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
 	
+	
+
 	
 	
 }

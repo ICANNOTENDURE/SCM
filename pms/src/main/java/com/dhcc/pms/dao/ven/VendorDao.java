@@ -221,6 +221,7 @@ public class VendorDao extends HibernatePersistentObjectDAO<Vendor> {
 	* @date 2014年6月12日 下午2:37:21
 	* @version V1.0
 	 */
+	@SuppressWarnings("unchecked")
 	public Long findVendorIdByName(String name){
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();

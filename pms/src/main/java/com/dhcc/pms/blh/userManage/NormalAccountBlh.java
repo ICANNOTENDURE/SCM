@@ -1,5 +1,6 @@
 package com.dhcc.pms.blh.userManage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
+import com.dhcc.framework.util.JsonUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.userManage.NormalAccountDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
@@ -426,5 +428,22 @@ public class NormalAccountBlh extends AbstractBaseBlh{
 		normalUser.setTelephone(normalAccountDto.getNormalAccount().getNormalUser().getTelephone());
 		commonService.saveOrUpdate(normalUser);
 		normalAccountDto.setOpFlg("1");
+	}
+	
+	/**
+	 * 
+	* @Title: NormalAccountBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param req
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月25日 上午11:36:56
+	* @version V1.0
+	 * @throws IOException 
+	 * @throws NumberFormatException 
+	 */
+	public void getUserByLoc(BusinessRequest req) throws NumberFormatException, IOException{
+		String locid=WebContextHolder.getContext().getRequest().getParameter("locId");
+		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(normalAccountService.getUserByLoc(Long.valueOf(locid))));
 	}
 }

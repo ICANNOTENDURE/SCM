@@ -29,7 +29,7 @@
 		data-options="modal:true,width:400,height:250,closed:true,buttons:'#btnDiv0'"
 		style="vertical-align: middle;">
 		<form id="hospdetail" method="post">
-			<table style="width: 100%;" cellspacing="10">
+			<table style="width: 100%;">
 				<tr style="display: none">
 					<input type="hidden" name="dto.hospital.hospitalId" />
 				</tr>
@@ -50,6 +50,12 @@
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.hospital.hospitalHisdr"
 						data-options="required:true" id="hospHisdr" /></td>					
+				</tr>
+				<tr>
+					<td class="textLabel">地址:</td>
+					<td class="textParent"><input style="width: 250px;"
+						class="validatebox" type="text" name="dto.hospital.hospitalDestination"
+					/></td>					
 				</tr>	
 			</table>							
 			<div id="btnDiv0" align="center">

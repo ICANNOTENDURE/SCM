@@ -4,30 +4,34 @@
  */
 package com.dhcc.pms.dao.hop;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Repository;
 
-import  com.dhcc.framework.common.PagerModel;
-import com.dhcc.framework.transmission.dto.BaseDto;
-import com.dhcc.framework.util.StringUtils;
+import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.hibernate.dao.CommonDao;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
+import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
+import com.dhcc.framework.transmission.dto.BaseDto;
+import com.dhcc.framework.util.StringUtils;
+import com.dhcc.framework.web.context.WebContextHolder;
+import com.dhcc.pms.dto.hop.HopCtlocDestinationDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.vo.hop.HopDestinationVo;
-import com.dhcc.pms.dto.hop.HopCtlocDestinationDto;
 
 @Repository
 public class HopCtlocDestinationDao extends HibernatePersistentObjectDAO<HopCtlocDestination> {
 
 	@Resource
 	private CommonDao commonDao;
+	
+	@Resource
+	private JdbcTemplateWrapper jdbcTemplateWrapper;
+	
 	public void buildPagerModelQuery(PagerModel pagerModel,BaseDto dto) {
 	
 		HopCtlocDestinationDto hopCtlocDestinationDto = (HopCtlocDestinationDto) dto;
@@ -55,7 +59,7 @@ public class HopCtlocDestinationDao extends HibernatePersistentObjectDAO<HopCtlo
 			hqlStr.append(" where 1=1 ");
 			String ctlocId =hopCtlocDestination.getCtlocDr();
 			String destinatonStr =hopCtlocDestination.getDestination();	
-			String contactStr=hopCtlocDestination.getContact();
+			//String contactStr=hopCtlocDestination.getContact();
 			if(!StringUtils.isNullOrEmpty(destinatonStr)){
 				hqlStr.append(" AND h.destination like:destinatonStr ");
 				hqlParamMap.put("destinatonStr","%"+destinatonStr+"%");
@@ -64,10 +68,10 @@ public class HopCtlocDestinationDao extends HibernatePersistentObjectDAO<HopCtlo
 				hqlStr.append(" AND h.ctlocDr like:ctlocId ");
 				hqlParamMap.put("ctlocId","%"+ctlocId+"%");
 			}
-			if(!StringUtils.isNullOrEmpty(contactStr)){
-				hqlStr.append(" AND h.contact like:contactStr ");
-				hqlParamMap.put("contactStr","%"+contactStr+"%");
-			}
+//			if(!StringUtils.isNullOrEmpty(contactStr)){
+//				hqlStr.append(" AND h.contact like:contactStr ");
+//				hqlParamMap.put("contactStr","%"+contactStr+"%");
+//			}
 		}
 	}
 		
@@ -113,55 +117,40 @@ public class HopCtlocDestinationDao extends HibernatePersistentObjectDAO<HopCtlo
 	 * @param hopDestinationVos
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public List<HopDestinationVo> getListInfo(PagerModel pagerModel,
-			List<HopDestinationVo> hopDestinationVos ,HopCtlocDestination hopCtlocDestination) {
+	public void getListInfo(HopCtlocDestinationDto dto) {
 		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
 		StringBuffer hqlBuffer = new StringBuffer();
-		hqlBuffer.append(" select new com.dhcc.pms.entity.vo.hop.HopDestinationVo(");
-		hqlBuffer.append(" h.hopCtlocDestinationId, ");
-		hqlBuffer.append(" h.destination, ");
-		hqlBuffer.append(" h.contact, ");
-		hqlBuffer.append(" h.tel, ");
-		hqlBuffer.append(" h.ctlocDr, ");
-		hqlBuffer.append(" hc.name) ");
-		hqlBuffer.append(" from HopCtlocDestination h , HopCtloc hc ");
-		hqlBuffer.append(" where h.ctlocDr=hc.hopCtlocId");
-		if (hopCtlocDestination!=null) {			
-			String ctlocId =hopCtlocDestination.getCtlocDr();
-			String destinatonStr =hopCtlocDestination.getDestination();	
-			String contactStr=hopCtlocDestination.getContact();
-			if(!StringUtils.isNullOrEmpty(destinatonStr)){
-				hqlBuffer.append(" AND h.destination like:destinatonStr ");
-				hqlParamMap.put("destinatonStr","%"+destinatonStr+"%");
+		hqlBuffer.append(" select ");
+		hqlBuffer.append(" h.CTLOCDES_ID as hopctlocdestinationid, ");
+		hqlBuffer.append(" h.CTLOCDES_DESTINATION as destination, ");
+		hqlBuffer.append(" hh.realName as descontact, ");
+		hqlBuffer.append(" h.CTLOCDES_TEL as destel, ");
+		hqlBuffer.append(" h.CTLOCDES_CTLOCDR as desctlocdr, ");
+		hqlBuffer.append(" h.CTLOCDES_MAIL as mail, ");
+		hqlBuffer.append(" hc.CTLOC_DEST as defaultdestion, ");
+		hqlBuffer.append(" hc.CTLOC_NAME as desctlocname ");
+		hqlBuffer.append(" from T_SYS_CTLOC_DESTINATION h ");
+		hqlBuffer.append(" left join T_SYS_CTLOC hc on h.CTLOCDES_CTLOCDR=hc.CTLOC_ID ");
+		hqlBuffer.append(" left join T_SYS_NORMAL_USER hh on hh.USER_ID=h.CTLOCDES_CONTACT ");
+		hqlBuffer.append(" where 1=1 ");
+		if (dto.getHopCtlocDestination()!=null) {			
+			if(!StringUtils.isNullOrEmpty(dto.getHopCtlocDestination().getDestination())){
+				hqlBuffer.append(" AND h.CTLOCDES_DESTINATION like:destinatonStr ");
+				hqlParamMap.put("destinatonStr","%"+dto.getHopCtlocDestination().getDestination()+"%");
 			}
-			if(ctlocId!=null){
-				hqlBuffer.append(" AND h.ctlocDr like:ctlocId ");
-				hqlParamMap.put("ctlocId","%"+ctlocId+"%");
-			}
-			if(!StringUtils.isNullOrEmpty(contactStr)){
-				hqlBuffer.append(" AND h.contact like:contactStr ");
-				hqlParamMap.put("contactStr","%"+contactStr+"%");
+			if(!StringUtils.isNullOrEmpty(dto.getHopCtlocDestination().getCtlocDr())){
+				hqlBuffer.append(" AND h.CTLOCDES_CTLOCDR =:ctlocId ");
+				hqlParamMap.put("ctlocId",dto.getHopCtlocDestination().getCtlocDr());
 			}
 		}
-		
-		pagerModel.setCountProName("CTLOCDES_ID");
-		pagerModel.setQueryHql(hqlBuffer.toString());
-		pagerModel.setHqlParamMap(hqlParamMap);
-		int totalRows = pagerModel.getTotals();
-		if (totalRows == 0) {
-			totalRows = commonDao.getResultCountWithValuesMap(
-					pagerModel.getQueryHql(), pagerModel.getHqlParamMap(),
-					pagerModel.getCountProName(), false).intValue();
+		Long type=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+		if(type.toString().equals("1")){
+			hqlBuffer.append(" AND hc.CTLOC_HOSPID =:hopId ");
+			hqlParamMap.put("hopId",WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
 		}
-		if (totalRows == 0) {
-			pagerModel.setPageData(new ArrayList<Object>(1));
-			return null;
-		}
-		pagerModel.setTotals(totalRows);
-		//return (List<HopDestinationVo>)this.findByHql(hqlBuffer.toString());
-		return (List<HopDestinationVo>)findByHqlWithValuesMap(hqlBuffer.toString(),pagerModel.getPageNo(),pagerModel.getPageSize(), hqlParamMap, true);
-		
+		dto.getPageModel().setQueryHql(hqlBuffer.toString());
+		dto.getPageModel().setHqlParamMap(hqlParamMap);
+		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), HopDestinationVo.class, "CTLOCDES_ID");
 	}
 		
 }

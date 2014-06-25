@@ -4,18 +4,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.hibernate.StatelessSession;
 import org.springframework.stereotype.Repository;
 
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
+import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.pms.dto.userManage.NormalAccountDto;
 import com.dhcc.pms.entity.userManage.Func;
 import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.userManage.NormalAccountRole;
 import com.dhcc.pms.entity.userManage.Role;
+import com.dhcc.pms.entity.vo.combo.ComboxVo;
 
 /**
  * 标题: NormalAccountDao.java
@@ -28,7 +32,10 @@ import com.dhcc.pms.entity.userManage.Role;
  */ 
 @Repository
 public class NormalAccountDao extends HibernatePersistentObjectDAO<NormalAccount>{
-
+	
+	
+	@Resource
+	private JdbcTemplateWrapper jdbcTemplateWrapper;
 	/**
 	 * 
 	* 方法名:          buildPagerModelQuery
@@ -271,6 +278,27 @@ public class NormalAccountDao extends HibernatePersistentObjectDAO<NormalAccount
 		normalAccountDto.setNormalAccounts((List<NormalAccount>)this.findByHqlWithValuesMap(hql.toString(),paramMap,false));
 	}
 	
-	
+	/**
+	 * 
+	* @Title: NormalAccountDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param locid
+	* @return
+	* @return:List<ComboxVo> 
+	* @author zhouxin  
+	* @date 2014年6月25日 上午11:28:31
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ComboxVo> getUserByLoc(Long locid){
+		StringBuffer hqlBuffer = new StringBuffer();
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+		hqlBuffer.append("select t1.user_id as id, ");
+		hqlBuffer.append("t1.realname as name ");
+		hqlBuffer.append("from t_sys_normal_user t1  ");
+		hqlBuffer.append("where  t1.locid=:locid");
+		hqlParamMap.put("locid", locid);
+		return jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap);
+	}
 
 }

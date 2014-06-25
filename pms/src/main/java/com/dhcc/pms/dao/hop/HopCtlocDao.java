@@ -144,7 +144,7 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 		if(hopCtloc!=null){
 			String codeStr =hopCtloc.getCode();
 			String nameStr =hopCtloc.getName();	
-			Long hospDr=hopCtloc.getHospid();
+//			Long hospDr=hopCtloc.getHospid();
 			if(!StringUtils.isNullOrEmpty(codeStr)){
 				hqlBuffer.append(" and h.code like:codeStr ");
 				hqlParamMap.put("codeStr","%"+codeStr+"%");
@@ -153,10 +153,16 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 				hqlBuffer.append(" and h.name like:nameStr ");
 				hqlParamMap.put("nameStr","%"+nameStr+"%");
 			}
-			if(hospDr!=null){
-				hqlBuffer.append(" and h.hospid =:hospDr ");
-				hqlParamMap.put("hospDr",hospDr);
-			}
+//			if(hospDr!=null){
+//				hqlBuffer.append(" and h.hospid =:hospDr ");
+//				hqlParamMap.put("hospDr",hospDr);
+//			}
+		}
+		Long type=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+		if(type.toString().equals("1")){
+			Long hopIdLong=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+			hqlBuffer.append(" and h.hospid =:hospDr ");
+			hqlParamMap.put("hospDr",hopIdLong);
 		}
 		//return (List<HopCtlocVo>)findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap, true);
 		
@@ -185,18 +191,17 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 	@SuppressWarnings("unchecked")
 	public List<ComboxVo> findHopLocComboxVos(HopCtlocDto dto){
 		
-		Long userId=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+		Long userId=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId());
 		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
 
 		StringBuffer hqlBuffer = new StringBuffer();
 		hqlBuffer.append("select ");
 		hqlBuffer.append("t3.ctloc_name as name, ");
-		hqlBuffer.append("t1.sys_loc_id as id ");
-		hqlBuffer.append("from t_sys_role_loc t1 ");
-		hqlBuffer.append("left join t_sys_normalaccount_role t2 on t1.sys_role_id=t2.role_id and t2.account_id=:userId ");
+		hqlBuffer.append("t3.ctloc_id as id ");
+		hqlBuffer.append("from t_sys_ctloc t3 ");
+		hqlBuffer.append("where t3.ctloc_id in ");
+		hqlBuffer.append("(select t2.sys_loc_id from t_sys_normalaccount_role t1,t_sys_role_loc t2 where t2.sys_role_id=t1.role_id and t1.account_id=:userId) ");
 		hqlParamMap.put("userId", userId);
-		hqlBuffer.append("left join t_sys_ctloc t3 on t3.ctloc_id=t1.sys_loc_id ");
-		hqlBuffer.append("where 1=1 ");
 		if(!StringUtils.isNullOrEmpty(dto.getComgridparam())){
 			hqlBuffer.append("and t3.ctloc_name like :alias ");
 			hqlParamMap.put("alias", "%"+dto.getComgridparam()+"%");
@@ -233,12 +238,11 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 		StringBuffer hqlBuffer = new StringBuffer();
 		hqlBuffer.append("select ");
 		hqlBuffer.append("t3.ctloc_name as name, ");
-		hqlBuffer.append("t1.sys_loc_id as id ");
-		hqlBuffer.append("from t_sys_role_loc t1 ");
-		hqlBuffer.append("left join t_sys_normalaccount_role t2 on t1.sys_role_id=t2.role_id and t2.account_id=:userId ");
+		hqlBuffer.append("t3.ctloc_id as id ");
+		hqlBuffer.append("from t_sys_ctloc t3 ");
+		hqlBuffer.append("where t3.ctloc_id in ");
+		hqlBuffer.append("(select t2.sys_loc_id from t_sys_normalaccount_role t1,t_sys_role_loc t2 where t2.sys_role_id=t1.role_id and t1.account_id=:userId) ");
 		hqlParamMap.put("userId", userId);
-		hqlBuffer.append("left join t_sys_ctloc t3 on t3.ctloc_id=t1.sys_loc_id ");
-		hqlBuffer.append("where 1=1 ");
 		if(!StringUtils.isNullOrEmpty(dto.getComgridparam())){
 			hqlBuffer.append("and t3.ctloc_name like :alias ");
 			hqlParamMap.put("alias", "%"+dto.getComgridparam()+"%");

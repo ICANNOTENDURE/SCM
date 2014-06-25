@@ -440,17 +440,7 @@
 				<td style="text-align: left; padding-left: 2px"><a
 					id="saveNormalAccountRole" href="javascript:void(0)"
 					class="linkbutton" data-options="iconCls:'icon-save',plain:true">保存</a>
-				</td>
-				<td style="text-align: right; padding-right: 2px"><span>系统名称:</span>
-					<input id="systemTypeSelect" class="combobox"
-					data-options="
-					           dict:'systemType',		
-	              	  valueField:'value',
-	               	  textField:'desc',
-					           multiple:false,
-					           required:false,
-					           width:200,
-					           panelHeight:'auto'" />
+	
 					<span>查询条件:</span> <select id="roleColumnName" panelHeight="auto"
 					style="width: 100px">
 						<option value="roleCode">角色代码</option>

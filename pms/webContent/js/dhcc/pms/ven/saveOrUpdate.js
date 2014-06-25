@@ -114,6 +114,7 @@ $(function() {
             "dto.vendor.contact": $("#detail input[name='dto.vendor.contact']").val(),
             "dto.vendor.parentId": $("#detail input[name='dto.vendor.parentId']").val(),
             "dto.vendor.hisId": $("#detail input[name='dto.vendor.hisId']").val(),
+            "dto.vendor.email": $("#detail input[name='dto.vendor.email']").val(),
             "dto.venQualificationList": jQuery.toJSON(venQualifTypeList)
         },
         function(data) {

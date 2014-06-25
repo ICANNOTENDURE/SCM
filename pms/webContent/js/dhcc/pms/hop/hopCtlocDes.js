@@ -3,48 +3,72 @@ $(function (){
 	var ctlocCombox=[$CommonUI.getComboBox('#comboCtloc'),$CommonUI.getComboBox('#ctlocDesDr')];
 	for(var i=0;i<ctlocCombox.length;i++){
 		ctlocCombox[i].combobox({
-			url:$WEB_ROOT_PATH+'/hop/hopCtlocCtrl!getCtlocList.htm',
-			valueField:'hopCtlocId',							
-			textField:'name'
+			url:$WEB_ROOT_PATH+'/hop/hopCtlocCtrl!findHopLocComboxVos.htm',
+			valueField:'id',							
+			textField:'name'	
 		});
 	}
-	
+	$CommonUI.getComboBox('#comboCtloc').combobox({
+		onSelect:function(rec){
+			$("#contact").combobox({
+				url:$WEB_ROOT_PATH+'/normalAccount/normalAccountCtrl!getUserByLoc.htm?locId='+rec.hopCtlocId,
+				valueField:'id',							
+				textField:'name',
+			});
+		}
+	});
 	$CommonUI.getDataGrid('#datagrid').datagrid({  
 	    url:$WEB_ROOT_PATH+'/hop/hopCtlocDestinationCtrl!listInfo.htm',	   
 	    method:'post',
 	    fit:true,
 	    columns:[[ 
-            {field:'ck1',checkbox:true},  
-	        {field:'hopCtlocDestinationId',title:'表ID',width:100}, 
-	        {field:'desCtlocDr',title:'科室表ID', hidden:true},
-	        {field:'desCtlocName',title:'科室描述',width:100},
+	        {field:'hopctlocdestinationid',title:'表ID',width:100,hidden:true}, 
+	        {field:'desctlocdr',title:'科室表ID', hidden:true},
+	        {field:'desctlocname',title:'科室描述',width:100},
 	        {field:'destination',title:'收货地点',width:100},  
-	        {field:'desContact',title:'联系人',width:100}, 
-	        {field:'desTel',title:'联系电话',width:100},  
+	        {field:'descontact',title:'联系人',width:100}, 
+	        {field:'destel',title:'联系电话',width:100},
+	        {field:'mail',title:'邮箱',width:100,},
+	        {field:'defaultdes',title:'默认',width:20,formatter: function(value,row,index){
+				if (row.hopctlocdestinationid==row.defaultdestion){
+					return "Y";
+				} else {
+					return "";
+				}
+			}
+	        },
 	    ]]	 
 	});
-	//新增或更新成功的回调函数
-	function succ(data){
-		var demoId=null;	
-		demoId=$('#ctlocDesDestail input[name="dto.hopCtlocDestination.hopCtlocDestinationId"]').val();	
-		if(demoId){
-			$CommonUI.alert("更新信息成功");
-		}else{
-			$CommonUI.alert("新增信息成功");
-		}
-		$("#datagrid").datagrid('reload');		
-		$("#detailWin").dialog('close');
-	}
 	
-	//新增或更新失败的回调函数
-	function err(xhr,textStatus,errorThrown){
-		$CommonUI.alert("执行失败");	
-	}	
 	
 	// hopCtlocDestination表新增和修改
 	$("#saveOrUpdateCtlocDesBtn").on('click', function() {
+		var isValid = $CommonUI.getForm('#ctlocDesDestail').form('validate');
+		if(!isValid){
+			return isValid;
+		}
 		$("#saveOrUpdateCtlocDesBtn").hide();
-		postReq($WEB_ROOT_PATH+'/hop/hopCtlocDestinationCtrl!save.htm',"#ctlocDesDestail",succ,err,{skipHidden:false});
+		//postReq($WEB_ROOT_PATH+'/hop/hopCtlocDestinationCtrl!save.htm',"#ctlocDesDestail",succ,err,{skipHidden:false});
+		
+		$.post(
+				$WEB_ROOT_PATH+'/hop/hopCtlocDestinationCtrl!save.htm',
+				{
+					'dto.hopCtlocDestination.hopCtlocDestinationId':$("#hopCtlocDestinationId").val(),
+					'dto.hopCtlocDestination.ctlocDr':$("#comboCtloc").combobox('getValue'),
+					'dto.hopCtlocDestination.contact':$("#contact").combobox('getValue'),
+					'dto.hopCtlocDestination.tel':$("#tel").val(),
+					'dto.hopCtlocDestination.mail':$("#mail").val(),
+					'dto.hopCtlocDestination.destination':$("#destination").val(),
+					'dto.defautFlag':($("#defaultFlag").attr("checked")=="checked")?1:0,
+				},
+				function(data){
+					$("#saveOrUpdateCtlocDesBtn").show();
+					$("#datagrid").datagrid('reload');
+					$CommonUI.alert("操作成功");
+					$("#detailWin").dialog("close");
+				},
+				'json'
+		);
 	});
 		
 	// 点击查询的提交按钮,查询hopCtlocDestination数据信息
@@ -53,11 +77,6 @@ $(function (){
 		 $("#datagrid").datagrid('load', json);
 		 $CommonUI.getDialog('#searchCtlocDesWin').dialog('close');
 	});
-		
-	
-	$('#title').css({width:500,height:60});
-	
-	$('#title1').css({width:500,height:60});
 });
 
 
@@ -80,7 +99,7 @@ function editRow() {
 	$("#saveOrUpdateCtlocDesBtn").show();	
 	$CommonUI.getForm('#ctlocdetail').form('clear');
 	var row =$("#datagrid").datagrid('getSelected');
-	var Id=row.hopCtlocDestinationId;
+	var Id=row.hopctlocdestinationid;
 	$("#detailWin").dialog("open");
 	$CommonUI.getDialog("#detailWin").dialog("setTitle","修改收货信息");
 	var url = $WEB_ROOT_PATH+'/hop/hopCtlocDestinationCtrl.htm?BLHMI=findById&dto.hopCtlocDestination.hopCtlocDestinationId='+Id;
@@ -88,6 +107,14 @@ function editRow() {
 		$CommonUI.fillBlock('#detailWin',data);
 	});
 	
+	$("#contact").combobox({
+		url:$WEB_ROOT_PATH+'/normalAccount/normalAccountCtrl!getUserByLoc.htm?locId='+row.desctlocdr,
+		valueField:'id',							
+		textField:'name',
+	});
+	if(row.defaultdestion==Id){
+		$("#defaultFlag").attr("checked",checked);
+	}
 }
 
 //刪除記錄

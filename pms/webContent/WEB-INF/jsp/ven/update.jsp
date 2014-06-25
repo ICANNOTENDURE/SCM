@@ -79,6 +79,11 @@
 					name="dto.vendor.alias" value="<s:property value="dto.vendor.alias"/>"></input></td>	
 				</tr>
 				<tr>
+					<td class="textLabel">邮箱:</td>
+					<td class="textParent"><input style="width: 250px;" type="text"
+						name="dto.vendor.email" value="<s:property value="dto.vendor.email"/>"></input></td>
+				</tr>
+				<tr>
 					<table id="subDetail">
 						<s:iterator value="dto.venQualifTypeVOList" status="all"
 							id="venQualifys">

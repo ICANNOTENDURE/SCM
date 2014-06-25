@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.mail.EmailException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -28,14 +29,19 @@ import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
+import com.dhcc.framework.util.SendMailUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.dto.sys.SysImpModelDto;
+import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
+import com.dhcc.pms.entity.hop.HopVendor;
+import com.dhcc.pms.entity.hop.Hospital;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.ImpModel;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.service.hop.HopCtlocService;
 import com.dhcc.pms.service.hop.HopIncService;
 import com.dhcc.pms.service.hop.HopVendorService;
@@ -454,6 +460,47 @@ public class OrderBlh extends AbstractBaseBlh {
 	public void complete(BusinessRequest res){
 		OrderDto dto = super.getDto(OrderDto.class, res);
 		orderService.complete(dto);
+		
+		
+		//发送邮件
+		String sub="";
+		StringBuffer msg = new StringBuffer();
+		String address="";
+		HopVendor HopVendor=commonService.get(HopVendor.class,dto.getOrder().getVendorId());
+		Vendor vendor=commonService.get(Vendor.class,HopVendor.getHopVenId());
+		if(StringUtils.isNullOrEmpty(vendor.getEmail())){
+			return;
+		}
+		Hospital Hospital=commonService.get(Hospital.class, dto.getOrder().getHopId());
+		HopCtlocDestination ctlocDestination=commonService.get(HopCtlocDestination.class,dto.getOrder().getRecDestination());
+		HopCtloc recLoc=commonService.get(HopCtloc.class,dto.getOrder().getRecLoc());
+		HopCtloc purloc=commonService.get(HopCtloc.class,dto.getOrder().getPurLoc());
+		
+//		if(!StringUtils.checkEmail(vendor.getEmail())){
+//			return;
+//		}
+		address=vendor.getEmail();
+		sub=Hospital.getHospitalName()+"订单";
+		msg.append("<h1>"+Hospital.getHospitalName()+"订单</h1>");
+		msg.append("<h4>单号:"+dto.getOrder().getOrderNo()+"</h4>");
+		if(dto.getOrder().getDeliveryDate()!=null){
+			msg.append("<br>要求送达时间:"+StringUtils.formatYearMonthDate(dto.getOrder().getDeliveryDate()));
+		}
+		msg.append("<br><h4>入库科室:"+purloc.getName()+"</h4>");
+		msg.append("<br><h4>收货科室:"+recLoc.getName()+"</h4>");
+		msg.append("<br><h4>收货地址:"+ctlocDestination.getDestination()+"</h4>");
+		msg.append("<br>订单以发出，请及时登录系统查看.");
+		msg.append("<br><br><br><br><br>");
+		msg.append("<br>地址:"+Hospital.getHospitalDestination());
+		msg.append("<br>电话:"+ctlocDestination.getTel());
+		msg.append("<br>邮箱:"+ctlocDestination.getMail());
+		try {
+			if(!StringUtils.isNullOrEmpty(address)){
+				SendMailUtil.sendEmail(sub, msg.toString(),address,60 * 1000);
+			}
+		} catch (EmailException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

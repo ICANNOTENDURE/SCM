@@ -69,6 +69,11 @@
 					name="dto.vendor.alias"></input></td>	
 			</tr>
 			<tr>
+				<td class="textLabel">邮箱:</td>
+				<td class="textParent"><input style="width: 250px;" type="text"
+					name="dto.vendor.email"></input></td>
+			</tr>
+			<tr>
 				<table id="subDetail">
 					<s:iterator value="dto.venQualifTypeList" status="all"
 						id="venQualifys">

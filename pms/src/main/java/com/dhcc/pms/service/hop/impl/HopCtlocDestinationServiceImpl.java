@@ -4,21 +4,17 @@
  */
 package com.dhcc.pms.service.hop.impl;
 
-import java.util.List;
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
 import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.PagerModel;
-
-import javax.annotation.Resource;
-
-import com.dhcc.pms.service.hop.HopCtlocDestinationService;
 import com.dhcc.pms.dao.hop.HopCtlocDestinationDao;
 import com.dhcc.pms.dto.hop.HopCtlocDestinationDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
-import com.dhcc.pms.entity.vo.hop.HopDestinationVo;
+import com.dhcc.pms.service.hop.HopCtlocDestinationService;
 
 @Service("hopCtlocDestinationService")
 public class HopCtlocDestinationServiceImpl implements HopCtlocDestinationService {
@@ -62,10 +58,8 @@ public class HopCtlocDestinationServiceImpl implements HopCtlocDestinationServic
 		return hopCtlocDestinationDao.getCtloc(dto);
 	}
 
-	public List<HopDestinationVo> getListInfo(HopCtlocDestinationDto dto) {
-		// hopCtlocDao.getListInfo(dto.getHopCtlocVos());
-		PagerModel pagerModel=dto.getPageModel();
-		return hopCtlocDestinationDao.getListInfo(pagerModel,dto.getHopDestinationVos(),dto.getHopCtlocDestination());
+	public void getListInfo(HopCtlocDestinationDto dto) {
+		hopCtlocDestinationDao.getListInfo(dto);
 	}
 
 	

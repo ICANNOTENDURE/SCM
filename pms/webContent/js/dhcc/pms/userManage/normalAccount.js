@@ -132,8 +132,7 @@ $(function(){
 				'normalAccountCtrl!saveNormalAccountRole.htm',
 				{
 					"normalAccountDto.accountId":accountId,
-					"normalAccountDto.roleId":roleId,
-					"normalAccountDto.systemType":$CommonUI.getComboBox('#systemTypeSelect').combobox('getValue')
+					"normalAccountDto.roleId":roleId
 				},
 				function(data){
 					if(data.message){

@@ -60,14 +60,29 @@ public class Vendor implements java.io.Serializable {
 	@Column(name="ALIAS")
 	private String alias;
 	
+	@Column(name="EMAIL")
+	private String email;
+	
 	@Transient
 	private List<VenQualification> venQualificationList;
 	
 	
     
 	
+	
 
-
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	/**
 	 * @return the alias
 	 */

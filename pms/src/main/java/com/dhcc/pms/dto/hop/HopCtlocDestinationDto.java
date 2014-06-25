@@ -16,6 +16,10 @@ public class HopCtlocDestinationDto extends BaseDto {
 	private HopCtlocDestination hopCtlocDestination;
 
 	private Long hopCtlocDr;
+	
+	private String defautFlag;
+	
+	
 	//显示收货信息
 	private List<HopDestinationVo> hopDestinationVos;
 	
@@ -26,6 +30,23 @@ public class HopCtlocDestinationDto extends BaseDto {
 
 	public void setHopCtlocDr(Long hopCtlocDr) {
 		this.hopCtlocDr = hopCtlocDr;
+	}
+	
+	
+
+	/**
+	 * @return the defautFlag
+	 */
+	public String getDefautFlag() {
+		return defautFlag;
+	}
+
+
+	/**
+	 * @param defautFlag the defautFlag to set
+	 */
+	public void setDefautFlag(String defautFlag) {
+		this.defautFlag = defautFlag;
 	}
 
 

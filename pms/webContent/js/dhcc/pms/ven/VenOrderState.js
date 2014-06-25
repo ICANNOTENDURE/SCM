@@ -15,7 +15,7 @@ $(function (){
 	    singleSelect:true,
 	    pagination:true,
 	    rownumbers:true,
-	    title:'订单状态查询(双击行查看明细)',
+	    title:'确认订单(双击行查看明细)',
 	    queryParams: {
 			'dto.state': 1,
 			"dto.reqStDate":$("#reqStDate").datebox('getValue'),

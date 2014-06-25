@@ -32,13 +32,11 @@ public class SendMailUtil {
 
 		HtmlEmail email = new HtmlEmail();
 		email.setHostName(PropertiesBean.getInstance().getProperty("mail.host"));
-		email.setSslSmtpPort(PropertiesBean.getInstance().getProperty(
-				"mail.port"));
-		email.setAuthenticator(new DefaultAuthenticator(PropertiesBean
-				.getInstance().getProperty("mail.username"), PropertiesBean
-				.getInstance().getProperty("mail.pwd")));
-		email.setSSLOnConnect(Boolean.parseBoolean(PropertiesBean.getInstance()
-				.getProperty("mail.ssl")));
+		email.setSslSmtpPort(PropertiesBean.getInstance().getProperty("mail.port"));
+		email.setAuthenticator(new DefaultAuthenticator(
+				PropertiesBean.getInstance().getProperty("mail.username"), 
+				PropertiesBean.getInstance().getProperty("mail.pwd")));
+		email.setSSLOnConnect(Boolean.parseBoolean(PropertiesBean.getInstance().getProperty("mail.ssl")));
 		email.setCharset("utf-8");
 		email.setFrom(PropertiesBean.getInstance().getProperty("mail.username"));
 		email.setDebug(Boolean.parseBoolean(PropertiesBean.getInstance()
