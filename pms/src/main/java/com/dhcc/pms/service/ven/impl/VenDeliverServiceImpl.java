@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.dhcc.pms.dao.ven.VenDeliverDao;
 import com.dhcc.pms.dto.ven.VenDeliverDto;
+import com.dhcc.pms.entity.ven.VenDeliver;
 import com.dhcc.pms.service.ven.VenDeliverService;
 
 @Service("venDeliverService")
@@ -22,9 +23,9 @@ public class VenDeliverServiceImpl implements VenDeliverService {
 	 * @see com.dhcc.pms.service.ven.VenDeliverService#AccectOrder(java.lang.Long)
 	 */
 	@Override
-	public void AccectOrder(Long orderId) {
+	public void AccectOrder(VenDeliverDto dto) {
 		// TODO Auto-generated method stub
-		venDeliverDao.AccectOrder(orderId);
+		venDeliverDao.AccectOrder(dto);
 	}
 
 	/* (non-Javadoc)

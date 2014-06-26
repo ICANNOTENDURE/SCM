@@ -468,6 +468,9 @@ public class OrderBlh extends AbstractBaseBlh {
 		String address="";
 		HopVendor HopVendor=commonService.get(HopVendor.class,dto.getOrder().getVendorId());
 		Vendor vendor=commonService.get(Vendor.class,HopVendor.getHopVenId());
+		if(vendor==null){
+			return;
+		}
 		if(StringUtils.isNullOrEmpty(vendor.getEmail())){
 			return;
 		}

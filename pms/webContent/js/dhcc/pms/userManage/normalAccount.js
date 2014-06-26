@@ -261,13 +261,19 @@ function editNormalAccount(){
 		}
 		if([row.normalUser.vendorId]!=null){
 			$("#ven").combobox({
-				url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm",
+				url:$WEB_ROOT_PATH+"/ven/vendorCtrl!getVenCombox.htm", //+[row.normalUser.vendorId],
 		    	panelHeight:"auto",
 		        valueField:'vendorId',  
 		        textField:'name',
 		        mode: 'remote',
+		        onBeforeLoad: function(param){
+		        		if((parseInt(venFlag)!==parseInt([row.normalUser.vendorId]))){
+			        		param.venid = [row.normalUser.vendorId];
+			    			venFlag=[row.normalUser.vendorId];
+		        		}
+		    	}
 			});
-			$CommonUI.getComboGrid('#ven').combobox('setValues', [row.normalUser.vendorId]);
+			$CommonUI.getComboGrid('#ven').combobox('setValue', [row.normalUser.vendorId]);
 		}
 		$CommonUI.getDateBox('#updateTime').datebox('setValue', new Date(row.updateTime).format("yyyy-MM-dd"));
 		$CommonUI.getDateBox('#loginTime').datebox('setValue', new Date(row.loginTime).format("yyyy-MM-dd"));
@@ -411,7 +417,8 @@ function clear(){
 }
 
 
-
+var first=0;
+var venFlag;
 
 
 

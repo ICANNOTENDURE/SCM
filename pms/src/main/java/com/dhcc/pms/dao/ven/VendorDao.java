@@ -18,8 +18,8 @@ import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.util.PingYinUtil;
 import com.dhcc.framework.util.StringUtils;
+import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ven.VendorDto;
-import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.ven.VenQualifPic;
 import com.dhcc.pms.entity.ven.VenQualification;
 import com.dhcc.pms.entity.ven.Vendor;
@@ -190,20 +190,25 @@ public class VendorDao extends HibernatePersistentObjectDAO<Vendor> {
 		hqlBuffer.append(" t.vendorId, ");
 		hqlBuffer.append(" t.name ) ");
 		hqlBuffer.append(" from Vendor t ");
+		hqlBuffer.append(" where 1=1 ");
 		if(dto.getVendor()!=null){
 			if(dto.getVendor().getName()!=null){
-				hqlBuffer.append("where  t.name like :name");
+				hqlBuffer.append("and  (t.name like :name");
 				hqlParamMap.put("name", dto.getVendor().getName()+"%");
-				hqlBuffer.append(" or t.alias like :alias");
+				hqlBuffer.append(" or t.alias like :alias )");
 				hqlParamMap.put("alias", dto.getVendor().getName()+"%");
 			}
 		}
 		if(!StringUtils.isNullOrEmpty(dto.getComgridparam())){
-				hqlBuffer.append("where t.name like :name");
+				hqlBuffer.append("and (t.name like :name");
 				hqlParamMap.put("name", dto.getComgridparam()+"%");
-				hqlBuffer.append(" or t.alias like :alias");
+				hqlBuffer.append(" or t.alias like :alias )");
 				hqlParamMap.put("alias", dto.getComgridparam()+"%");
 			
+		}
+		if(!StringUtils.isNullOrEmpty(WebContextHolder.getContext().getRequest().getParameter("venid"))){
+			hqlBuffer.append(" and t.vendorId =:yyy ");
+			hqlParamMap.put("yyy", Long.valueOf(WebContextHolder.getContext().getRequest().getParameter("venid")));
 		}
 		return (List<Vendor>)super.findByHqlWithValuesMap(hqlBuffer.toString(),1,20,hqlParamMap,true);
 		

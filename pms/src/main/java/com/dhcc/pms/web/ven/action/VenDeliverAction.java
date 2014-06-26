@@ -35,6 +35,7 @@ import com.dhcc.pms.dto.ven.VenDeliverDto;
 			  @JResult(BlhMethod="sendDeliver",ognlExpress="dto"),
 			  @JResult(BlhMethod="delete",ognlExpress="dto"),
 			  @JResult(BlhMethod="cancelComplete",ognlExpress="dto"),
+			  @JResult(BlhMethod="createDelByOrder",ognlExpress="dto"),
 			  @JResult(BlhMethod="saveMain",ognlExpress="dto")})
 public class VenDeliverAction extends BaseAction {
 	

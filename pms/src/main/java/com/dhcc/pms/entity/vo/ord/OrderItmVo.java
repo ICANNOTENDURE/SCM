@@ -28,11 +28,25 @@ public class OrderItmVo implements java.io.Serializable{
 	
 	private Long rp;
 	
+	private Float delqty;
 	
 	
 	
 	
-	
+
+	/**
+	 * @return the delqty
+	 */
+	public Float getDelqty() {
+		return delqty;
+	}
+
+	/**
+	 * @param delqty the delqty to set
+	 */
+	public void setDelqty(Float delqty) {
+		this.delqty = delqty;
+	}
 
 	/**
 	 * @return the orderid

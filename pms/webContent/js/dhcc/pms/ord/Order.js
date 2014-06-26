@@ -250,6 +250,9 @@ function endEditing(){
 
 
 function onClickCell(index, field){
+	if($("#orderState").val()!=""){
+		return;
+	}
 	if (endEditing()){
 		$('#datagrid').datagrid('selectRow', index).datagrid('editCell', {index:index,field:field});
 		editIndex = index;
@@ -258,6 +261,9 @@ function onClickCell(index, field){
 
 
 function append() {
+	if($("#orderState").val()!=""){
+		return;
+	}
     if (endEditing()) {
     	//orderid=$('#datagrid').datagrid('getRows')[0]['orderid'];
     	orderid=$("#orderId").val();
@@ -415,8 +421,11 @@ function onAfterEdit(rowIndex, rowData, changes){
 
 
 function deleteR(value,row,index){
-	return '<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:deleterow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-cancel l-btn-icon-left">删除</span></span></a>';
-	//return '<a href="#" onclick="deleterow('+index+')">删除</a>';
+	if($("#orderState").val()!=""){
+		return "";
+	}else{
+		return '<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:deleterow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-cancel l-btn-icon-left">删除</span></span></a>';
+	}//return '<a href="#" onclick="deleterow('+index+')">删除</a>';
 }
 function deleterow(index){
 	orderitmid=$('#datagrid').datagrid('getRows')[index]['orderitmid'];
@@ -549,7 +558,7 @@ function complete(){
 			 },
 			 function(data){
 				 if(data.dto.opFlg=="1"){
-	
+					 $('#datagrid').datagrid('reload');
 					 $CommonUI.alert("确认成功");
 					 $("#orderState").val("新建");
 				 }else{
@@ -579,7 +588,7 @@ function canclecomplete(){
 			 },
 			 function(data){
 				 if(data.dto.opFlg=="1"){
-	
+					 $('#datagrid').datagrid('reload');
 					 $CommonUI.alert("操作成功");
 					 $("#orderState").val("");
 				 }else{

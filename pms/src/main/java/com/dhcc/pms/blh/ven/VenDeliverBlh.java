@@ -128,7 +128,8 @@ public class VenDeliverBlh extends AbstractBaseBlh {
 		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
 		
 		VenDeliveritm venDeliveritm=commonService.get(VenDeliveritm.class, dto.getVenDeliveritm().getDeliveritmId());
-		if(commonService.get(ExeState.class, venDeliveritm.getDeliveritmParentid()).getStateId().toString().equals("6")){
+		VenDeliver venDeliver=commonService.get(VenDeliver.class, venDeliveritm.getDeliveritmParentid());
+		if(commonService.get(ExeState.class,venDeliver.getDeliverExestateid()).getStateId().toString().equals("6")){
 			dto.setOpFlg("2");
 			return;
 		}
@@ -515,5 +516,20 @@ public void upload(BusinessRequest res){
 	public void cancelComplete(BusinessRequest res){
 		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
 		venDeliverService.cancelComplete(dto);
+	}
+	
+	/**
+	 * 
+	* @Title: VenDeliverBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月26日 下午2:22:48
+	* @version V1.0
+	 */
+	public void createDelByOrder(BusinessRequest res){
+		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
+		venDeliverService.AccectOrder(dto);
 	}
 }

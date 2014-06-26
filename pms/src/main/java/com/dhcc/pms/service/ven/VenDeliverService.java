@@ -18,7 +18,7 @@ public interface VenDeliverService {
 	* @date 2014年6月18日 下午4:26:10
 	* @version V1.0
 	 */
-	public void AccectOrder(Long orderId);
+	public void AccectOrder(VenDeliverDto dto);
 	
 	/**
 	 * 

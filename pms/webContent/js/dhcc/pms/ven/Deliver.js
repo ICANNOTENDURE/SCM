@@ -74,19 +74,107 @@ $(function (){
 			textField:'name'
 	});
 	
-	$CommonUI.getComboBox('#hopSearch').combobox({
-		url:$WEB_ROOT_PATH+'/hop/hospitalCtrl!getHospInfo.htm',
-		valueField:'hospitalId',							
-		textField:'hospitalName'
-	});
+
+	var hopCombox=[$('#hopSearch'),$('#hopSearchOrder')];
+	for(var i=0;i<hopCombox.length;i++){
+		hopCombox[i].combobox({
+			url:$WEB_ROOT_PATH+'/hop/hospitalCtrl!getHospInfo.htm',
+			valueField:'hospitalId',							
+			textField:'hospitalName'	
+		});
+	}
+	
 	
 	$('#delFlag').combobox({
-		url:getContextPath()+'/ord/orderStateCtrl!getComboList.htm',
+		url:$WEB_ROOT_PATH+'/ord/orderStateCtrl!getComboList.htm',
 		valueField:'stateSeq',							
 		textField:'stateName'	
 	});
 	$('#delFlag').combobox('setValue',2);
 	
+	
+	$('#searchOrderBTN').on('click',function(){
+		
+			date=new Date();
+			dateAdd(date,'D',-30);
+			$('#ordStDate').datebox('setValue',date.format("yyyy-MM-dd"));
+			$('#ordEdDate').datebox('setValue',new Date().format("yyyy-MM-dd"));
+			$('#searchOrderTable').datagrid({
+				url:$WEB_ROOT_PATH+'/ord/orderStateCtrl!list.htm',
+				queryParams: {
+					'dto.stdate': $('#ordStDate').datebox('getValue'),
+					'dto.eddate': $('#ordEdDate').datebox('getValue'),
+					'dto.cmpFlag':1
+				},
+				onLoadSuccess: function (data) {
+				 	$('#searchOrderTable').datagrid('selectRow', 0);
+				 	$("#searchOrderTableItm").datagrid({
+			 			url:$WEB_ROOT_PATH+'/ord/orderStateCtrl!listOrdItm.htm',
+						queryParams: {
+							'dto.exeState.ordId': $('#searchOrderTable').datagrid('getRows')[0]['orderid'],
+							}
+		 				}
+				 	);
+			 	 }
+			});
+			$('#searchOrder').dialog('open');			
+		}	
+	);
+	
+	$("#searchOrderTool").on('click', function() {
+		 $("#searchOrderTable").datagrid('load', {
+			 'dto.stdate': $('#ordStDate').datebox('getValue'),
+			 'dto.eddate': $('#ordEdDate').datebox('getValue'),
+			 "dto.cmpFlag":1,
+			 "dto.hopId":$("#hopSearchOrder").combobox('getValue'),
+		 });
+		
+	});
+	
+	 $("#selectOrderTool").on('click',function(){
+		 	rowData=$("#searchOrderTable").datagrid('getSelected');
+		    str="医院:"+rowData.hopname;
+	    	str=str+"\r\nHIS单号:"+rowData.hisno;
+	    	str=str+"\r\n入库科室:"+rowData.purloc;
+	    	str=str+"\r\n收货科室:"+rowData.recloc;
+	    	str=str+"\r\n收货地址:"+rowData.destination;
+	    	$("#deliverInfo").html(str);
+	    	
+	    	$.post(
+	    			$WEB_ROOT_PATH+'/ven/venDeliverCtrl!createDelByOrder.htm',
+	   			 	{
+	   				 	"dto.venDeliver.deliverOrderid":rowData.orderid,
+	   			 	},
+	    			function(data){
+	   			 		if(data.dto.opFlg=="1"){
+	   			 			$("#deliveryId").val(data.dto.venDeliver.deliverId);
+	   			 			$CommonUI.getDataGrid('#datagrid').datagrid('load',{
+	   			 				'dto.venDeliver.deliverId':data.dto.venDeliver.deliverId
+	   			 			});
+	   			 			$("#deliveryState").val("接收");
+	   			 			$('#searchOrder').dialog('close');
+	   			 		}
+	    			},
+	    			'json'
+	    	);
+		 
+	 });
+	 
+	
+	 $("#searchOrderTable").datagrid({
+		 	onClickRow:function(rowIndex,rowData){
+		 		$("#searchOrderTableItm").datagrid({
+		 			url:$WEB_ROOT_PATH+'/ord/orderStateCtrl!listOrdItm.htm',
+					queryParams: {
+						'dto.exeState.ordId': rowData.orderid,
+						}
+	 				}
+		 		);
+		    },
+	 		onDbClickRow:function(rowIndex,rowData){
+	 			
+	 		}
+	 });
 
 });
 
@@ -103,10 +191,12 @@ function endEditing(){
     }
 }
 function onClickRow(index){
+	if($("#deliveryState").val()!="接收"){
+		return;
+	}
     if (editIndex != index){
         if (endEditing()){
-            $('#datagrid').datagrid('selectRow', index)
-                    .datagrid('beginEdit', index);
+            $('#datagrid').datagrid('selectRow', index).datagrid('beginEdit', index);
             editIndex = index;
         } else {
             $('#datagrid').datagrid('selectRow', editIndex);
@@ -476,61 +566,6 @@ function addrow(index){
 			 );
 
 	}
-	
-	
-	
-	
-	//查询订单
-	function searchOrder(){
-		
-		$('#searchOrder').dialog('open');
-		
-
-		
-		$('#searchOrderTable').datagrid({  
-		    url:$WEB_ROOT_PATH+'/ven/venDeliverCtrl!listDeliver.htm',
-		    method:'post',
-		    fit:true,
-		    toolbar:'#searchOrdertoolbar',
-		    loadMsg:'加载数据中.....',
-		    pagination:true,
-		    fitColumns:true,
-		    rownumbers:true,
-		    queryParams:{
-		    	'dto.state':2
-		    },
-		    onDblClickRow:function(rowIndex, rowData){
-		    	$("#searchDeliver").dialog('close');
-		    	str="医院:"+rowData.hopname;
-		    	str=str+"\r\nHIS单号:"+rowData.hisno;
-		    	str=str+"\r\n入库科室:"+rowData.purloc;
-		    	str=str+"\r\n收货科室:"+rowData.recloc;
-		    	str=str+"\r\n收货地址:"+rowData.destination;
-		    	$("#deliverInfo").html(str);
-		    	$("#remark").val(rowData.remark);
-		    	$("#deliveryState").val(rowData.statedesc);
-		    	$("#deliveryId").val(rowData.deliverid);
-		    	$("#deliveryDate").datetimebox("setValue",rowData.deliveraccpectdate);
-		    	$CommonUI.getDataGrid('#datagrid').datagrid('load',{
-		    		'dto.venDeliver.deliverId':rowData.deliverid
-	    		});
-		    },
-		    columns:[[  
-		  	        {field:'deliverid',hidden:true},
-		  	        {field:'hisno',title:'HIS单号',width:100},
-		  	        {field:'statedesc',title:'状态',width:100,sortable:true},
-		  	        {field:'emflag',title:'加急',width:100,sortable:true},
-		  	        {field:'purloc',title:'入库科室',width:150,sortable:true},  
-		  	        {field:'recloc',title:'收货科室',width:150,sortable:true},
-		  	        {field:'destination',title:'收货地址',width:200,sortable:true},
-		  	        {field:'hopname',title:'医院',width:150,sortable:true},
-		  	        {field:'deliverydate',title:'发货时间',width:100,sortable:true},
-		  	        {field:'deliveraccpectdate',title:'接收时间',width:100,sortable:true}
-		  	 ]]
-		});
-		
-		
-	}	
 	
 	
 }

@@ -52,8 +52,9 @@ $(function (){
 				} else {
 					return str;
 				}
-			}},     
-	        {field:'orderid',title:'单号',width:100},
+			}},
+			{field:'hisno',title:'单号',width:100},
+	        {field:'orderid',width:100,hidden:true},
 	        {field:'statedesc',title:'状态',width:100,sortable:true},
 	        {field:'emflag',title:'加急',width:100,sortable:true},
 	        {field:'hopname',title:'医院',width:150,sortable:true}, 

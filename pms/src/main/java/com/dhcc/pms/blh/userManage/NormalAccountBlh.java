@@ -109,7 +109,12 @@ public class NormalAccountBlh extends AbstractBaseBlh{
 						normalAccountDto.getNormalAccount().getNormalUser().setRegTime(normalAccountDto.getNormalAccount().getRegTime());
 						normalAccountDto.getNormalAccount().getNormalUser().setUpdateTime(normalAccountDto.getNormalAccount().getUpdateTime());
 						normalAccountDto.getNormalAccount().getNormalUser().setUseState(normalAccountDto.getNormalAccount().getUseState());
-						
+						if(normalAccountDto.getNormalAccount().getNormalUser().getType().toString().equals("1")){
+							normalAccountDto.getNormalAccount().getNormalUser().setVendorId(null);
+						}
+						if(normalAccountDto.getNormalAccount().getNormalUser().getType().toString().equals("2")){
+							normalAccountDto.getNormalAccount().getNormalUser().setLocId(null);
+						}
 						this.normalAccountService.update(normalAccountDto);
 						this.normalAccountService.saveNormalAccountRole(normalAccountDto);
 						normalAccountDto.setMessage("更新成功");

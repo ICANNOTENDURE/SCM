@@ -15,8 +15,10 @@ import com.dhcc.framework.common.PagerModel;
 import com.dhcc.pms.dao.ord.OrderDao;
 import com.dhcc.pms.dao.ven.VenDeliverDao;
 import com.dhcc.pms.dto.ord.OrderDto;
+import com.dhcc.pms.dto.ven.VenDeliverDto;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.ven.VenDeliver;
 import com.dhcc.pms.entity.vo.ord.ExportOrderVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartPicVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartVo;
@@ -178,7 +180,11 @@ public class OrderServiceImpl implements OrderService {
 	public void exeOrder(OrderDto dto) {
 		// TODO Auto-generated method stub
 		orderDao.exeOrder(dto);
-		venDeliverDao.AccectOrder(dto.getOrder().getOrderId());
+		VenDeliverDto venDeliverDto=new VenDeliverDto();
+		VenDeliver VenDeliver=new VenDeliver();
+		VenDeliver.setDeliverOrderid(dto.getOrder().getOrderId());
+		venDeliverDto.setVenDeliver(VenDeliver);
+		venDeliverDao.AccectOrder(venDeliverDto);
 	}
 
 	/* (non-Javadoc)

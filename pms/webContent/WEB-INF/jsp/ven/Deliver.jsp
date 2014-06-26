@@ -25,8 +25,8 @@
 				data-options="iconCls:'icon-save',plain:true">保存</a>	
 			<a  class="linkbutton" onclick="javascript:searchDeliver()"
 				data-options="iconCls:'icon-search',plain:true">查询发货单</a>
-			<a  class="linkbutton" onclick="javascript:searchOrder()"
-				data-options="iconCls:'icon-search',plain:true">查询订单</a>		
+			<a  class="linkbutton" 
+				data-options="iconCls:'icon-search',plain:true" id="searchOrderBTN">查询订单</a>		
 			<a  class="linkbutton" onclick="javascript:send()"
 				data-options="iconCls:'icon-save',plain:true" id="send">发货</a>
 			<a  class="linkbutton" onclick="javascript:deleteOrder()"
@@ -124,10 +124,12 @@
 	
 	<!-- 弹出查询发货单 -->
 	<div id="searchDeliver" class="dialog" title="查询发货单（双击选择）"
-		data-options="modal:true,width:1000,height:450,closed:true,maximizable:true"
+		data-options="width:1000,height:450,closed:true,maximizable:true"
 		style="vertical-align: middle">
-		<table id="searchDeliverTable" />
+		<table id="searchDeliverTable" class="datagrid"></table>
 	</div>
+	
+	
 	<!-- 弹出查询发货toolbar-->
 	<div id="searchDeltoolbar" style="height: auto">
 		  <div  style="margin-bottom:5px;margin-top:5px">
@@ -153,6 +155,82 @@
 		</div>
 		
 		
+		
+		<!-- 弹出查询发货单 -->
+	<div id="searchOrder" class="dialog" title="查询未发完订单（双击选择）"
+		data-options="width:1000,height:450,closed:true,maximizable:true"
+		style="vertical-align: middle">
+		<div class="layout" data-options="fit:true,border:true">
+			 <div data-options="region:'north',iconCls:'icon-ok',split:true" style="height: 200px">
+			 	<table id="searchOrderTable" class="datagrid" data-options="toolbar:'#searchOrdtoolbar',
+			 															   pagination:true,
+			 															   fit:true,
+			 															   loadMsg:'加载数据中.....',
+			 															   fitColumns:true,
+			 															   method:'post',
+			 															   nowrap:true,
+			 															   striped:true,
+			 															   pageSize: 5,
+    																	   pageList: [5, 10, 15],
+			 															   ">
+			 		<thead>
+					<tr>
+						<th data-options="field:'orderid',hidden:true"></th>
+						<th data-options="field:'hisno',width:90">订单号</th>
+						<th data-options="field:'hopname',width:90">医院</th>
+						<th data-options="field:'statedesc',width:90">状态</th>
+						<th data-options="field:'emflag',width:90">加急</th>
+						<th data-options="field:'purloc',width:90">入库科室</th>
+						<th data-options="field:'recloc',width:150">收货科室</th>
+						<th data-options="field:'destination',width:200">收货地址</th>
+			 	    </tr>
+			 	    </thead>
+			 	
+			 	</table>
+			 </div>
+			 
+			 <div data-options="region:'center',iconCls:'icon-ok'" style="height: 200px">
+			 	<table id="searchOrderTableItm" class="datagrid" data-options="title:'订单明细',
+			 																   pagination:true,
+			 																   nowrap:true,				
+			 																   fit:true,
+			 																   loadMsg:'加载数据中.....',
+			 																   fitColumns:true,
+			 																   method:'post',
+			 																   pageSize: 5,
+    																		   pageList: [5, 10, 15],
+    																		   striped:true,
+    																		   singleSelect:true,
+    																		   rownumbers:true,
+    																		   " >
+			 		<thead>
+					<tr>
+						<th data-options="field:'inccode',width:90">代码</th>
+						<th data-options="field:'incname',width:150">名称</th>
+						<th data-options="field:'qty',width:90">数量</th>
+						<th data-options="field:'rp',width:90">进价</th>
+						<th data-options="field:'uom',width:100">单位</th>
+						<th data-options="field:'delqty',width:90">已发货数量</th>
+						<th data-options="field:'manf',width:200">产地</th>
+			 	    </tr>
+			 	    </thead>
+			 	</table>
+			 </div>
+		</div>
+	</div>
+	
+	
+	<!-- 弹出查询发货toolbar-->
+	<div id="searchOrdtoolbar" style="height: auto">
+		  <div  style="margin-bottom:5px;margin-top:5px">
+			开始: <input class="datebox" style="width:100px" id="ordStDate">
+			结束: <input class="datebox" style="width:100px" id="ordEdDate">
+			医院:
+			<input class="combobox" panelHeight="auto" style="width:100px" id="hopSearchOrder"/>
+		 	<a href="#" class="linkbutton" iconCls="icon-search" id="searchOrderTool">查询</a>
+		 	<a href="#" class="linkbutton" iconCls="icon-search" id="selectOrderTool">选择</a>
+		 </div>
+		</div>
 						
 </body>
 </html>

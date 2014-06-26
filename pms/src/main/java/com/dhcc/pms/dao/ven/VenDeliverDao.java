@@ -59,10 +59,10 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	* @version V1.0
 	 */
 	@SuppressWarnings("unchecked")
-	public void AccectOrder(Long orderId){
+	public void AccectOrder(VenDeliverDto dto){
 		StringBuilder hqlStr = new StringBuilder();
 		
-		Order order=super.get(Order.class, orderId);
+		Order order=super.get(Order.class, dto.getVenDeliver().getDeliverOrderid());
 		VenDeliver venDeliver=new VenDeliver();
 		venDeliver.setDeliverHopid(order.getHopId());
 		venDeliver.setDeliverOrderid(order.getOrderId());
@@ -86,21 +86,28 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		
 		venDeliver.setDeliverExestateid(exeState.getExestateId());
 		super.saveOrUpdate(venDeliver);
+		dto.setVenDeliver(venDeliver);
 		//更新发货主表
 		
 		hqlStr.delete(0, hqlStr.length());
 		hqlStr.append(" from OrderItm t where t.ordId=?");
-		List<OrderItm> orderItms=super.findByHql(hqlStr.toString(), orderId);
+		List<OrderItm> orderItms=super.findByHql(hqlStr.toString(), dto.getVenDeliver().getDeliverOrderid());
 		for(OrderItm tmpOrderItm:orderItms){
-			VenDeliveritm venDeliveritm=new VenDeliveritm();
-			venDeliveritm.setDeliveritmHopincid(tmpOrderItm.getIncId());
-			venDeliveritm.setDeliveritmOrderitmid(tmpOrderItm.getOrderitmId());
-			venDeliveritm.setDeliveritmParentid(venDeliver.getDeliverId());
-			venDeliveritm.setDeliveritmQty(tmpOrderItm.getReqqty());
-			venDeliveritm.setDeliveritmUom(tmpOrderItm.getUom());
-			venDeliveritm.setDeliveritmRp(tmpOrderItm.getRp());
-			venDeliveritm.setDeliveritmVenincid(hopIncDao.getVenIncByHopInc(tmpOrderItm.getIncId()));
-			super.saveOrUpdate(venDeliveritm);
+			if((tmpOrderItm.getFlag()==null)||(tmpOrderItm.getFlag().toString().equals("1"))){
+				VenDeliveritm venDeliveritm=new VenDeliveritm();
+				venDeliveritm.setDeliveritmHopincid(tmpOrderItm.getIncId());
+				venDeliveritm.setDeliveritmOrderitmid(tmpOrderItm.getOrderitmId());
+				venDeliveritm.setDeliveritmParentid(venDeliver.getDeliverId());
+				if(tmpOrderItm.getDeliverqty()==null){
+					venDeliveritm.setDeliveritmQty(tmpOrderItm.getReqqty());
+				}else{
+					venDeliveritm.setDeliveritmQty(tmpOrderItm.getReqqty().floatValue()-tmpOrderItm.getDeliverqty().floatValue());
+				}
+				venDeliveritm.setDeliveritmUom(tmpOrderItm.getUom());
+				venDeliveritm.setDeliveritmRp(tmpOrderItm.getRp());
+				venDeliveritm.setDeliveritmVenincid(hopIncDao.getVenIncByHopInc(tmpOrderItm.getIncId()));
+				super.saveOrUpdate(venDeliveritm);
+			}
 		}
 		//保存发货明细表
 	}
@@ -506,10 +513,13 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			if(tmpVenDeliveritm.getDeliveritmQty()==null){
 				tmpVenDeliveritm.setDeliveritmQty(0f);
 			}
-			Float deliverqty=orderItm.getDeliverqty()+tmpVenDeliveritm.getDeliveritmQty();
+			Float deliverqty=orderItm.getDeliverqty().floatValue()+tmpVenDeliveritm.getDeliveritmQty().floatValue();
+			//logger.info("deliverqty:"+deliverqty);
+			//logger.info("deliverqty1:"+orderItm.getDeliverqty().floatValue());
+			//logger.info("deliverqty2:"+tmpVenDeliveritm.getDeliveritmQty().floatValue());
 			orderItm.setDeliverqty(deliverqty);
 			orderItm.setFlag(Long.valueOf("1"));
-			if((orderItm.getDeliverqty()-orderItm.getReqqty())>=0){
+			if((orderItm.getDeliverqty().floatValue()-orderItm.getReqqty().floatValue())>=0){
 				orderItm.setFlag(Long.valueOf("2"));
 			}
 			super.saveOrUpdate(orderItm);
@@ -590,7 +600,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			if(tmpVenDeliveritm.getDeliveritmQty()==null){
 				tmpVenDeliveritm.setDeliveritmQty(0f);
 			}
-			Float deliverqty=orderItm.getDeliverqty()-tmpVenDeliveritm.getDeliveritmQty();
+			Float deliverqty=orderItm.getDeliverqty().floatValue()-tmpVenDeliveritm.getDeliveritmQty().floatValue();
 			orderItm.setDeliverqty(deliverqty);
 			orderItm.setFlag(Long.valueOf("1"));
 			super.saveOrUpdate(orderItm);
@@ -650,11 +660,16 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			if(tmpVenDeliveritm.getDeliveritmQty()==null){
 				tmpVenDeliveritm.setDeliveritmQty(0f);
 			}
-			Float deliverqty=orderItm.getDeliverqty()-tmpVenDeliveritm.getDeliveritmQty();
+			Float deliverqty=orderItm.getDeliverqty().floatValue()-tmpVenDeliveritm.getDeliveritmQty().floatValue();
 			orderItm.setDeliverqty(deliverqty);
 			orderItm.setFlag(Long.valueOf("1"));
 			super.saveOrUpdate(orderItm);
 		}
 		
 	}
+	
+	
+	
+	
+	
 }

@@ -134,6 +134,15 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 			hqlBuffer.append("and t1.recloc=:recloc ");
 			hqlParamMap.put("recloc", dto.getRecLoc());
 		}
+		if((dto.getCmpFlag()!=null)&&(dto.getCmpFlag().toString().equals("1"))){
+			hqlBuffer.append("and t1.ORD_FLAG=:cmpflag ");
+			hqlParamMap.put("cmpflag", dto.getCmpFlag());
+		}
+		if(dto.getHopId()!=null){
+			hqlBuffer.append("and t1.HOP_ID=:hopid ");
+			hqlParamMap.put("hopid", dto.getHopId());
+		}
+		
 		Long userType=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
 		if(userType==null){
 			return;
@@ -227,6 +236,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("t2.inc_code as inccode, ");
 		hqlBuffer.append("t1.reqqty as qty , ");
 		hqlBuffer.append("t1.rp as rp, ");
+		hqlBuffer.append("t1.DELIVERQTY as delqty, ");
 		hqlBuffer.append("t1.uom as uom, ");
 		hqlBuffer.append("t3.name as manf ");
 		hqlBuffer.append("from t_ord_orderitm t1 ");
@@ -234,6 +244,10 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("left join t_hop_manf t3 on t2.inc_manfid=t3.id ");
 		hqlBuffer.append("where 1=1 ");
 		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+		if(dto.getCmpFlag()!=null){
+			hqlBuffer.append("and t1.flag=:cmpflag ");
+			hqlParamMap.put("cmpflag", dto.getCmpFlag());
+		}
 		if(dto.getPageModel()==null){
 			PagerModel pagerModel=new PagerModel();
 			pagerModel.setPageNo(1);
