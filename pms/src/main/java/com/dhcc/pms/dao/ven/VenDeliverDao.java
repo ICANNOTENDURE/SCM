@@ -196,7 +196,10 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			hqlBuffer.append("and t1.DELIVER_VENDORID=:venId ");
 			hqlParamMap.put("venId", WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
 		}
-		
+		if(type==1){
+			hqlBuffer.append("and t1.deliver_hopid=:hopId2 ");
+			hqlParamMap.put("hopId2", WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+		}
 		
 		dto.getPageModel().setQueryHql(hqlBuffer.toString());
 		dto.getPageModel().setHqlParamMap(hqlParamMap);

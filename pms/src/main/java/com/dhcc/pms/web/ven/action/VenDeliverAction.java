@@ -26,7 +26,8 @@ import com.dhcc.pms.dto.ven.VenDeliverDto;
 @Action(value = "venDeliverCtrl", results = {
 		@Result(name = "deliver", location = "/WEB-INF/jsp/ven/Deliver.jsp"),
 		@Result(name = "TrackDeliver", location = "/WEB-INF/jsp/ven/TrackDeliver.jsp"),
-		@Result(name = "importInv", location = "/WEB-INF/jsp/ven/importInv.jsp"),})
+		@Result(name = "importInv", location = "/WEB-INF/jsp/ven/importInv.jsp"),
+		@Result(name = "printLabel", location = "/WEB-INF/jsp/ven/PrintLabel.jsp"),})
 @Blh("venDeliverBlh")
 @InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.venDeliver"),
@@ -54,6 +55,9 @@ public class VenDeliverAction extends BaseAction {
 		}
 		if("TrackDeliver".equals(super.getBusinessFlow())){
 			return "TrackDeliver";
+		}
+		if("printLabel".equals(super.getBusinessFlow())){
+			return "printLabel";
 		}
 		return null;
 	}

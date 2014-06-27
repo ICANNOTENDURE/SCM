@@ -200,28 +200,7 @@ function simpleDateFormat(date, delimiter){
 	return result;
 }
 
-Date.prototype.format = function(format){ 
-		var o = { 
-			"M+" : this.getMonth()+1, //month 
-			"d+" : this.getDate(), //day 
-			"h+" : this.getHours(), //hour 
-			"m+" : this.getMinutes(), //minute 
-			"s+" : this.getSeconds(), //second 
-			"q+" : Math.floor((this.getMonth()+3)/3), //quarter 
-			"S" : this.getMilliseconds() //millisecond 
-		}; 
-
-		if(/(y+)/.test(format)) { 
-			format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
-		} 
-
-		for(var k in o) { 
-			if(new RegExp("("+ k +")").test(format)) { 
-				format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length)); 
-			} 
-		} 
-	return format; 
-	}; 
+ 
 
 /**
  * 获得应用的根路径
@@ -692,3 +671,25 @@ Date.prototype.format = function(mask) {
 			}
 			});
 };
+
+
+
+function toUtf8(str) { 
+	var out, i, len, c; 
+	out = ""; 
+	len = str.length; 
+	for(i = 0; i < len; i++) { 
+	c = str.charCodeAt(i); 
+	if ((c >= 0x0001) && (c <= 0x007F)) { 
+	out += str.charAt(i); 
+	} else if (c > 0x07FF) { 
+	out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F)); 
+	out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F)); 
+	out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F)); 
+	} else { 
+	out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F)); 
+	out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F)); 
+	} 
+	} 
+	return out; 
+} 

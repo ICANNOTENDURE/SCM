@@ -1,7 +1,7 @@
 // zxx 2014-04-19
 $(function (){
 	date=new Date();
-	dateAdd(date,'D',-1);
+	dateAdd(date,'D',-7);
 	$('#stdate').datetimebox('setValue',date.format("yyyy-MM-dd HH:mm:ss"));
 	$('#eddate').datetimebox('setValue',new Date().format("yyyy-MM-dd HH:mm:ss"));
 	
@@ -18,8 +18,8 @@ $(function (){
 	    title:'确认订单(双击行查看明细)',
 	    queryParams: {
 			'dto.state': 1,
-			"dto.reqStDate":$("#reqStDate").datebox('getValue'),
-			"dto.reqEdDate":$("#reqEdDate").datebox('getValue'),
+			"dto.stdate":$("#stdate").datebox('getValue'),
+			"dto.eddate":$("#eddate").datebox('getValue'),
 		},
 	    onDblClickRow: function(rowIndex, rowData){
 	    	$('#detail').dialog('open');

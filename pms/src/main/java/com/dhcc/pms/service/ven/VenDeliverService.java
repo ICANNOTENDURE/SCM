@@ -4,7 +4,10 @@
  */
 package com.dhcc.pms.service.ven;
 
+import java.util.List;
+
 import com.dhcc.pms.dto.ven.VenDeliverDto;
+import com.dhcc.pms.entity.ven.VenDeliveritm;
 
 
 public interface VenDeliverService {
@@ -116,4 +119,16 @@ public interface VenDeliverService {
 	* @version V1.0
 	 */
 	public void cancelComplete(VenDeliverDto dto);
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月27日 下午2:40:44
+	* @version V1.0
+	 */
+	public List<VenDeliveritm> getDeliveritms(Long deliverId);
 }

@@ -4,13 +4,15 @@
  */
 package com.dhcc.pms.service.ven.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
 import com.dhcc.pms.dao.ven.VenDeliverDao;
 import com.dhcc.pms.dto.ven.VenDeliverDto;
-import com.dhcc.pms.entity.ven.VenDeliver;
+import com.dhcc.pms.entity.ven.VenDeliveritm;
 import com.dhcc.pms.service.ven.VenDeliverService;
 
 @Service("venDeliverService")
@@ -98,6 +100,15 @@ public class VenDeliverServiceImpl implements VenDeliverService {
 	public void cancelComplete(VenDeliverDto dto) {
 		// TODO Auto-generated method stub
 		venDeliverDao.cancelComplete(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#getDeliveritms(com.dhcc.pms.dto.ven.VenDeliverDto)
+	 */
+	@Override
+	public List<VenDeliveritm> getDeliveritms(Long deliverId) {
+		// TODO Auto-generated method stub
+		return venDeliverDao.getDeliveritms(deliverId);
 	}
 	
 

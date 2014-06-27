@@ -6,6 +6,7 @@ package com.dhcc.pms.blh.ven;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -531,5 +532,21 @@ public void upload(BusinessRequest res){
 	public void createDelByOrder(BusinessRequest res){
 		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
 		venDeliverService.AccectOrder(dto);
+	}
+	
+	/**
+	 * 
+	* @Title: VenDeliverBlh.java
+	* @Description: TODO(查询所有订单明细)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月27日 下午2:42:23
+	* @version V1.0
+	 * @throws IOException 
+	 */
+	public void getDeliveritms(BusinessRequest res) throws IOException{
+		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
+		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(venDeliverService.getDeliveritms(dto.getVenDeliver().getDeliverId())));
 	}
 }
