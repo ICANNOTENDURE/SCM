@@ -6,8 +6,6 @@ import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
 
 import com.dhcc.framework.annotation.Blh;
-import com.dhcc.framework.annotation.JsonResult;
-import com.dhcc.framework.annotation.JsonResult4Pojo;
 import com.dhcc.framework.exception.BaseException;
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.transmission.event.BusinessRequest;
@@ -26,10 +24,10 @@ import com.dhcc.pms.dto.platformManage.TaskConfigDto;
  */
 @Namespace(value = "/task")
 @Scope("prototype")
-@Action(value = "TaskConfigCtrl", results = {@Result(name = "list", location = "/WEB-INF/jsp/platformManage/TaskConfig.jsp")})
+@Action(value = "TaskConfigCtrl", results = {@Result(name = "listMain", location = "/WEB-INF/jsp/platformManage/TaskConfig.jsp")})
 @Blh("TaskConfigBlh")
-@JsonResult("findById:dto.taskConfig")
-@JsonResult4Pojo("list:dto.pageModel")
+//@JsonResult("findById:dto.taskConfig")
+//@JsonResult4Pojo("list:dto.pageModel")
 public class TaskConfigAction extends BaseAction {
 
 	/**  
@@ -42,6 +40,10 @@ public class TaskConfigAction extends BaseAction {
 	
 	@Override
 	public String directlyJump() {
+		// TODO Auto-generated method stub
+		if ("listMain".equals(super.getBusinessFlow())) {
+			return "listMain";
+		}
 		return null;
 	}
 	
