@@ -41,10 +41,42 @@ public class OrderStateDto extends BaseDto {
 	
 	private Long recLoc;
 	
+	private Long cmpFlag;
+	
+	private Long hopId;
 	
 	
 	
 	
+	
+	/**
+	 * @return the hopId
+	 */
+	public Long getHopId() {
+		return hopId;
+	}
+
+	/**
+	 * @param hopId the hopId to set
+	 */
+	public void setHopId(Long hopId) {
+		this.hopId = hopId;
+	}
+
+	/**
+	 * @return the cmpFlag
+	 */
+	public Long getCmpFlag() {
+		return cmpFlag;
+	}
+
+	/**
+	 * @param cmpFlag the cmpFlag to set
+	 */
+	public void setCmpFlag(Long cmpFlag) {
+		this.cmpFlag = cmpFlag;
+	}
+
 	/**
 	 * @return the recLoc
 	 */
