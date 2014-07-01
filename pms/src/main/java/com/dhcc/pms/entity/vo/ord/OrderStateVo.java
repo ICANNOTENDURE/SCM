@@ -43,6 +43,7 @@ public class OrderStateVo implements java.io.Serializable{
 	
 	private String remark;
 	
+	private String exeuser;
 	
 	
 	
@@ -268,6 +269,20 @@ public class OrderStateVo implements java.io.Serializable{
 	 */
 	public void setExedate(Date exedate) {
 		this.exedate = exedate;
+	}
+
+	/**
+	 * @return the exeuser
+	 */
+	public String getExeuser() {
+		return exeuser;
+	}
+
+	/**
+	 * @param exeuser the exeuser to set
+	 */
+	public void setExeuser(String exeuser) {
+		this.exeuser = exeuser;
 	}
 	
 	

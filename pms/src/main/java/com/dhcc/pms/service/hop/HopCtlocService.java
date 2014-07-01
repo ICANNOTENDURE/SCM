@@ -61,7 +61,6 @@ public interface HopCtlocService {
 	* @version V1.0
 	 */
 	public Long getLocIdByName(String name);
-
 	/**
 	 * @param dto
 	 * @return

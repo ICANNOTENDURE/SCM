@@ -92,4 +92,13 @@ public class HopVendorServiceImpl implements HopVendorService {
 		return hopVendorDao.findHopVenComboxVos(input);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopVendorService#findHopVenAndroid(com.dhcc.pms.dto.hop.HopVendorDto)
+	 */
+	@Override
+	public List<ComboxVo> findHopVenAndroid(HopVendorDto dto) {
+		// TODO Auto-generated method stub
+		return hopVendorDao.findHopVenAndroid(dto);
+	}
+
 }

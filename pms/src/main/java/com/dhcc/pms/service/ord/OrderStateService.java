@@ -9,6 +9,7 @@ import java.util.List;
 import com.dhcc.pms.dto.ord.OrderStateDto;
 import com.dhcc.pms.entity.ord.State;
 import com.dhcc.pms.entity.vo.ord.OrderExeStateVo;
+import com.dhcc.pms.entity.vo.ord.OrderStateAndroidVo;
 
 public interface OrderStateService {
 	
@@ -61,4 +62,11 @@ public interface OrderStateService {
 	* @version V1.0
 	 */
 	public  List<State> getComboList();
+
+
+	/**
+	 * @param dto
+	 * @return
+	 */
+	public List<OrderStateAndroidVo> listOrderStateAndroid(OrderStateDto dto);
 }

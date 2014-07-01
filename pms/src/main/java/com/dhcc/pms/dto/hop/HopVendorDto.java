@@ -29,6 +29,9 @@ public class HopVendorDto extends BaseDto {
 	
 	private String comgridparam;
 	
+	private Long type;
+	
+	private Long userId; 
 	
 	
 	/**
@@ -79,9 +82,6 @@ public class HopVendorDto extends BaseDto {
 	}
 
 
-	
-
-
 	/**
 	 * @return the upload
 	 */
@@ -121,6 +121,41 @@ public class HopVendorDto extends BaseDto {
 	
 	public void setHopVendor(HopVendor hopVendor) {
 		this.hopVendor = hopVendor;
+	}
+
+
+
+
+
+	/**
+	 * @return the userId
+	 */
+	public Long getUserId() {
+		return userId;
+	}
+
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+
+	/**
+	 * @return the type
+	 */
+	public Long getType() {
+		return type;
+	}
+
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(Long type) {
+		this.type = type;
 	}
 
 

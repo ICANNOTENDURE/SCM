@@ -72,5 +72,11 @@ public interface HopVendorService {
 	* @version V1.0
 	 */
 	public List<ComboxVo> findHopVenComboxVos(String input);
+
+	/**
+	 * @param input
+	 * @return
+	 */
+	public List<ComboxVo> findHopVenAndroid(HopVendorDto dto);
 	
 }

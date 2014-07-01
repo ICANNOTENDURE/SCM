@@ -314,4 +314,27 @@ public class HopVendorBlh extends AbstractBaseBlh {
 		HopVendorDto dto = super.getDto(HopVendorDto.class, res);
 		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(hopVendorService.findHopVenComboxVos(dto.getComgridparam())));
 	}
+	
+	/**
+	 * 
+	 * @param res
+	 * @throws IOException
+	 * @author penzi
+	 * @Description :供PDA供应商调用
+	 */
+	public void findHopVenAndroid(BusinessRequest res) throws IOException{
+		HopVendorDto dto=super.getDto(HopVendorDto.class, res);
+		WebContextHolder.getContext().getResponse().setContentType("text/html;charset=UTF-8");
+		WebContextHolder.getContext().getResponse().getWriter();
+		WebContextHolder.getContext().getResponse().getWriter()
+		.write(
+				"{\"rows\":"
+				+
+				JsonUtils.toJson(hopVendorService.findHopVenAndroid(dto))
+				+"}");
+		WebContextHolder.getContext().getResponse().getWriter().flush();
+	}
+	
+	
 }
+

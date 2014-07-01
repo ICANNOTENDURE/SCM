@@ -5,6 +5,7 @@
 package com.dhcc.pms.blh.ord;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -20,6 +21,7 @@ import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderStateDto;
+import com.dhcc.pms.entity.vo.ord.OrderStateAndroidVo;
 import com.dhcc.pms.service.ord.OrderStateService;
 
 
@@ -126,7 +128,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	 */
 	public void OrderAndroid(BusinessRequest res) throws IOException{
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
-
+		
 		//调用对应的service方法
 		ordertateService.listOrderState(dto);
 		//调用对应的service方法
@@ -136,6 +138,50 @@ public class OrderStateBlh extends AbstractBaseBlh {
 				+ dto.getPageModel().getTotals()
 				+ ",\"rows\":"
 				+ JsonUtils.toJson(dto.getPageModel().getPageData())
+				+ "}");
+		WebContextHolder.getContext().getResponse().getWriter().flush();
+	}
+	
+	/**
+	 * 
+	 * @param res
+	 * @throws IOException
+	 * @author penzi
+	 * @description 获取当前状态的订单以及其之前所有已经操作的状态订单信息
+	 */
+	public void OrderDetailAndroid(BusinessRequest res) throws IOException{
+		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
+		List<OrderStateAndroidVo> androidVos=ordertateService.listOrderStateAndroid(dto);
+		//调用对应的service方法
+		//ordertateService.listOrderState(dto);
+		//调用对应的service方法
+		WebContextHolder.getContext().getResponse().setContentType("text/html;charset=UTF-8");
+		WebContextHolder.getContext().getResponse().getWriter()
+		.write("{\"total\":"
+				+ dto.getPageModel().getTotals()
+				+",\"rows\":"
+				+ JsonUtils.toJson(androidVos)
+				+ "}");
+		WebContextHolder.getContext().getResponse().getWriter().flush();
+	}
+	
+	/**
+	 * 
+	 * @param res
+	 * @throws IOException
+	 * @author penzi
+	 * @description:PDA调用，查询各订单的执行状态
+	 */
+	public void OrderStateAndroid(BusinessRequest res) throws IOException{
+		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
+		
+		//调用对应的service方法
+		WebContextHolder.getContext().getResponse().setContentType("text/html;charset=UTF-8");
+		WebContextHolder.getContext().getResponse().getWriter()
+		.write("{\"orderId\":"
+				+dto.getExeState().getOrdId()
+				+ ",\"rows\":"
+				+ JsonUtils.toJson(ordertateService.listOrderExeState(dto))
 				+ "}");
 		WebContextHolder.getContext().getResponse().getWriter().flush();
 	}

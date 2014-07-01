@@ -15,6 +15,7 @@ import com.dhcc.pms.dao.ord.OrderStateDao;
 import com.dhcc.pms.dto.ord.OrderStateDto;
 import com.dhcc.pms.entity.ord.State;
 import com.dhcc.pms.entity.vo.ord.OrderExeStateVo;
+import com.dhcc.pms.entity.vo.ord.OrderStateAndroidVo;
 import com.dhcc.pms.service.ord.OrderStateService;
 
 @Service("orderStateService")
@@ -67,6 +68,17 @@ public class OrderStateServiceImpl implements OrderStateService {
 	public List<State> getComboList() {
 		// TODO Auto-generated method stub
 		return orderStateDao.getComboList();
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ord.OrderStateService#listOrderStateAndroid(com.dhcc.pms.dto.ord.OrderStateDto)
+	 */
+	@Override
+	public List<OrderStateAndroidVo> listOrderStateAndroid(OrderStateDto dto) {
+		
+		return orderStateDao.listOrderStateAndroid(dto);
 	}
 
 

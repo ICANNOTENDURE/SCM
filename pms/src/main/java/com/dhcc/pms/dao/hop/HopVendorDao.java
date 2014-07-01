@@ -264,4 +264,38 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 		}
 		return null;
 	}
+
+	/**
+	 * @param dto
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ComboxVo> findHopVenAndroid(HopVendorDto dto) {
+		String input=dto.getComgridparam();//输入内容
+		Long type=dto.getType();
+		Long userId=dto.getUserId();
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+		//1是医院，2是供应商，0是平台维护人员
+		if(type==1){
+			StringBuffer hqlBuffer = new StringBuffer();
+			hqlBuffer.append("select ");
+			hqlBuffer.append("t3.H_NAME as name, ");
+			hqlBuffer.append("t1.sys_ven_id as id ");
+			hqlBuffer.append("from t_sys_ven_role t1 ");
+			hqlBuffer.append("left join t_sys_normalaccount_role t2 on t2.role_id=t1.sys_role_id and t2.account_id=:userId ");
+			hqlParamMap.put("userId", userId);
+			hqlBuffer.append("left join t_hop_vendor t3 on t3.h_venid=t1.sys_ven_id ");
+			hqlBuffer.append("where 1=1 ");
+			if(!StringUtils.isNullOrEmpty(input)){
+				hqlBuffer.append("and t3.h_alias like :alias ");
+				hqlParamMap.put("alias", input+"%");
+			}
+			if(!StringUtils.isNullOrEmpty(WebContextHolder.getContext().getRequest().getParameter("q"))){
+				hqlBuffer.append("and t3.h_alias like :xxx ");
+				hqlParamMap.put("xxx", WebContextHolder.getContext().getRequest().getParameter("q")+"%");
+			}
+			return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_ven_id");
+		}
+		return null;
+	}
 }
