@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.transmission.event.BusinessRequest;
-import com.dhcc.pms.dto.platformManage.TaskConfigDto;
+import com.dhcc.pms.dto.sys.TaskConfigDto;
 
 /**
  * 

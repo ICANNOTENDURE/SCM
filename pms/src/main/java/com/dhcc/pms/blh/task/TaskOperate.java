@@ -21,8 +21,8 @@ import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.dhcc.framework.exception.DataBaseException;
-import com.dhcc.pms.dto.platformManage.TaskConfigDto;
-import com.dhcc.pms.entity.platformManage.TaskConfig;
+import com.dhcc.pms.dto.sys.TaskConfigDto;
+import com.dhcc.pms.entity.sys.TaskConfig;
 
 /**
  * <p>标题: TaskOperateBlh.java</p>
@@ -206,7 +206,12 @@ public class TaskOperate {
 		try {
 			Scheduler scheduler = sf.getScheduler();
 			JobKey jobKey=new JobKey(tc.getJobName(),tc.getJobGroup());
-			scheduler.resumeJob(jobKey);
+			if(scheduler.checkExists(jobKey)){
+				scheduler.resumeJob(jobKey);
+			}else{
+				this.addJob(tcdto);
+			}
+			
 			TriggerKey triggerKey = new TriggerKey(tc.getTriggerName(),tc.getTriggerGroup());
 			scheduler.resumeTrigger(triggerKey);
 			tcdto.setSuccess(true);
@@ -237,5 +242,29 @@ public class TaskOperate {
 			throw new DataBaseException(e.getMessage(), e);
 		}
 	}
+	
+	public boolean isExist(TaskConfigDto tcdto){
+		TaskConfig tc=tcdto.getTaskConfig();
+		try {
+			Scheduler scheduler = sf.getScheduler();
+			JobKey jobKey=new JobKey(tc.getJobName(),tc.getJobGroup());
+			scheduler.getJobDetail(jobKey);
+			System.out.println("----------------display-----------------");
+			System.out.println("scheduler.getCurrentlyExecutingJobs() :"+scheduler.getCurrentlyExecutingJobs());
+			System.out.println("scheduler.getJobGroupNames() :"+scheduler.getJobGroupNames());
+			System.out.println("scheduler.getMetaData() :"+scheduler.getMetaData());
+			System.out.println("scheduler.getPausedTriggerGroups() :"+scheduler.getPausedTriggerGroups());
+			System.out.println("scheduler.getTriggerGroupNames() :"+scheduler.getTriggerGroupNames());
+			System.out.println("scheduler.isInStandbyMode() :"+scheduler.isInStandbyMode());
+			System.out.println("scheduler.isShutdown() :"+scheduler.isShutdown());
+			System.out.println("scheduler.isStarted() :"+scheduler.isStarted());
+			
+		} catch (SchedulerException e) {
+			System.out.println("e.getMessage() :"+e.getMessage());
+			throw new DataBaseException(e.getMessage(), e);
+		}
+		return true;
+	}
+	
 	
 }

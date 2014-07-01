@@ -1,6 +1,6 @@
 package com.dhcc.pms.service.platformManage;
 
-import com.dhcc.pms.dto.platformManage.TaskConfigDto;;
+import com.dhcc.pms.dto.sys.TaskConfigDto;
 
 public interface TaskConfigService {
 

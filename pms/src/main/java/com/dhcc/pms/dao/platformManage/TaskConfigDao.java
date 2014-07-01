@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.transmission.dto.BaseDto;
-import com.dhcc.pms.dto.platformManage.TaskConfigDto;
-import com.dhcc.pms.entity.platformManage.TaskConfig;
+import com.dhcc.pms.dto.sys.TaskConfigDto;
+import com.dhcc.pms.entity.sys.TaskConfig;
 import com.dhcc.pms.tool.hql.GetHql;
 
 /**
@@ -61,8 +61,8 @@ public class TaskConfigDao extends HibernatePersistentObjectDAO<TaskConfig> {
 		super.update(taskConfig);
 	}
 	
-	public void findById(TaskConfig taskConfig){
-		super.findById(taskConfig);
+	public TaskConfig findById(TaskConfig taskConfig){
+		return super.findById(taskConfig.getTaskId());
 	}
 	
 }

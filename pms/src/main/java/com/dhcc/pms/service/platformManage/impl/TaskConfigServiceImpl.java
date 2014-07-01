@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.pms.dao.platformManage.TaskConfigDao;
-import com.dhcc.pms.dto.platformManage.TaskConfigDto;
+import com.dhcc.pms.dto.sys.TaskConfigDto;
 import com.dhcc.pms.service.platformManage.TaskConfigService;
 
 
@@ -35,6 +35,12 @@ public class TaskConfigServiceImpl implements TaskConfigService {
 		taskConfigDao.buildPagerModelQuery(pagerModel, dto);
 		//调用分页查询方法
 		commonService.fillPagerModelData(pagerModel);
+		
+//		Map<String,String> map=new HashMap<String,String>(1);
+//		map.put("timePeriodType", "taskTimeType");
+//		commonService.dictionaryConvert(pagerModel.getPageData(), map);
+		
+		
 	}
 	
 	public void save(TaskConfigDto dto){
@@ -50,7 +56,7 @@ public class TaskConfigServiceImpl implements TaskConfigService {
 	}
 	
 	public void findById(TaskConfigDto dto){
-		taskConfigDao.findById(dto.getTaskConfig());
+		dto.setTaskConfig(taskConfigDao.findById(dto.getTaskConfig()));
 	}
 	
 }

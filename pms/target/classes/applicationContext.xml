@@ -125,6 +125,7 @@
 				<entry key="usestate" value="com.dhcc.pms.entity.dict.UseState" />
 				<entry key="systemType" value="com.dhcc.pms.entity.dict.SystemType" />
 				<entry key="sex" value="com.dhcc.pms.entity.dict.Sex" />
+				<entry key="taskTimeType" value="com.dhcc.pms.entity.dict.TaskTimeType" />
 			</map>
 		</constructor-arg>
 	</bean>
