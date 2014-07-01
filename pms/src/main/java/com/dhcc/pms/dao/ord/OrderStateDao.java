@@ -21,8 +21,11 @@ import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.util.StringUtils;
+import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderStateDto;
+import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.ord.State;
 import com.dhcc.pms.entity.vo.ord.OrderExeStateVo;
 import com.dhcc.pms.entity.vo.ord.OrderItmVo;
@@ -76,7 +79,8 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("t8.realname as realname, ");
 		hqlBuffer.append("t1.deliverydate as deliverydate, ");
 		hqlBuffer.append("t2.exedate as exedate, ");
-		hqlBuffer.append("t9.name as vendor ");
+		hqlBuffer.append("t10.HOSPITAL_NAME as hopname, ");
+		hqlBuffer.append("t9.H_NAME as vendor ");
 		hqlBuffer.append("from t_ord_order t1  ");
 		hqlBuffer.append("left join t_ord_exestate t2 on t1.exestate_id=t2.exestate_id  ");
 		hqlBuffer.append("left join t_ord_state t3 on t2.state_id=t3.state_seq ");
@@ -85,7 +89,8 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("left join t_sys_ctloc_destination t6 on t6.ctlocdes_id=t1.recdestination ");
 		hqlBuffer.append("left join t_sys_normal_account t7 on  t7.account_id=t1.createuser ");
 		hqlBuffer.append("left join t_sys_normal_user t8 on  t8.user_id=t7.user_id ");
-		hqlBuffer.append("left join t_ven_vendor t9 on t9.ven_id=t1.vendor_id ");
+		hqlBuffer.append("left join T_HOP_VENDOR t9 on t9.H_VENID=t1.vendor_id ");
+		hqlBuffer.append("left join T_SYS_HOSPITAL t10 on t10.HOSPITAL_ID=t1.HOP_ID ");
 		hqlBuffer.append("where 1=1 ");
 		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
 		
@@ -137,6 +142,30 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 			hqlBuffer.append("and t1.recloc=:recloc ");
 			hqlParamMap.put("recloc", dto.getRecLoc());
 		}
+		if((dto.getCmpFlag()!=null)&&(dto.getCmpFlag().toString().equals("1"))){
+			hqlBuffer.append("and t1.ORD_FLAG=:cmpflag ");
+			hqlParamMap.put("cmpflag", dto.getCmpFlag());
+		}
+		if(dto.getHopId()!=null){
+			hqlBuffer.append("and t1.HOP_ID=:hopid ");
+			hqlParamMap.put("hopid", dto.getHopId());
+		}
+		
+		Long userType=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+		if(userType==null){
+			return;
+		}
+		//医院
+		if(userType==1){
+			hqlBuffer.append("and t1.HOP_ID=:tmphop ");
+			hqlParamMap.put("tmphop", WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+		}
+		//供应商
+		if(userType==2){
+			hqlBuffer.append("and t9.H_VENDORID=:tmpVendor ");
+			hqlParamMap.put("tmpVendor", WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
+		}
+		
 		if(dto.getPageModel()==null){
 			PagerModel pageModel=new PagerModel();
 			pageModel.setPageNo(1);
@@ -167,7 +196,8 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("select t2.state_name as statedesc, ");
 		hqlBuffer.append("t1.exedate as exedate, ");
 		hqlBuffer.append("t1.remark as remark, ");
-		hqlBuffer.append("t3.name as exeuser ");
+		hqlBuffer.append("t4.realName as exeuser, ");
+		hqlBuffer.append("t4.tel as tel ");
 		hqlBuffer.append("from t_ord_exestate t1  ");
 		hqlBuffer.append("left join t_ord_state t2 on t2.state_seq=t1.state_id ");
 		hqlBuffer.append("left join t_sys_normal_account t3 on  t3.account_id=t1.user_id ");
@@ -179,10 +209,14 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 				hqlBuffer.append("and t1.ord_id=:ord ");
 				hqlParamMap.put("ord", dto.getExeState().getOrdId());
 			}
+			if (dto.getExeState().getDeliverId()!=null){
+				hqlBuffer.append("and t1.DELIVER_ID=:deliverId ");
+				hqlParamMap.put("deliverId", dto.getExeState().getDeliverId());
+			}
 		}
+
 		
-		
-		hqlBuffer.append("order by t1.exestate_id desc ");
+		hqlBuffer.append("order by t1.exestate_id  ");
 		
 
 		return jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), OrderExeStateVo.class, hqlParamMap);
@@ -210,6 +244,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("t2.inc_code as inccode, ");
 		hqlBuffer.append("t1.reqqty as qty , ");
 		hqlBuffer.append("t1.rp as rp, ");
+		hqlBuffer.append("t1.DELIVERQTY as delqty, ");
 		hqlBuffer.append("t1.uom as uom, ");
 		hqlBuffer.append("t3.name as manf ");
 		hqlBuffer.append("from t_ord_orderitm t1 ");
@@ -217,6 +252,10 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("left join t_hop_manf t3 on t2.inc_manfid=t3.id ");
 		hqlBuffer.append("where 1=1 ");
 		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+		if(dto.getCmpFlag()!=null){
+			hqlBuffer.append("and t1.flag=:cmpflag ");
+			hqlParamMap.put("cmpflag", dto.getCmpFlag());
+		}
 		if(dto.getPageModel()==null){
 			PagerModel pagerModel=new PagerModel();
 			pagerModel.setPageNo(1);
@@ -254,6 +293,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		return (List<State>)super.getAll(State.class, "stateSeq",true);
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * 
 	 * @param dto
@@ -390,5 +430,40 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 			orderStateVo.setOrderexestatevos(orderExeStateVos);
 		}
 		return orderStateVos;
+=======
+	@SuppressWarnings("unchecked")
+	public List<OrderItm> getOrderItms(Long orderId){
+		StringBuffer hql = new StringBuffer();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		hql.append(" from ");
+		hql.append(" OrderItm t ");
+		hql.append(" where 1=1 ");
+		hql.append(" and t.ordId = :key ");
+		paramMap.put("key", orderId);	
+		return (List<OrderItm>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Order> getOrderByNo(String no){
+		StringBuffer hql = new StringBuffer();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		hql.append(" from ");
+		hql.append(" Order t ");
+		hql.append(" where 1=1 ");
+		hql.append(" and t.orderNo = :key ");
+		paramMap.put("key", no);
+		List<Order> orders=(List<Order>) this.findByHqlWithValuesMap(hql.toString(),paramMap,false);
+		List<Order> orders2=new ArrayList<Order>();
+		Long loginVendor=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
+		for(Order tmpOrder:orders){
+			HopVendor hopVendor=super.get(HopVendor.class, tmpOrder.getVendorId());
+			
+			if((hopVendor.getHopVenId()!=null)&&(hopVendor.getHopVenId().toString().equals(loginVendor.toString()))){
+				orders2.add(tmpOrder);
+			}
+		}
+		return orders2;
+		
+>>>>>>> refs/remotes/origin/master
 	}
 }
