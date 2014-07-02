@@ -18,6 +18,7 @@ import com.dhcc.framework.common.log.BusinessLogUtil;
 import com.dhcc.framework.common.log.logconfig.dto.logconfig.LogConfigDto;
 import com.dhcc.framework.common.log.logconfig.service.LogConfigService;
 import com.dhcc.framework.transmission.event.BusinessRequest;
+import com.dhcc.framework.util.StringUtils;
 
 @Component
 @PmDataTypes({@PmDataType(methodName="list",clsType=LogConfigure.class)
@@ -58,11 +59,11 @@ public class LogConfigBlh extends AbstractBaseBlh {
 	public void save(BusinessRequest res) {
 	
 		LogConfigDto dto = super.getDto(LogConfigDto.class, res);
-		if("".equals(dto.getLogConfigure().getId())){
+		if(StringUtils.isNullOrEmpty(dto.getLogConfigure().getId())){
 			dto.getLogConfigure().setId(null);
-			dto.getLogConfigure().setInsertDate(new Date());
+			dto.getLogConfigure().setInsertDate(new java.sql.Timestamp(new Date().getTime()));
 		} else {
-			dto.getLogConfigure().setUpdateDate(new Date());
+			dto.getLogConfigure().setUpdateDate(new java.sql.Timestamp(new Date().getTime()));
 		}
 		//调用对应的service方法
 		logConfigService.saveOrUpdate(dto);

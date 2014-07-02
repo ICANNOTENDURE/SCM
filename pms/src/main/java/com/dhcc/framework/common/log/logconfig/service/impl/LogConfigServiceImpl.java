@@ -33,7 +33,7 @@ public class LogConfigServiceImpl implements LogConfigService {
 	
 	public void saveOrUpdate(LogConfigDto dto){
 	
-		logConfigureDao.saveOrUpdate(dto.getLogConfigure());
+		logConfigureDao.save(dto.getLogConfigure());
 		BusinessLogUtil.reLoadConfigure();
 	}
 	

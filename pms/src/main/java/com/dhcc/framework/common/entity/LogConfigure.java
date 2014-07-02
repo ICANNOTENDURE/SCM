@@ -1,14 +1,13 @@
 package com.dhcc.framework.common.entity;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -35,9 +34,9 @@ public class LogConfigure implements java.io.Serializable {
 	//1:pageNo="页数":pageSize="每页记录数";2:user.userId="用户id"
 	private String args;
 
-	private Date insertDate;
+	private Timestamp insertDate;
 	
-	private Date updateDate;
+	private Timestamp updateDate;
 
 	public LogConfigure() {
 	}
@@ -52,22 +51,20 @@ public class LogConfigure implements java.io.Serializable {
 		this.method = method;
 		this.args = args;
 	}
-	@Temporal(TemporalType.DATE)
-	@Column(name = "log_insertDate", length = 20)
-	public Date getInsertDate() {
+	@Column(name = "log_insertDate")
+	public Timestamp getInsertDate() {
 		return insertDate;
 	}
 
-	public void setInsertDate(Date insertDate) {
+	public void setInsertDate(Timestamp insertDate) {
 		this.insertDate = insertDate;
 	}
-	@Temporal(TemporalType.DATE)
-	@Column(name = "log_updateDate", length = 20)
+	@Column(name = "log_updateDate")
 	public Date getUpdateDate() {
 		return updateDate;
 	}
 
-	public void setUpdateDate(Date updateDate) {
+	public void setUpdateDate(Timestamp updateDate) {
 		this.updateDate = updateDate;
 	}
 	

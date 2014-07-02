@@ -11,8 +11,6 @@ import java.util.Map;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
 
 import com.dhcc.framework.common.SpringContextHolder;
 import com.dhcc.framework.common.config.PropertiesBean;
@@ -20,9 +18,7 @@ import com.dhcc.framework.common.entity.BusinessLog;
 import com.dhcc.framework.common.entity.LogConfigure;
 //import com.dhcc.framework.hbase.HBaseHelper;
 import com.dhcc.framework.hibernate.dao.CommonDao;
-import com.dhcc.framework.service.GatewayInfoInterface;
 import com.dhcc.framework.util.DhccBeanUtils;
-import com.dhcc.framework.util.JsonUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 
 
@@ -44,8 +40,14 @@ public class BusinessLogUtil {
 	
 	public static void writeLog(MethodInvocation invoke,String loginName,String tradeAccount,Date startDate,Date endDate){
 		String className = BusinessLogUtil.getDeclaringClass(invoke.getMethod().getDeclaringClass().getName());
-		String method = className + "." + invoke.getMethod().getName();
-		LogConfigure configure = getConfigure(method);
+		String method = className + ":" + invoke.getMethod().getName();
+		if(confMap.size()==0){
+			loadConfigure();
+		}
+		if(!confMap.containsKey(method)){
+			return;
+		}
+		LogConfigure configure = confMap.get(method);  //getConfigure(method);
 		String rootFlg = null;
 		if(configure!=null){
 			BusinessLog logInfo = null;
@@ -63,12 +65,7 @@ public class BusinessLogUtil {
 					ip= WebContextHolder.getContext().getIp();
 				}
 				String gatewayId = null;
-				try {
-					GatewayInfoInterface gw = SpringContextHolder.getBean("gatewayInfoInterface");
-					gatewayId = gw.getGatewayId();
-				} catch (Exception e1) {
-					System.out.println("no gatewayInfoInterface implement in pms   " +e.getMessage());
-				}
+
 				System.out.println("BusinessLogUtil buildLogInfo error " +e.getMessage());
 				logger.error("{\"tradeAccount\":\"" + tradeAccount + "\",\"accountName\":\""
 						+ loginName + "\",\"operDesc\":\"" + configure.getTitle() +"\",\"operSummary\":\""
@@ -93,13 +90,7 @@ public class BusinessLogUtil {
 			if(WebContextHolder.getContext()!=null){
 				logInfo.setIpAddress(WebContextHolder.getContext().getIp());
 			}
-			
-			try {
-				GatewayInfoInterface gw = SpringContextHolder.getBean("gatewayInfoInterface");
-				logInfo.setRecordGatewayId(gw.getGatewayId());
-			} catch (Exception e) {
-				System.out.println("no gatewayInfoInterface implement in pms   " +e.getMessage());
-			}
+
 			logger.info(buidJosnLog(logInfo));
 
 		}
@@ -147,34 +138,28 @@ public class BusinessLogUtil {
 		if(WebContextHolder.getContext()!=null){
 			logInfo.setIpAddress(WebContextHolder.getContext().getIp());
 		}
-		try {
-			GatewayInfoInterface gw = SpringContextHolder.getBean("gatewayInfoInterface");
-			logInfo.setRecordGatewayId(gw.getGatewayId());
-		} catch (Exception e) {
-			System.out.println("no gatewayInfoInterface implement in pms   " +e.getMessage());
-		}
 		logger.info(buidJosnLog(logInfo));
 
 		
 	}
 	
-	static class WriteLogThread implements Runnable{
-		BusinessLog logInfo;
-		public WriteLogThread(BusinessLog logInfo){
-			this.logInfo = logInfo;
-		}
-
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		@Override
-		public void run() {
-			logger.info("交易号:" + logInfo.getTradeAccount() + " "
-					+ logInfo.getAccountName() + " " + logInfo.getOperSummary()
-					+ " " + logInfo.getOperDesc());
-			if ("true".equals(PropertiesBean.getInstance().getProperty(
-					"conf.writeLog.db"))) {
-			}			
-		}
-	}	
+//	static class WriteLogThread implements Runnable{
+//		BusinessLog logInfo;
+//		public WriteLogThread(BusinessLog logInfo){
+//			this.logInfo = logInfo;
+//		}
+//
+//
+//		@Override
+//		public void run() {
+//			logger.info("交易号:" + logInfo.getTradeAccount() + " "
+//					+ logInfo.getAccountName() + " " + logInfo.getOperSummary()
+//					+ " " + logInfo.getOperDesc());
+//			if ("true".equals(PropertiesBean.getInstance().getProperty(
+//					"conf.writeLog.db"))) {
+//			}			
+//		}
+//	}	
 	
 	private static String getDeclaringClass(String str) {
 		return str.substring(str.lastIndexOf(".") + 1);
@@ -248,7 +233,8 @@ public class BusinessLogUtil {
 		return detail.toString();
 	}
 	
-	@SuppressWarnings({ "unchecked"})
+
+	@SuppressWarnings("unused")
 	private static LogConfigure getConfigure(String method) {
 
 		if (confMap.isEmpty()&&!haveLoadConfig) {
@@ -261,10 +247,8 @@ public class BusinessLogUtil {
 
 	private static void loadConfigure(){
 		try {
-			DetachedCriteria query = DetachedCriteria.forClass(LogConfigure.class);
-			query.addOrder(Order.desc("id"));
 			CommonDao commonDao = SpringContextHolder.getBean("commonDao");
-			List<LogConfigure> configures = commonDao.findByCriteria(query);
+			List<LogConfigure> configures = commonDao.getAll(LogConfigure.class, "id", true);
 			for (int i = 0; i < configures.size(); i++) {
 				LogConfigure configure = configures.get(i);
 				confMap.put(configure.getMethod(), configure);
@@ -279,28 +263,28 @@ public class BusinessLogUtil {
 		loadConfigure();
 	}
 	
-	public static void main(String[] args) {
-		BusinessLog log = new BusinessLog();
-		log.setAccountName("accountName");
-		log.setBusiSys("pms");
-		log.setBusiVersion("busiVersion");
-		log.setDealMode("Sync");
-		log.setDealStatus("1");
-		log.setStartDate(new Date());
-		log.setEndDate(new Date());
-		log.setIpAddress("192.168.1.1");
-		log.setLogType("1");
-		log.setOperDesc("增加用户");
-		log.setOperSummary("{增加名字为王强的用户}");
-		log.setRecordGatewayId("123456");
-		log.setRootOpper("1");
-		log.setTradeAccount("pms:123");
-		String ss = JsonUtils.toJson(log);
-		System.out.println(ss);
-		System.out.println("===="+buidJosnLog(log));
-		Map map = JsonUtils.toObject(buidJosnLog(log), Map.class);
-		System.out.println(map);
-		System.out.println(JsonUtils.toJson(map));
-		System.out.println(JsonUtils.toJson(null));
-	}
+//	public static void main(String[] args) {
+//		BusinessLog log = new BusinessLog();
+//		log.setAccountName("accountName");
+//		log.setBusiSys("pms");
+//		log.setBusiVersion("busiVersion");
+//		log.setDealMode("Sync");
+//		log.setDealStatus("1");
+//		log.setStartDate(new Date());
+//		log.setEndDate(new Date());
+//		log.setIpAddress("192.168.1.1");
+//		log.setLogType("1");
+//		log.setOperDesc("增加用户");
+//		log.setOperSummary("{增加名字为王强的用户}");
+//		log.setRecordGatewayId("123456");
+//		log.setRootOpper("1");
+//		log.setTradeAccount("pms:123");
+//		String ss = JsonUtils.toJson(log);
+//		System.out.println(ss);
+//		System.out.println("===="+buidJosnLog(log));
+//		Map map = JsonUtils.toObject(buidJosnLog(log), Map.class);
+//		System.out.println(map);
+//		System.out.println(JsonUtils.toJson(map));
+//		System.out.println(JsonUtils.toJson(null));
+//	}
 }
