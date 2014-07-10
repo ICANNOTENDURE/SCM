@@ -371,7 +371,7 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 				hqlParamMap.put("venincname","%"+dto.getVenIncContranstDto().getIncName()+"%");
 			}
 			if(!StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncCode())){
-				hqlBuffer.append(" AND t1.inc_code  like :venincode ");
+				hqlBuffer.append(" AND t1.ven_inc_code  like :venincode ");
 				hqlParamMap.put("venincode","%"+dto.getVenIncContranstDto().getIncCode()+"%");
 			}
 			if(dto.getVenIncContranstDto().getFlag().equals("1")){

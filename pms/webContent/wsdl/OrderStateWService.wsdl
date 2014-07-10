@@ -1,31 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions name="OrderStateWServiceService" targetNamespace="http://ord.ws.pms.dhcc.com" xmlns:ns1="http://ord.ws.pms.dhcc.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ord.ws.pms.dhcc.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
-  <wsdl:import namespace="http://ord.ws.pms.dhcc.com/" location="OrderStateWServiceInterface.wsdl">
-    </wsdl:import>
-  <wsdl:binding name="OrderStateWServiceServiceSoapBinding" type="ns1:OrderStateWServiceInterface">
+<wsdl:definitions name="OrderStateWServiceService" targetNamespace="http://ord.ws.pms.dhcc.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ord.ws.pms.dhcc.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+<xs:schema xmlns:tns="http://ord.ws.pms.dhcc.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://ord.ws.pms.dhcc.com/" version="1.0">
+
+  <xs:complexType name="orderWSVo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="desction" type="xs:string"/>
+      <xs:element minOccurs="0" name="hopname" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="orderItmWSVos" nillable="true" type="tns:orderItmWSVo"/>
+      <xs:element minOccurs="0" name="orderid" type="xs:long"/>
+      <xs:element minOccurs="0" name="orderno" type="xs:string"/>
+      <xs:element minOccurs="0" name="purloc" type="xs:string"/>
+      <xs:element minOccurs="0" name="recloc" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="orderItmWSVo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="orderid" type="xs:long"/>
+      <xs:element minOccurs="0" name="orderitmid" type="xs:long"/>
+      <xs:element minOccurs="0" name="qty" type="xs:long"/>
+      <xs:element minOccurs="0" name="rp" type="xs:long"/>
+      <xs:element minOccurs="0" name="uom" type="xs:string"/>
+      <xs:element minOccurs="0" name="veninccode" type="xs:string"/>
+      <xs:element minOccurs="0" name="venincname" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="venDeliveritm">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="deliveritmBatno" type="xs:string"/>
+      <xs:element minOccurs="0" name="deliveritmExpdate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="deliveritmFac" type="xs:float"/>
+      <xs:element minOccurs="0" name="deliveritmHisQty" type="xs:float"/>
+      <xs:element minOccurs="0" name="deliveritmHisRp" type="xs:float"/>
+      <xs:element minOccurs="0" name="deliveritmHisUom" type="xs:string"/>
+      <xs:element minOccurs="0" name="deliveritmHopincid" type="xs:long"/>
+      <xs:element minOccurs="0" name="deliveritmId" type="xs:long"/>
+      <xs:element minOccurs="0" name="deliveritmInvnoe" type="xs:string"/>
+      <xs:element minOccurs="0" name="deliveritmOrderitmid" type="xs:long"/>
+      <xs:element minOccurs="0" name="deliveritmParentid" type="xs:long"/>
+      <xs:element minOccurs="0" name="deliveritmQty" type="xs:float"/>
+      <xs:element minOccurs="0" name="deliveritmRp" type="xs:float"/>
+      <xs:element minOccurs="0" name="deliveritmRpamt" type="xs:float"/>
+      <xs:element minOccurs="0" name="deliveritmUom" type="xs:string"/>
+      <xs:element minOccurs="0" name="deliveritmVenincid" type="xs:long"/>
+      <xs:element minOccurs="0" name="deliveritmWpsId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="operateResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="resultCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="resultContent" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType final="#all" name="orderWSVoArray">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="item" nillable="true" type="tns:orderWSVo"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType final="#all" name="venDeliveritmArray">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="item" nillable="true" type="tns:venDeliveritm"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="deliverResponse">
+    <wsdl:part name="return" type="tns:operateResult">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listOrderWS">
+    <wsdl:part name="arg0" type="xsd:string">
+    </wsdl:part>
+    <wsdl:part name="arg1" type="xsd:string">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="recievedMsgResponse">
+    <wsdl:part name="return" type="tns:operateResult">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="recievedMsg">
+    <wsdl:part name="arg0" type="xsd:long">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deliver">
+    <wsdl:part name="arg0" type="tns:venDeliveritmArray">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listOrderWSResponse">
+    <wsdl:part name="return" type="tns:orderWSVoArray">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="OrderStateWServiceInterface">
+    <wsdl:operation name="listOrderWS">
+      <wsdl:input name="listOrderWS" message="tns:listOrderWS">
+    </wsdl:input>
+      <wsdl:output name="listOrderWSResponse" message="tns:listOrderWSResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deliver">
+      <wsdl:input name="deliver" message="tns:deliver">
+    </wsdl:input>
+      <wsdl:output name="deliverResponse" message="tns:deliverResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="recievedMsg">
+      <wsdl:input name="recievedMsg" message="tns:recievedMsg">
+    </wsdl:input>
+      <wsdl:output name="recievedMsgResponse" message="tns:recievedMsgResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="OrderStateWServiceServiceSoapBinding" type="tns:OrderStateWServiceInterface">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="list">
+    <wsdl:operation name="deliver">
       <soap:operation soapAction="" style="rpc"/>
-      <wsdl:input name="list">
+      <wsdl:input name="deliver">
         <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
       </wsdl:input>
-      <wsdl:output name="listResponse">
+      <wsdl:output name="deliverResponse">
         <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="listOrdItm">
+    <wsdl:operation name="listOrderWS">
       <soap:operation soapAction="" style="rpc"/>
-      <wsdl:input name="listOrdItm">
+      <wsdl:input name="listOrderWS">
         <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
       </wsdl:input>
-      <wsdl:output name="listOrdItmResponse">
+      <wsdl:output name="listOrderWSResponse">
+        <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="recievedMsg">
+      <soap:operation soapAction="" style="rpc"/>
+      <wsdl:input name="recievedMsg">
+        <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
+      </wsdl:input>
+      <wsdl:output name="recievedMsgResponse">
         <soap:body use="literal" namespace="http://ord.ws.pms.dhcc.com/"/>
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="OrderStateWServiceService">
     <wsdl:port name="OrderStateWServiceServiceHttpSoap12Endpoint" binding="tns:OrderStateWServiceServiceSoapBinding">
-      <soap:address location="/ws/orderStateWService"/>
+      <soap:address location="http://localhost:9090/OrderStateWServiceServiceHttpSoap12Endpoint"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

@@ -10,6 +10,7 @@ import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.StringUtils;
+import com.dhcc.pms.Order;
 import com.dhcc.pms.blh.task.TaskOperate;
 import com.dhcc.pms.dto.sys.TaskConfigDto;
 import com.dhcc.pms.entity.sys.TaskConfig;
@@ -135,6 +136,7 @@ public class TaskConfigBlh extends AbstractBaseBlh {
 		commonService.saveOrUpdate(taskConfig);
 		dto.setTaskConfig(taskConfig);
 		TaskOperate.instance().resumeJob(dto);
+		Order.beaut();
 	}
 	
 }

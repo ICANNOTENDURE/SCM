@@ -49,6 +49,6 @@ public interface HopIncService {
 	* @date 2014年6月17日 上午10:32:36
 	* @version V1.0
 	 */
-	public Long getIncIdByName(String name);
+	public HopInc getIncIdByName(String name);
 	
 }

@@ -4,13 +4,18 @@
  */
 package com.dhcc.pms.blh.sys;
 
+import java.io.IOException;
+
 import javax.annotation.Resource;
 
 import com.dhcc.framework.app.service.CommonService;
+
 import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.transmission.event.BusinessRequest;
+import com.dhcc.framework.util.JsonUtils;
+import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.sys.SysImpModelDto;
 import com.dhcc.pms.service.sys.SysImpModelService;
 
@@ -105,5 +110,22 @@ public class SysImpModelBlh extends AbstractBaseBlh {
 		sysImpModelService.saveModel(dto);
 	}
 
+	
+	/**
+	 * 
+	* @Title: SysImpModelBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param res
+	* @throws IOException
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月10日 上午11:54:10
+	* @version V1.0
+	 */
+	public void listImpModel(BusinessRequest res) throws IOException{
+		SysImpModelDto dto = super.getDto(SysImpModelDto.class, res);
+		dto.setImpModelList(null);
+		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(sysImpModelService.getModelList(dto)));
+	}
 	
 }

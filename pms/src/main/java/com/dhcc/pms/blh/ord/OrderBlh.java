@@ -36,6 +36,7 @@ import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.dto.sys.SysImpModelDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
+import com.dhcc.pms.entity.hop.HopInc;
 import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.hop.Hospital;
 import com.dhcc.pms.entity.ord.Order;
@@ -331,6 +332,9 @@ public class OrderBlh extends AbstractBaseBlh {
 					}
 			}
 			
+			if(!dto.getOpFlg().equals("1")){
+				return;
+			}
 			
 			dto.setOrder(order);
 			//明细
@@ -340,32 +344,44 @@ public class OrderBlh extends AbstractBaseBlh {
 				
 				OrderItm orderItm = new OrderItm();
 				
+				HopInc hopInc=new HopInc();
+				String undefineName="";
+				for (int numCells = 0; numCells <= row.getLastCellNum(); numCells++) {
+					cell = row.getCell(numCells);
+					String colNameString=modelMap.get(numCells);
+					if(StringUtils.isNullOrEmpty(colNameString)) {colNameString=" ";};
+					if (colNameString.equals("HIS药品标示")) {
+							hopInc=hopIncService.getIncIdByName(cell.getStringCellValue());
+							undefineName=cell.getStringCellValue();
+					}
+				}
+				if(hopInc==null){
+					 if(StringUtils.isNullOrEmpty(dto.getMsg())){
+						   dto.setMsg(undefineName+":在平台里有没");
+					   }else{
+						   dto.setMsg(dto.getMsg()+"."+undefineName+":在平台里有没");
+						   dto.setOpFlg("4");
+					   }
+					continue;
+				}
+				orderItm.setUom(hopInc.getIncUomname());
+				orderItm.setIncId(hopInc.getIncId());
+				orderItm.setRp((float)hopInc.getIncRp());
+				
 				for (int numCells = 0; numCells <= row.getLastCellNum(); numCells++) {
 					cell = row.getCell(numCells);
 					
 					String colNameString=modelMap.get(numCells);
 					if(StringUtils.isNullOrEmpty(colNameString)) {colNameString=" ";};
 					
+					
 					switch (colNameString) {
-						case "HIS药品标示":
-							if(cell!=null){
-								Long incId=hopIncService.getIncIdByName(cell.getStringCellValue());
-								if(incId==null){
-									   if(StringUtils.isNullOrEmpty(dto.getMsg())){
-										   dto.setMsg(cell.getStringCellValue()+":在平台里有没");
-									   }else{
-										   dto.setMsg(dto.getMsg()+"."+cell.getStringCellValue()+":在平台里有没");
-										   dto.setOpFlg("4");
-									   }
-									   
-								}else{
-									orderItm.setIncId(incId);
-								}
-							}
-							break;
+//						case "HIS药品标示":
+//							orderItm.setIncId(hopInc.getIncId());
+//							break;
 						case "单位":
 							if(cell!=null){
-								orderItm.setUom(cell.toString());
+								orderItm.setUom(cell.getStringCellValue());
 							}
 							break;
 						case "数量":
@@ -379,9 +395,6 @@ public class OrderBlh extends AbstractBaseBlh {
 							}
 							break;
 					}
-//					if(incId==null){
-//						break ;
-//					}
 				}
 				
 				orderItms.add(orderItm);

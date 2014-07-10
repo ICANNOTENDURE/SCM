@@ -5,10 +5,14 @@
 package com.dhcc.pms.dto.ord;
 
 import java.util.Date;
+import java.util.List;
 
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.pms.entity.ord.ExeState;
 import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.ven.VenDeliveritm;
+import com.dhcc.pms.entity.vo.ws.OperateResult;
+import com.dhcc.pms.entity.vo.ws.OrderWebVo;
 
 public class OrderStateDto extends BaseDto {
 
@@ -45,10 +49,112 @@ public class OrderStateDto extends BaseDto {
 	
 	private Long hopId;
 	
+	//webservice  用户名
+	private String userName;
 	
+	//webservice 密码
+	private String passWord;
 	
+	//webservice 发送标志
+	private String sendFlag;
 	
+	//webservice 返回订单信息
+	private List<OrderWebVo> orderWSVos;
 	
+	//webservice 执行结果
+	private OperateResult OperateResult;
+	
+	//webservice 入参
+	private List<VenDeliveritm> deliveritms;
+	
+
+	
+	/**
+	 * @return the deliveritms
+	 */
+	public List<VenDeliveritm> getDeliveritms() {
+		return deliveritms;
+	}
+
+	/**
+	 * @param deliveritms the deliveritms to set
+	 */
+	public void setDeliveritms(List<VenDeliveritm> deliveritms) {
+		this.deliveritms = deliveritms;
+	}
+
+	/**
+	 * @return the operateResult
+	 */
+	public OperateResult getOperateResult() {
+		return OperateResult;
+	}
+
+	/**
+	 * @param operateResult the operateResult to set
+	 */
+	public void setOperateResult(OperateResult operateResult) {
+		OperateResult = operateResult;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	/**
+	 * @return the passWord
+	 */
+	public String getPassWord() {
+		return passWord;
+	}
+
+	/**
+	 * @param passWord the passWord to set
+	 */
+	public void setPassWord(String passWord) {
+		this.passWord = passWord;
+	}
+
+	/**
+	 * @return the sendFlag
+	 */
+	public String getSendFlag() {
+		return sendFlag;
+	}
+
+	/**
+	 * @param sendFlag the sendFlag to set
+	 */
+	public void setSendFlag(String sendFlag) {
+		this.sendFlag = sendFlag;
+	}
+
+	
+
+	/**
+	 * @return the orderWSVos
+	 */
+	public List<OrderWebVo> getOrderWSVos() {
+		return orderWSVos;
+	}
+
+	/**
+	 * @param orderWSVos the orderWSVos to set
+	 */
+	public void setOrderWSVos(List<OrderWebVo> orderWSVos) {
+		this.orderWSVos = orderWSVos;
+	}
+
 	/**
 	 * @return the hopId
 	 */

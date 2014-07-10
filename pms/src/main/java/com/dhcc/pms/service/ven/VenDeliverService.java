@@ -5,6 +5,7 @@
 package com.dhcc.pms.service.ven;
 
 import java.util.List;
+import java.util.Map;
 
 import com.dhcc.pms.dto.ven.VenDeliverDto;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
@@ -131,4 +132,17 @@ public interface VenDeliverService {
 	* @version V1.0
 	 */
 	public List<VenDeliveritm> getDeliveritms(Long deliverId);
+	
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param map
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月9日 下午3:40:47
+	* @version V1.0
+	 */
+	public void deliver(Map<String, List<VenDeliveritm>> map);
 }

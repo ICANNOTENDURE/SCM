@@ -141,6 +141,16 @@ public interface NormalAccountService {
 	public List<ComboxVo> getUserByLoc(Long locid);
 	
 	
-	
-	
+	/**
+	 * 
+	* @Title: NormalAccountService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param account
+	* @return
+	* @return:NormalAccount 
+	* @author zhouxin  
+	* @date 2014年7月2日 下午5:33:49
+	* @version V1.0
+	 */
+	public NormalAccount getNormalAccountByAccount(String account);
 }

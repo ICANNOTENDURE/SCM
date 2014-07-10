@@ -356,19 +356,16 @@ public class WebServiceCodeGenerator extends AnnoParameterParser {
 					codeStringBuffer.append("    }\n\n");
 				}
 				code.append("}");
-				writeCodeFile("main", code.toString(), outputPackage,
-						outFileName);
+				writeCodeFile("main", code.toString(), outputPackage,outFileName);
 				logger.info("wrapper codes generated to " + outputPackage);
 
 				codeStringBuffer.append("    @PostConstruct\n");
 				codeStringBuffer.append("    private void preRegister() {\n");
-				codeStringBuffer
-						.append("        com.dhcc.framework.common.WsInfoHolder.registWsInfo("
+				codeStringBuffer.append("        com.dhcc.framework.common.WsInfoHolder.registWsInfo("
 								+ outFileName + ".class);\n");
 				codeStringBuffer.append("    }\n");
 				codeStringBuffer.append("}");
-				writeCodeFile("main", codeStringBuffer.toString(),
-						outputPackage, outFileNames);
+				writeCodeFile("main", codeStringBuffer.toString(),outputPackage, outFileNames);
 				logger.info("wrapper codes generated to " + outputPackage);
 
 				try {
@@ -381,22 +378,21 @@ public class WebServiceCodeGenerator extends AnnoParameterParser {
 						+ outputPackage.replace('.', '/') + "/" + outFileNames
 						+ ".class";
 				System.out.println(compiledFile);
+				
+				
+				/**** 生成wsdl文件*******************************************************************************/
 				if (new File(compiledFile).exists()) { // 若生成的源文件已编译好就自动再生成其wsdl文件
-					System.out.println("==========================="
-							+ compiledFile);
+					System.out.println("==========================="+ compiledFile);
 					try {
-						Class<?> targetClass = Class.forName(outputPackage
-								+ "." + outFileNames);
+						Class<?> targetClass = Class.forName(outputPackage+ "." + outFileNames);
 						String wsdlTargetDir = "webContent/wsdl";
-						String soapAddress = "/ws/"
-								+ lowerFirstChar(outFileNames);
+						String soapAddress = "/ws/"+ lowerFirstChar(outFileNames);
 						String frontEnd = "simple";
 						String[] wsdlArgs = new String[] { "-wsdl", "-fe",
 								frontEnd, "-a", soapAddress, "-d",
 								wsdlTargetDir,"-o",outFileNames+".wsdl", targetClass.getName() };
 						new JavaToWS(wsdlArgs).run();
-						logger.info("wsdl for " + outFileNames
-								+ " is generated to " + wsdlTargetDir);
+						logger.info("wsdl for " + outFileNames+ " is generated to " + wsdlTargetDir);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

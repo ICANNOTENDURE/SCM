@@ -310,7 +310,7 @@ $(document).ready(function () {
 		<div id="topPanel">
 
 			
-			<div id="hid">隐藏</div>
+			<div id="hid"></div>
 		</div>
 	</div>
 

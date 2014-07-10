@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -378,7 +379,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	* @version V1.0
 	 */
 	public void impByOrder(VenDeliverDto dto){
-		
+		String no=UUID.randomUUID().toString();
 		Iterator<String> it = dto.getOrderMap().keySet().iterator();
 		q1:
 		while(it.hasNext()){
@@ -411,6 +412,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			venDeliver.setDeliverVendorid(super.get(HopVendor.class, order.getVendorId()).getHopVenId()); //供应商
 			venDeliver.setDeliverDestinationid(order.getRecDestination());
 			venDeliver.setDeliverAccpecctDate(new java.sql.Timestamp(new Date().getTime()));
+			venDeliver.setDeliverNo(no);
 			super.saveOrUpdate(venDeliver);
 			ExeState exeState=new ExeState();
 			exeState.setDeliverId(venDeliver.getDeliverId());
@@ -673,6 +675,84 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	
 	
 	
+	
+	
+	
+	/**
+	 * 
+	* @Title: VenDeliverDao.java
+	* @Description: TODO(根据供应商发货生成发货单)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月9日 下午2:49:36
+	* @version V1.0
+	 */
+	public void Deliver(Map<String, List<VenDeliveritm>> map){
+		String no=UUID.randomUUID().toString();
+		Iterator<String> it = map.keySet().iterator();
+		while(it.hasNext()){
+			String key = (String) it.next();
+			Order order=super.get(Order.class, Long.valueOf(key));
+			//保存发货主表
+			VenDeliver venDeliver=new VenDeliver();
+			venDeliver.setDeliverHopid(order.getHopId());
+			venDeliver.setDeliverOrderid(order.getOrderId());
+			venDeliver.setDeliverPurloc(order.getPurLoc());
+			venDeliver.setDeliverRecloc(order.getRecLoc());
+			venDeliver.setHopVendorId(order.getVendorId()); //医院供应商
+			venDeliver.setDeliverVendorid(super.get(HopVendor.class, order.getVendorId()).getHopVenId()); //供应商
+			venDeliver.setDeliverDestinationid(order.getRecDestination());
+			venDeliver.setDeliverDate(new java.sql.Timestamp(new Date().getTime()));
+			venDeliver.setDeliverWpsId(map.get(key).get(0).getDeliveritmWpsId());
+			venDeliver.setDeliverNo(no);
+			super.saveOrUpdate(venDeliver);
+			//执行表(发货表)
+			ExeState exeState=new ExeState();
+			exeState.setDeliverId(venDeliver.getDeliverId());
+			exeState.setExedate(new java.sql.Timestamp(new Date().getTime()));
+			exeState.setStateId(2l);
+			exeState.setRemark("平台 webservice 导入");
+			super.saveOrUpdate(exeState);
+			//更新发货表执行表ID
+			venDeliver.setDeliverExestateid(exeState.getExestateId());
+			super.saveOrUpdate(venDeliver);
+			//执行表(订单表)
+			ExeState exeState1=new ExeState();
+			exeState1.setOrdId(order.getOrderId());
+			exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
+			exeState1.setStateId(2l);
+			exeState1.setRemark("平台 webservice 导入");
+			super.saveOrUpdate(exeState1);
+			//更新订单表执行状态
+			order.setExeStateId(exeState1.getExestateId());
+			super.saveOrUpdate(order);
+			
+			
+			
+			//保存发货明细表
+			List<VenDeliveritm> deliveritms=map.get(key);
+			for(VenDeliveritm tmpVenDeliveritm:deliveritms){
+				tmpVenDeliveritm.setDeliveritmParentid(venDeliver.getDeliverId());
+				super.saveOrUpdate(tmpVenDeliveritm);
+				
+				
+				/********************************暂时在这里处理 ******************************************/
+				//更新订单表里发货数量
+				OrderItm orderItm=super.get(OrderItm.class, tmpVenDeliveritm.getDeliveritmOrderitmid());
+				if(orderItm.getDeliverqty()==null){
+					orderItm.setDeliverqty(0f);
+				}
+				Float deliverqty=orderItm.getDeliverqty().floatValue()+tmpVenDeliveritm.getDeliveritmQty().floatValue();
+				orderItm.setDeliverqty(deliverqty);
+				orderItm.setFlag(Long.valueOf("1"));
+				if((orderItm.getDeliverqty().floatValue()-orderItm.getReqqty().floatValue())>=0){
+					orderItm.setFlag(Long.valueOf("2"));
+				}
+				super.saveOrUpdate(orderItm);
+			}
+		}	
+	}
 	
 	
 }

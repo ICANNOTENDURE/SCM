@@ -25,7 +25,13 @@ public class VenDeliveritm implements Serializable {
 	private Float deliveritmRpamt;
 	private String deliveritmUom;
 	private Long deliveritmVenincid;
-
+    
+	private String deliveritmHisUom;
+	private Float deliveritmHisQty;
+	private Float deliveritmHisRp;
+	private Float deliveritmFac;
+	private String deliveritmWpsId;
+	
 	public VenDeliveritm() {
 	}
 
@@ -153,4 +159,92 @@ public class VenDeliveritm implements Serializable {
 		this.deliveritmVenincid = deliveritmVenincid;
 	}
 
+
+	/**
+	 * @return the deliveritmHisUom
+	 */
+	@Column(name="DELIVERITM_HISUOM")
+	public String getDeliveritmHisUom() {
+		return deliveritmHisUom;
+	}
+
+
+	/**
+	 * @param deliveritmHisUom the deliveritmHisUom to set
+	 */
+	public void setDeliveritmHisUom(String deliveritmHisUom) {
+		this.deliveritmHisUom = deliveritmHisUom;
+	}
+
+
+	/**
+	 * @return the deliveritmHisQty
+	 */
+	@Column(name="DELIVERITM_HISQTY")
+	public Float getDeliveritmHisQty() {
+		return deliveritmHisQty;
+	}
+
+
+	/**
+	 * @param deliveritmHisQty the deliveritmHisQty to set
+	 */
+	public void setDeliveritmHisQty(Float deliveritmHisQty) {
+		this.deliveritmHisQty = deliveritmHisQty;
+	}
+
+
+	/**
+	 * @return the deliveritmHisRp
+	 */
+	@Column(name="DELIVERITM_HISRP")
+	public Float getDeliveritmHisRp() {
+		return deliveritmHisRp;
+	}
+
+
+	/**
+	 * @param deliveritmHisRp the deliveritmHisRp to set
+	 */
+	public void setDeliveritmHisRp(Float deliveritmHisRp) {
+		this.deliveritmHisRp = deliveritmHisRp;
+	}
+
+
+	/**
+	 * @return the deliveritmFac
+	 */
+	@Column(name="DELIVERITM_FAC")
+	public Float getDeliveritmFac() {
+		return deliveritmFac;
+	}
+
+
+	/**
+	 * @param deliveritmFac the deliveritmFac to set
+	 */
+	public void setDeliveritmFac(Float deliveritmFac) {
+		this.deliveritmFac = deliveritmFac;
+	}
+
+
+	/**
+	 * @return the deliveritmWpsId
+	 */
+	@Column(name="DELIVERITM_WPSID")
+	public String getDeliveritmWpsId() {
+		return deliveritmWpsId;
+	}
+
+
+	/**
+	 * @param deliveritmWpsId the deliveritmWpsId to set
+	 */
+	public void setDeliveritmWpsId(String deliveritmWpsId) {
+		this.deliveritmWpsId = deliveritmWpsId;
+	}
+    
+	
+	
+	
 }

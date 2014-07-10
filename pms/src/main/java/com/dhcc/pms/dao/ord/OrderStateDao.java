@@ -27,6 +27,8 @@ import com.dhcc.pms.entity.ord.State;
 import com.dhcc.pms.entity.vo.ord.OrderExeStateVo;
 import com.dhcc.pms.entity.vo.ord.OrderItmVo;
 import com.dhcc.pms.entity.vo.ord.OrderStateVo;
+import com.dhcc.pms.entity.vo.ws.OrderItmWebVo;
+import com.dhcc.pms.entity.vo.ws.OrderWebVo;
 
 @Repository
 public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
@@ -319,4 +321,98 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		return orders2;
 		
 	}
+	
+	
+	/**
+	 * 
+	* @Title: OrderStateDao.java
+	* @Description: TODO( webservice 查询医院订单)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月2日 上午11:37:44
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public void listOrderWS(OrderStateDto dto) {
+
+		StringBuffer hqlBuffer = new StringBuffer();
+		hqlBuffer.append("select ");
+		hqlBuffer.append("t1.order_no orderno, ");
+		hqlBuffer.append("t1.REMARK remark, ");
+		hqlBuffer.append("t1.EMFLAG emflag, ");
+		hqlBuffer.append("t1.order_id orderid, ");
+		hqlBuffer.append("t4.ctloc_name as recloc, ");
+		hqlBuffer.append("t5.ctloc_name as purloc, ");
+		hqlBuffer.append("t6.ctlocdes_destination as desction, ");
+		hqlBuffer.append("t10.HOSPITAL_NAME as hopname ");
+		hqlBuffer.append("from t_ord_order t1  ");
+		hqlBuffer.append("left join t_ord_exestate t2 on t1.exestate_id=t2.exestate_id  ");
+		hqlBuffer.append("left join t_sys_ctloc t4 on t4.ctloc_id=t1.recloc ");
+		hqlBuffer.append("left join t_sys_ctloc t5 on t5.ctloc_id=t1.purloc ");
+		hqlBuffer.append("left join t_sys_ctloc_destination t6 on t6.ctlocdes_id=t1.recdestination ");
+		hqlBuffer.append("left join T_HOP_VENDOR t9 on t9.H_VENID=t1.vendor_id ");
+		hqlBuffer.append("left join T_SYS_HOSPITAL t10 on t10.HOSPITAL_ID=t1.HOP_ID ");
+		hqlBuffer.append("where 1=1 ");
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+	
+
+		hqlBuffer.append("and t2.state_id=:State ");
+		hqlParamMap.put("State", 1);
+		if(dto.getSendFlag().equals("1")){
+			hqlBuffer.append("and t1.sendflag=:sendflag ");
+			hqlParamMap.put("sendflag", dto.getSendFlag());
+		}else{
+			hqlBuffer.append("and t1.sendflag is null ");
+		}
+		
+		hqlBuffer.append("and t9.H_VENDORID=:Vendor ");
+		hqlParamMap.put("Vendor", dto.getVendor());
+
+		dto.setOrderWSVos(jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), OrderWebVo.class, hqlParamMap));
+	}
+	
+
+	/**
+	 * 
+	* @Title: OrderStateDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月3日 下午2:28:32
+	* @version V1.0
+	 */
+    @SuppressWarnings("unchecked")
+	public void listOrderItmWS(OrderWebVo wsVo){
+		
+		StringBuffer hqlBuffer = new StringBuffer();
+		hqlBuffer.append("select ");
+		hqlBuffer.append("t1.ord_id as orderid, ");
+		hqlBuffer.append("t1.orderitm_id as orderitmid, ");
+		hqlBuffer.append("t1.inc_id as hopincid, ");
+		hqlBuffer.append("t3.VEN_INC_NAME as incname, ");
+		hqlBuffer.append("t3.VEN_INC_CODE as inccode, ");
+		hqlBuffer.append("t1.reqqty as hisqty , ");
+		hqlBuffer.append("t1.rp as hisrp, ");
+		hqlBuffer.append("t6.VEN_INC_FAC as fac, ");
+		hqlBuffer.append("t3.VEN_INC_UOMNAME as venuom, ");
+		hqlBuffer.append("t1.rp*t6.VEN_INC_FAC as venrp, ");
+		hqlBuffer.append("t1.reqqty*t6.VEN_INC_FAC as venqty, ");
+		hqlBuffer.append("t1.uom as hisuom ");
+		hqlBuffer.append("from t_ord_orderitm t1 ");
+		hqlBuffer.append("left join t_hop_inc t2 on t2.inc_id=t1.inc_id ");
+		hqlBuffer.append("left join t_ven_hop_inc t6 on t1.inc_id=t6.hop_inc_id ");
+		hqlBuffer.append("left join t_ven_inc t3 on t3.ven_inc_rowid=t6.ven_inc_id ");
+		hqlBuffer.append("where 1=1 ");
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+
+		hqlBuffer.append("and t1.ord_id=:ord ");
+		hqlParamMap.put("ord", wsVo.getOrderid());
+
+		wsVo.setOrderItmWSVos(jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), OrderItmWebVo.class, hqlParamMap));
+	}
+    
+    
+
 }

@@ -31,7 +31,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		style="vertical-align: middle;">
 		<form id="detail" method="post">
 			<div align="center">
-				<input type="hidden" name="dto.logConfigure.id" />
+				<input type="hidden" name="dto.logConfigure.id" id="id"/>
 			</div>
 			<br>
 			<div align="center">

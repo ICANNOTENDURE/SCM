@@ -285,6 +285,21 @@ function append() {
 //导入订单
 function importOrder(){
 	$('#importDialog').dialog('open');
+	$('#orderUpload-queue').html("");
+	$('#impModel').html("");
+	$('#impModel').append("<td class='time'>模版 </td>");
+	$.post(
+		$WEB_ROOT_PATH+"/sys/sysImpModelCtrl!listImpModel.htm",
+		{
+			'dto.impModel.type':'ORDER'
+		},
+		function(data){
+			$.each(data,function(i,dd){
+					$('#impModel').append("<td class='drop'><div class='item'>"+dd.name+"</div></td>");
+			});
+		},
+		"json"
+	);
 }
 
 //查询导入订单

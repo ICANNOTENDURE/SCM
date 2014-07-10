@@ -61,4 +61,17 @@ public interface OrderStateService {
 	* @version V1.0
 	 */
 	public  List<State> getComboList();
+	
+	
+	/**
+	 * 
+	* @Title: OrderStateService.java
+	* @Description: TODO(webservice 查询订单)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月2日 下午1:44:51
+	* @version V1.0
+	 */
+	public  void listOrderWS(OrderStateDto dto);
 }

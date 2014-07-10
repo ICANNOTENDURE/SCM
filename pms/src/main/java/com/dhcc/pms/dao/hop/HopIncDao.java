@@ -258,7 +258,7 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 	* @date 2014年6月17日 上午10:30:55
 	* @version V1.0
 	 */
-	public Long getIncIdByName(String name) {
+	public HopInc getIncIdByName(String name) {
 		StringBuffer hqlBuffer = new StringBuffer();
 		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
 		hqlBuffer.append(" from HopInc h");
@@ -273,7 +273,7 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 		@SuppressWarnings("unchecked")
 		List<HopInc> hopCtlocs=(List<HopInc>)this.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,false);
 		if(hopCtlocs.size()>0){
-			return hopCtlocs.get(0).getIncId();
+			return hopCtlocs.get(0);
 		}
 		return null;
 	}

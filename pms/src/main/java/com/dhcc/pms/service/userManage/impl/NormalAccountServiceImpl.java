@@ -198,6 +198,15 @@ public class NormalAccountServiceImpl implements NormalAccountService{
 		// TODO Auto-generated method stub
 		return normalAccountDao.getUserByLoc(locid);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.userManage.NormalAccountService#getNormalAccountByAccount(java.lang.String)
+	 */
+	@Override
+	public NormalAccount getNormalAccountByAccount(String account) {
+		// TODO Auto-generated method stub
+		return normalAccountDao.getNormalAccountByAccount(account);
+	}
 	
 	
 

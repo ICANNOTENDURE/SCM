@@ -371,6 +371,7 @@ public class LoginDao extends HibernatePersistentObjectDAO<NormalAccount>{
 		return userId+"^"+password;
 	}
 	
-
+	
+	
 	
 }

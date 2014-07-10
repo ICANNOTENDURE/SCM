@@ -300,5 +300,28 @@ public class NormalAccountDao extends HibernatePersistentObjectDAO<NormalAccount
 		hqlParamMap.put("locid", locid);
 		return jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap);
 	}
+	
+	/**
+	 * 
+	* @Title: NormalAccountDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param account
+	* @return
+	* @return:NormalAccount 
+	* @author zhouxin  
+	* @date 2014年7月2日 下午5:34:26
+	* @version V1.0
+	 */
+	public NormalAccount getNormalAccountByAccount(String account) {
 
+		StringBuilder hqlStr=new StringBuilder(64);
+		hqlStr.append(" from NormalAccount t where ");
+		hqlStr.append("accountAlias=?");
+		@SuppressWarnings("unchecked")
+		List<NormalAccount>  normalAccounts=this.findByHql(hqlStr.toString(), account);
+		if(normalAccounts.size()==1){
+			return normalAccounts.get(0);
+		}
+		return null;
+	}
 }

@@ -30,6 +30,8 @@ public class VenDeliver implements Serializable {
 	private Timestamp deliverAccpecctDate;
 	private Long deliverAccpUserId;
 	private Long hopVendorId;
+	private String deliverWpsId;
+	private String deliverNo;
 	
 	public VenDeliver() {
 	}
@@ -226,6 +228,40 @@ public class VenDeliver implements Serializable {
 	 */
 	public void setHopVendorId(Long hopVendorId) {
 		this.hopVendorId = hopVendorId;
+	}
+
+
+	/**
+	 * @return the deliverWpsId
+	 */
+	@Column(name="DELIVER_WPSID")
+	public String getDeliverWpsId() {
+		return deliverWpsId;
+	}
+
+
+	/**
+	 * @param deliverWpsId the deliverWpsId to set
+	 */
+	public void setDeliverWpsId(String deliverWpsId) {
+		this.deliverWpsId = deliverWpsId;
+	}
+
+
+	/**
+	 * @return the deliverNo
+	 */
+	@Column(name="DELIVER_NO")
+	public String getDeliverNo() {
+		return deliverNo;
+	}
+
+
+	/**
+	 * @param deliverNo the deliverNo to set
+	 */
+	public void setDeliverNo(String deliverNo) {
+		this.deliverNo = deliverNo;
 	}
 	
 	

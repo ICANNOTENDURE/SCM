@@ -131,6 +131,9 @@
 		}
 		var row =$("#datagrid").datagrid('getSelected');
 		var hopincid=row.hopincid;
+		
+		var row =$("#datagrid2").datagrid('getSelected');
+		var fac=row.fac;
 		$.post(
 			$WEB_ROOT_PATH+'/ven/venIncCtrl!saveContranstInc.htm',
 			{
@@ -149,6 +152,8 @@
 	}
 	//保存对照
 	function updateConTra(row){
+
+		
 		$('#datagrid2').datagrid('endEdit', row);
 		facid=$('#datagrid2').datagrid('getRows')[row]['facid'];
 		fac=$('#datagrid2').datagrid('getRows')[row]['fac'];

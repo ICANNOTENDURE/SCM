@@ -115,10 +115,10 @@
             			function(data){
             				$.each(data, function (index, item) {
             					//alert(item.deliverId)
-            					$('#qrcode').html("<img   src="+$WEB_ROOT_PATH+'/sys/qrCodeCtrl!encoderQrAndroid.htm?dto.content='+item.deliverId+" style='height: 80;width: 80px'> </img>");
+            					//$('#qrcode').html("<img   src="+$WEB_ROOT_PATH+'/sys/qrCodeCtrl!encoderQrAndroid.htm?dto.content='+item.deliverId+" style='height: 80;width: 80px'> </img>");
             					//alert($('#qrcode').html())
             					//$("#qrCode").jqprint();
-            					document.getElementById("WebBrowser").ExecWB(6,1);
+            					//document.getElementById("WebBrowser").ExecWB(6,1);
             				});
             				$('#qrcode').html("");
             			},

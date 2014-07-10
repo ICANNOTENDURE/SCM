@@ -53,6 +53,20 @@ public class OrderItm implements Serializable {
 	@Column(name="flag")
 	private Long flag;
 	
+	
+	@Column(name="VENUOMREQQTY")
+	private Float venuomreqqty;
+	
+	@Column(name="VENUOMRP")
+	private Float venrp;
+	
+	@Column(name="VENUOM")
+	private String venuom;
+	
+	@Column(name="FAC")
+	private Float fac;
+	
+	
 	public OrderItm() {
 	}
 	
@@ -148,4 +162,77 @@ public class OrderItm implements Serializable {
 		this.uom = uom;
 	}
 
+
+
+	/**
+	 * @return the venuomreqqty
+	 */
+	public Float getVenuomreqqty() {
+		return venuomreqqty;
+	}
+
+
+
+	/**
+	 * @param venuomreqqty the venuomreqqty to set
+	 */
+	public void setVenuomreqqty(Float venuomreqqty) {
+		this.venuomreqqty = venuomreqqty;
+	}
+
+
+
+	/**
+	 * @return the venrp
+	 */
+	public Float getVenrp() {
+		return venrp;
+	}
+
+
+
+	/**
+	 * @param venrp the venrp to set
+	 */
+	public void setVenrp(Float venrp) {
+		this.venrp = venrp;
+	}
+
+
+
+	/**
+	 * @return the venuom
+	 */
+	public String getVenuom() {
+		return venuom;
+	}
+
+
+
+	/**
+	 * @param venuom the venuom to set
+	 */
+	public void setVenuom(String venuom) {
+		this.venuom = venuom;
+	}
+
+
+
+	/**
+	 * @return the fac
+	 */
+	public Float getFac() {
+		return fac;
+	}
+
+
+
+	/**
+	 * @param fac the fac to set
+	 */
+	public void setFac(Float fac) {
+		this.fac = fac;
+	}
+	
+	
 }

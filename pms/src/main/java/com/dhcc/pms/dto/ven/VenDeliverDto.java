@@ -34,9 +34,13 @@ public class VenDeliverDto extends BaseDto {
 	private File upload;
 	private Map<String,List<VenDeliveritm>> orderMap=new HashMap<String, List<VenDeliveritm>>();
 	
+
 	
 	
 	
+
+
+
 	/**
 	 * @return the orderMap
 	 */

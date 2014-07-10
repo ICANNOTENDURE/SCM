@@ -80,7 +80,7 @@ public class HopIncServiceImpl implements HopIncService {
 	 * @see com.dhcc.pms.service.hop.HopIncService#getIncIdByName(java.lang.String)
 	 */
 	@Override
-	public Long getIncIdByName(String name) {
+	public HopInc getIncIdByName(String name) {
 		// TODO Auto-generated method stub
 		return hopIncDao.getIncIdByName(name);
 	}

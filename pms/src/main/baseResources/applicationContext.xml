@@ -20,9 +20,9 @@
 	<!-- 引入属性文件 -->
 	<context:property-placeholder location="classpath:hibernate.properties" />
 	
-	
+	<!-- webservice -->
 	<import resource="applicationOrderStateWSServer.xml" />
-
+	
 	<!-- 数据源配置 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">

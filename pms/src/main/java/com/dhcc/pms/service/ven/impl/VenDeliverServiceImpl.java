@@ -5,6 +5,7 @@
 package com.dhcc.pms.service.ven.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -109,6 +110,15 @@ public class VenDeliverServiceImpl implements VenDeliverService {
 	public List<VenDeliveritm> getDeliveritms(Long deliverId) {
 		// TODO Auto-generated method stub
 		return venDeliverDao.getDeliveritms(deliverId);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#deliver(java.util.Map)
+	 */
+	@Override
+	public void deliver(Map<String, List<VenDeliveritm>> map) {
+		// TODO Auto-generated method stub
+		venDeliverDao.Deliver(map);
 	}
 	
 

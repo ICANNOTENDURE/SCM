@@ -157,7 +157,7 @@
 	</table>
 
 	<div id="importDialog" class="dialog" title="导入订单"
-		style="width:400px;height: 200px; background-color: #F5FAFD;"
+		style="width:1000px;height: 200px; background-color: #F5FAFD;"
 		data-options="
 				modal:true,
 		        closed:true,
@@ -172,8 +172,22 @@
 						name="upload" id="orderUpload"></input></td>
 				</tr>
 			</table>
+		<table>
+	    	<tr id="impModel">
+	    		<td class="time">模版 </td>
+	    	</tr>
+	    </table>
 	</div>
-	
+    <style type="text/css">
+
+    .item{
+	    text-align:center;
+	    border:1px solid #499B33;
+	    background:#fafafa;
+	    color:#444;
+	    width:90px;
+    }
+    </style>
 
 	
 	<!-- 弹出查询订单 -->
@@ -201,8 +215,10 @@
 			<a href="#" class="linkbutton" iconCls="icon-search" id="search">查询</a>
 		 </div>
 		</div>
-		
-		 <div id="gg" class="dialog" title="请等待"  style="width:800px;height:400px;padding:10px;"
+		 
+		 
+		 
+		 <div id="gg" class="dialog" title="请等待"  style="width:1000px;height:400px;padding:10px;"
 				data-options="
 				modal:true,
 				draggable:false,

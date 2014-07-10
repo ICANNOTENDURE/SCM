@@ -65,6 +65,11 @@ public class Order implements Serializable {
 	@Column(name="ORD_FLAG")
 	private Long ordFlag;
 	
+	//1,webservice发送,
+	@Column(name="SENDFLAG")
+	private Long sendFlag;
+		
+	
 	public Order() {
 	}
 	
@@ -72,6 +77,36 @@ public class Order implements Serializable {
 	
 	
 	
+	
+
+
+
+	/**
+	 * @return the sendFlag
+	 */
+	public Long getSendFlag() {
+		return sendFlag;
+	}
+
+
+
+
+
+
+
+
+
+	/**
+	 * @param sendFlag the sendFlag to set
+	 */
+	public void setSendFlag(Long sendFlag) {
+		this.sendFlag = sendFlag;
+	}
+
+
+
+
+
 
 
 
