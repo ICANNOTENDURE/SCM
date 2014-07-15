@@ -67,28 +67,9 @@ public class OrderItm implements Serializable {
 	private Float fac;
 	
 	
+
 	public OrderItm() {
 	}
-	
-	
-	
-	/**
-	 * @return the flag
-	 */
-	public Long getFlag() {
-		return flag;
-	}
-
-
-
-	/**
-	 * @param flag the flag to set
-	 */
-	public void setFlag(Long flag) {
-		this.flag = flag;
-	}
-
-
 
 	public Long getOrderitmId() {
 		return this.orderitmId;
@@ -98,10 +79,18 @@ public class OrderItm implements Serializable {
 		this.orderitmId = orderitmId;
 	}
 
+	
+
+	/**
+	 * @return the deliverqty
+	 */
 	public Float getDeliverqty() {
-		return this.deliverqty;
+		return deliverqty;
 	}
 
+	/**
+	 * @param deliverqty the deliverqty to set
+	 */
 	public void setDeliverqty(Float deliverqty) {
 		this.deliverqty = deliverqty;
 	}
@@ -137,21 +126,49 @@ public class OrderItm implements Serializable {
 	public void setRecloc(Long recloc) {
 		this.recloc = recloc;
 	}
+	
+	
 
+	/**
+	 * @return the reqqty
+	 */
 	public Float getReqqty() {
-		return this.reqqty;
+		return reqqty;
 	}
 
+	/**
+	 * @param reqqty the reqqty to set
+	 */
 	public void setReqqty(Float reqqty) {
 		this.reqqty = reqqty;
 	}
 
+	/**
+	 * @return the rp
+	 */
 	public Float getRp() {
-		return this.rp;
+		return rp;
 	}
 
+	/**
+	 * @param rp the rp to set
+	 */
 	public void setRp(Float rp) {
 		this.rp = rp;
+	}
+
+	/**
+	 * @return the flag
+	 */
+	public Long getFlag() {
+		return flag;
+	}
+
+	/**
+	 * @param flag the flag to set
+	 */
+	public void setFlag(Long flag) {
+		this.flag = flag;
 	}
 
 	public String getUom() {

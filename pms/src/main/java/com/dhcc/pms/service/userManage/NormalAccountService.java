@@ -1,10 +1,7 @@
 package com.dhcc.pms.service.userManage;
 
-import java.util.List;
-
 import com.dhcc.pms.dto.userManage.NormalAccountDto;
 import com.dhcc.pms.entity.userManage.NormalAccount;
-import com.dhcc.pms.entity.vo.combo.ComboxVo;
 
 /**
  * 标题: NormalAccountService.java
@@ -126,19 +123,6 @@ public interface NormalAccountService {
 	* @Create Date:   2013年11月21日 下午1:58:57
 	 */
 	public void configOnly(NormalAccountDto normalAccountDto) throws Exception;
-	
-	/**\
-	 * 
-	* @Title: NormalAccountService.java
-	* @Description: TODO(用一句话描述该文件做什么)
-	* @param locid
-	* @return
-	* @return:List<ComboxVo> 
-	* @author zhouxin  
-	* @date 2014年6月25日 上午11:35:16
-	* @version V1.0
-	 */
-	public List<ComboxVo> getUserByLoc(Long locid);
 	
 	
 	/**

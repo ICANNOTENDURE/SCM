@@ -61,6 +61,7 @@ public interface OrderStateService {
 	* @version V1.0
 	 */
 	public  List<State> getComboList();
+
 	
 	
 	/**
@@ -74,4 +75,12 @@ public interface OrderStateService {
 	* @version V1.0
 	 */
 	public  void listOrderWS(OrderStateDto dto);
+
+
+
+	/**
+	 * @param dto
+	 * @return
+	 */
+	//public List<OrderStateAndroidVo> listOrderStateAndroid(OrderStateDto dto);
 }

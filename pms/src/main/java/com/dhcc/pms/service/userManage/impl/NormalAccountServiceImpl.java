@@ -11,7 +11,6 @@ import com.dhcc.framework.common.PagerModel;
 import com.dhcc.pms.dao.userManage.NormalAccountDao;
 import com.dhcc.pms.dto.userManage.NormalAccountDto;
 import com.dhcc.pms.entity.userManage.NormalAccount;
-import com.dhcc.pms.entity.vo.combo.ComboxVo;
 import com.dhcc.pms.service.userManage.NormalAccountService;
 
 /**
@@ -188,15 +187,6 @@ public class NormalAccountServiceImpl implements NormalAccountService{
 	@Override
 	public void configOnly(NormalAccountDto normalAccountDto) throws Exception {
 		this.normalAccountDao.configOnly(normalAccountDto);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.dhcc.pms.service.userManage.NormalAccountService#getUserByLoc(java.lang.Long)
-	 */
-	@Override
-	public List<ComboxVo> getUserByLoc(Long locid) {
-		// TODO Auto-generated method stub
-		return normalAccountDao.getUserByLoc(locid);
 	}
 
 	/* (non-Javadoc)

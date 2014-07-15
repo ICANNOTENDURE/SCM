@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Repository;
 
 import com.dhcc.framework.common.PagerModel;
+import com.dhcc.framework.hibernate.dao.CommonDao;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
@@ -33,6 +34,9 @@ import com.dhcc.pms.entity.vo.ws.OrderWebVo;
 @Repository
 public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 
+	@Resource
+	private CommonDao commonDao;
+	
 	@Resource
 	private JdbcTemplateWrapper jdbcTemplateWrapper;
 
@@ -70,6 +74,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("t4.ctloc_name as recloc, ");
 		hqlBuffer.append("t5.ctloc_name as purloc, ");
 		hqlBuffer.append("t6.ctlocdes_destination as destination, ");
+		hqlBuffer.append("t7.name exeuser, ");
 		hqlBuffer.append("t8.realname as realname, ");
 		hqlBuffer.append("t1.deliverydate as deliverydate, ");
 		hqlBuffer.append("t2.exedate as exedate, ");
@@ -287,6 +292,144 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		return (List<State>)super.getAll(State.class, "stateSeq",true);
 	}
 	
+
+//	/**
+//	 * 
+//	 * @param dto
+//	 * @return  
+//	 * @author penzi
+//	 * @description :获取当前状态订单以及已经操作过的订单状态
+//	 */
+//	@SuppressWarnings("unchecked")
+//	public List<OrderStateAndroidVo> listOrderStateAndroid(OrderStateDto dto) {
+//
+//		StringBuffer hqlBuffer = new StringBuffer();
+//		hqlBuffer.append("select ");
+//		hqlBuffer.append("t1.remark remark, ");
+//		hqlBuffer.append("t1.RECDESTINATION destinationid, ");
+//		hqlBuffer.append("t1.order_no hisno, ");
+//		hqlBuffer.append("t1.vendor_id vendorid, ");
+//		hqlBuffer.append("t1.recloc reclocid, ");
+//		hqlBuffer.append("t1.purloc purlocid, ");
+//		hqlBuffer.append("t3.state_name statedesc, ");
+//		hqlBuffer.append("t1.order_id orderid, ");
+//		hqlBuffer.append("t1.emflag as emflag, ");
+//		hqlBuffer.append("t4.ctloc_name as recloc, ");
+//		hqlBuffer.append("t5.ctloc_name as purloc, ");
+//		hqlBuffer.append("t6.ctlocdes_destination as destination, ");
+//		hqlBuffer.append("t7.name exeuser, ");
+//		hqlBuffer.append("t8.realname as realname, ");
+//		hqlBuffer.append("t1.deliverydate as deliverydate, ");
+//		hqlBuffer.append("t2.exedate as exedate, ");
+//		hqlBuffer.append("t9.name as vendor ");
+//		hqlBuffer.append("from t_ord_order t1  ");
+//		hqlBuffer.append("left join t_ord_exestate t2 on t1.exestate_id=t2.exestate_id  ");
+//		hqlBuffer.append("left join t_ord_state t3 on t2.state_id=t3.state_seq ");
+//		hqlBuffer.append("left join t_sys_ctloc t4 on t4.ctloc_id=t1.recloc ");
+//		hqlBuffer.append("left join t_sys_ctloc t5 on t5.ctloc_id=t1.purloc ");
+//		hqlBuffer.append("left join t_sys_ctloc_destination t6 on t6.ctlocdes_id=t1.recdestination ");
+//		hqlBuffer.append("left join t_sys_normal_account t7 on  t7.account_id=t1.createuser ");
+//		hqlBuffer.append("left join t_sys_normal_user t8 on  t8.user_id=t7.user_id ");
+//		hqlBuffer.append("left join t_ven_vendor t9 on t9.ven_id=t1.vendor_id ");
+//		hqlBuffer.append("where 1=1 ");
+//		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+//		
+//
+//		if(!StringUtils.isNullOrEmpty(dto.getEmflag())){
+//			if(dto.getEmflag().equals("checked")){
+//				hqlBuffer.append("and t1.emflag=:emflag ");
+//				hqlParamMap.put("emflag", dto.getEmflag());
+//			}
+//		}
+//	
+//		if(dto.getStdate()!=null){
+//			hqlBuffer.append("and t1.plandate>=:Stdate ");
+//			hqlParamMap.put("Stdate", dto.getStdate());
+//		}
+//		if(dto.getEddate()!=null){
+//			hqlBuffer.append("and t1.plandate<=:Eddate ");
+//			hqlParamMap.put("Eddate", dto.getEddate());
+//		}
+//		if(dto.getReqStDate()!=null){
+//			hqlBuffer.append("and t1.deliverydate>=:ReqStDate ");
+//			hqlParamMap.put("ReqStDate", dto.getReqStDate());
+//		}
+//		if(dto.getReqEdDate()!=null){
+//			hqlBuffer.append("and t1.deliverydate<=:ReqEdDate ");
+//			hqlParamMap.put("ReqEdDate", dto.getReqEdDate());
+//		}
+//		
+//		if(dto.getState()!=null){
+//			if(dto.getState().toString().equals("0")){
+//				hqlBuffer.append("and t2.state_id is null ");
+//			}else{ 
+//				hqlBuffer.append("and t2.state_id=:State ");
+//				hqlParamMap.put("State", dto.getState());
+//			}
+//		}
+//		
+//		if(dto.getVendor()!=null){
+//			hqlBuffer.append("and t1.vendor_id=:Vendor ");
+//			hqlParamMap.put("Vendor", dto.getVendor());
+//		}
+//		
+//		if(dto.getPurloc()!=null){
+//			hqlBuffer.append("and t1.purloc=:purloc ");
+//			hqlParamMap.put("purloc", dto.getPurloc());
+//		}
+//		
+//		if(dto.getRecLoc()!=null){
+//			hqlBuffer.append("and t1.recloc=:recloc ");
+//			hqlParamMap.put("recloc", dto.getRecLoc());
+//		}
+//		PagerModel pageModel = dto.getPageModel();
+//		if(dto.getPageModel()==null){
+//			pageModel=new PagerModel();
+//			//pageModel.setPageNo(1);
+//			//pageModel.setPageSize(10);
+//			dto.setPageModel(pageModel);
+//		}
+//		
+//		int totalRows = jdbcTemplateWrapper.getResultCountWithValuesMap(hqlBuffer.toString(), "order_id", hqlParamMap);
+//		pageModel.setTotals(totalRows);
+//		
+//		List<OrderStateAndroidVo> orderStateVos=(List<OrderStateAndroidVo>)
+//				jdbcTemplateWrapper.queryAllMatchListWithParaMap(
+//						hqlBuffer.toString(), OrderStateAndroidVo.class, hqlParamMap, 
+//						pageModel.getPageNo(),pageModel.getPageSize(),"order_id");
+//		
+//		
+//		Iterator<OrderStateAndroidVo>  iterator=orderStateVos.iterator();
+//		while(iterator.hasNext()){
+//			OrderStateAndroidVo orderStateVo=iterator.next();
+//			String orderId=orderStateVo.getOrderid();
+//			StringBuffer hqlBuffer1 = new StringBuffer();
+//
+//			hqlBuffer1.append("select t2.state_name as statedesc, ");
+//			hqlBuffer1.append("t1.exedate as exedate, ");
+//			hqlBuffer1.append("t1.remark as remark, ");
+//			hqlBuffer1.append("t3.name as exeuser ");
+//			hqlBuffer1.append("from t_ord_exestate t1  ");
+//			hqlBuffer1.append("left join t_ord_state t2 on t2.state_seq=t1.state_id ");
+//			hqlBuffer1.append("left join t_sys_normal_account t3 on  t3.account_id=t1.user_id ");
+//			hqlBuffer1.append("left join t_sys_normal_user t4 on  t4.user_id=t3.user_id ");
+//			hqlBuffer1.append("where 1=1 ");
+//			Map<String, Object> hqlParamMap1 = new HashMap<String, Object>();
+//			
+//			if (orderId!=null){
+//				hqlBuffer1.append("and t1.ord_id=:ord ");
+//				hqlParamMap1.put("ord", orderId);
+//			}
+//		
+//			
+//			hqlBuffer1.append("order by t1.exestate_id desc ");
+//			List<OrderExeStateVo> orderExeStateVos=(List<OrderExeStateVo>)
+//					jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer1.toString(),
+//							OrderExeStateVo.class, hqlParamMap1);
+//			orderStateVo.setOrderexestatevos(orderExeStateVos);
+//		}
+//		return orderStateVos;
+//	}	
 	@SuppressWarnings("unchecked")
 	public List<OrderItm> getOrderItms(Long orderId){
 		StringBuffer hql = new StringBuffer();
@@ -319,7 +462,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 			}
 		}
 		return orders2;
-		
+
 	}
 	
 	

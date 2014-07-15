@@ -449,6 +449,6 @@ public class NormalAccountBlh extends AbstractBaseBlh{
 	 */
 	public void getUserByLoc(BusinessRequest req) throws NumberFormatException, IOException{
 		String locid=WebContextHolder.getContext().getRequest().getParameter("locId");
-		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(normalAccountService.getUserByLoc(Long.valueOf(locid))));
+		//WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(normalAccountService.getUserByLoc(Long.valueOf(locid))));
 	}
 }

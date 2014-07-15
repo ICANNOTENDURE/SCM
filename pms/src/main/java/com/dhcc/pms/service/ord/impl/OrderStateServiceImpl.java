@@ -82,7 +82,15 @@ public class OrderStateServiceImpl implements OrderStateService {
 		for(OrderWebVo orderWSVo:(List<OrderWebVo>)dto.getOrderWSVos()){
 			orderStateDao.listOrderItmWS(orderWSVo);
 		}
-	}
+	}	
+	/*	
+	 * @see com.dhcc.pms.service.ord.OrderStateService#listOrderStateAndroid(com.dhcc.pms.dto.ord.OrderStateDto)
+	 */
+//	@Override
+//	public List<OrderStateAndroidVo> listOrderStateAndroid(OrderStateDto dto) {
+//		
+//		return orderStateDao.listOrderStateAndroid(dto);
+//	}
 
 
 }

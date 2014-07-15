@@ -33,7 +33,6 @@ import com.dhcc.pms.entity.vo.combo.ComboxVo;
 @Repository
 public class NormalAccountDao extends HibernatePersistentObjectDAO<NormalAccount>{
 	
-	
 	@Resource
 	private JdbcTemplateWrapper jdbcTemplateWrapper;
 	/**
@@ -278,6 +277,7 @@ public class NormalAccountDao extends HibernatePersistentObjectDAO<NormalAccount
 		normalAccountDto.setNormalAccounts((List<NormalAccount>)this.findByHqlWithValuesMap(hql.toString(),paramMap,false));
 	}
 	
+
 	/**
 	 * 
 	* @Title: NormalAccountDao.java
@@ -313,6 +313,7 @@ public class NormalAccountDao extends HibernatePersistentObjectDAO<NormalAccount
 	* @version V1.0
 	 */
 	public NormalAccount getNormalAccountByAccount(String account) {
+
 
 		StringBuilder hqlStr=new StringBuilder(64);
 		hqlStr.append(" from NormalAccount t where ");

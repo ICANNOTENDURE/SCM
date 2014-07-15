@@ -97,9 +97,4 @@ public class TaskOperateBlh extends AbstractBaseBlh{
 		TaskOperate.instance().resumeJob(dto);
 	}
 	
-	
-	public void list2(BusinessRequest res){
-		TaskOperate.instance().display();
-	}
-	
 }

@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.mail.EmailException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -29,20 +27,15 @@ import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
-import com.dhcc.framework.util.SendMailUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.dto.sys.SysImpModelDto;
-import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.hop.HopInc;
-import com.dhcc.pms.entity.hop.HopVendor;
-import com.dhcc.pms.entity.hop.Hospital;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.ImpModel;
-import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.service.hop.HopCtlocService;
 import com.dhcc.pms.service.hop.HopIncService;
 import com.dhcc.pms.service.hop.HopVendorService;
@@ -110,6 +103,7 @@ public class OrderBlh extends AbstractBaseBlh {
 		
 		//调用对应的service方法
 		orderService.delete(dto);
+		dto.setOpFlg("1");
 	}
 	
 	//更新
@@ -386,7 +380,7 @@ public class OrderBlh extends AbstractBaseBlh {
 							break;
 						case "数量":
 							if(cell!=null){
-								orderItm.setReqqty((float)(cell.getNumericCellValue()));
+								orderItm.setReqqty((float)cell.getNumericCellValue());
 							}
 							break;
 						case "进价":
@@ -473,50 +467,6 @@ public class OrderBlh extends AbstractBaseBlh {
 	public void complete(BusinessRequest res){
 		OrderDto dto = super.getDto(OrderDto.class, res);
 		orderService.complete(dto);
-		
-		
-		//发送邮件
-		String sub="";
-		StringBuffer msg = new StringBuffer();
-		String address="";
-		HopVendor HopVendor=commonService.get(HopVendor.class,dto.getOrder().getVendorId());
-		Vendor vendor=commonService.get(Vendor.class,HopVendor.getHopVenId());
-		if(vendor==null){
-			return;
-		}
-		if(StringUtils.isNullOrEmpty(vendor.getEmail())){
-			return;
-		}
-		Hospital Hospital=commonService.get(Hospital.class, dto.getOrder().getHopId());
-		HopCtlocDestination ctlocDestination=commonService.get(HopCtlocDestination.class,dto.getOrder().getRecDestination());
-		HopCtloc recLoc=commonService.get(HopCtloc.class,dto.getOrder().getRecLoc());
-		HopCtloc purloc=commonService.get(HopCtloc.class,dto.getOrder().getPurLoc());
-		
-//		if(!StringUtils.checkEmail(vendor.getEmail())){
-//			return;
-//		}
-		address=vendor.getEmail();
-		sub=Hospital.getHospitalName()+"订单";
-		msg.append("<h1>"+Hospital.getHospitalName()+"订单</h1>");
-		msg.append("<h4>单号:"+dto.getOrder().getOrderNo()+"</h4>");
-		if(dto.getOrder().getDeliveryDate()!=null){
-			msg.append("<br>要求送达时间:"+StringUtils.formatYearMonthDate(dto.getOrder().getDeliveryDate()));
-		}
-		msg.append("<br><h4>入库科室:"+purloc.getName()+"</h4>");
-		msg.append("<br><h4>收货科室:"+recLoc.getName()+"</h4>");
-		msg.append("<br><h4>收货地址:"+ctlocDestination.getDestination()+"</h4>");
-		msg.append("<br>订单以发出，请及时登录系统查看.");
-		msg.append("<br><br><br><br><br>");
-		msg.append("<br>地址:"+Hospital.getHospitalDestination());
-		msg.append("<br>电话:"+ctlocDestination.getTel());
-		msg.append("<br>邮箱:"+ctlocDestination.getMail());
-		try {
-			if(!StringUtils.isNullOrEmpty(address)){
-				SendMailUtil.sendEmail(sub, msg.toString(),address,60 * 1000);
-			}
-		} catch (EmailException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	/**
@@ -548,40 +498,7 @@ public class OrderBlh extends AbstractBaseBlh {
 	public void saveMain(BusinessRequest res) {
 	
 		OrderDto dto = super.getDto(OrderDto.class, res);
-		Order order=new Order();
-		if(dto.getOrder().getOrderId()!=null){
-			order=commonService.get(Order.class, dto.getOrder().getOrderId());	
-		}else{
-			order.setHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
-			order.setCreateUser(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
-			order.setPlanDate(new Date());
-		}
-		order.setDeliveryDate(dto.getOrder().getDeliveryDate());
-		order.setEmFlag(dto.getOrder().getEmFlag());
-		order.setOrderNo(dto.getOrder().getOrderNo());
-		order.setRemark(dto.getOrder().getRemark());
-		order.setPlanArrDate(dto.getOrder().getPlanArrDate());
-		order.setPurLoc(dto.getOrder().getPurLoc());
-		order.setRecDestination(dto.getOrder().getRecDestination());
-		order.setRecLoc(dto.getOrder().getRecLoc());
-		order.setVendorId(dto.getOrder().getVendorId());	
-		commonService.saveOrUpdate(order);
-		
+		commonService.saveOrUpdate(dto.getOrder());
 		dto.setOpFlg("1");
-	}
-	
-	/**
-	 * 
-	* @Title: OrderBlh.java
-	* @Description: TODO(执行订单状态)
-	* @param dto
-	* @return:void 
-	* @author zhouxin  
-	* @date 2014年6月17日 下午8:45:41
-	* @version V1.0
-	 */
-	public void exeOrder(BusinessRequest res){
-		OrderDto dto = super.getDto(OrderDto.class, res);
-		orderService.exeOrder(dto);
 	}
 }

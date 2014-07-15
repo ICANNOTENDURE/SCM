@@ -23,11 +23,13 @@ public class VenIncServiceImpl implements VenIncService {
 
 	@Resource
 	private VenIncDao venIncDao;
-	@Resource
-	private HopIncDao hopIncDao;
+	
 	@Resource
 	private CommonService commonService;
-
+	
+	@Resource
+	private HopIncDao hopIncDao;
+	
 	public void list(VenIncDto dto){
 	
 		PagerModel pagerModel = dto.getPageModel();
@@ -109,25 +111,21 @@ public class VenIncServiceImpl implements VenIncService {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.dhcc.pms.service.ven.VenIncService#getHopIncByVenIncCode(java.lang.String)
-	 */
-	@Override
-	public Long getHopIncByVenIncCode(String code) {
-		// TODO Auto-generated method stub
-		Long venincidLong=hopIncDao.getVenIncByCode(code);
-		if(venincidLong==null){
-			return null;
-		}
-		return hopIncDao.getHopIncByVenInc(venincidLong);
-	}
-
-	/* (non-Javadoc)
 	 * @see com.dhcc.pms.service.ven.VenIncService#getVenIncByCode(java.lang.String, java.lang.Long)
 	 */
 	@Override
 	public Long getVenIncByCode(String code, Long venId) {
 		// TODO Auto-generated method stub
 		return venIncDao.getVenIncByCode(code,venId);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenIncService#getHopIncByVenIncCode(java.lang.String)
+	 */
+	@Override
+	public Long getHopIncByVenIncCode(String code) {
+		// TODO Auto-generated method stub
+		return hopIncDao.getVenIncByCode(code);
 	}
 
 }
