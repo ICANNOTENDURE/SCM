@@ -416,4 +416,33 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 	public void exportVenInc(VenIncDto dto){
 		super.batchSaveOrUpdate(dto.getVenIncs());
 	}
+	
+	
+	/**
+	 * 
+	* @Title: VenIncDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param code
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年7月11日 下午4:40:19
+	* @version V1.0
+	 */
+	public Long getVenIncByCode(String code,Long venId){
+		StringBuffer hqlBuffer = new StringBuffer();
+		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
+		hqlBuffer.append(" from VenInc h");
+		hqlBuffer.append(" where 1=1 ");
+		hqlBuffer.append(" and h.venIncCode = :code ");
+		hqlParamMap.put("code",code);
+		hqlBuffer.append(" and h.venIncVenid = :venid ");
+		hqlParamMap.put("venid",venId);
+		@SuppressWarnings("unchecked")
+		List<VenInc> venHopIncs=(List<VenInc>)this.findByHqlWithValuesMap(hqlBuffer.toString(),hqlParamMap,false);
+		if(venHopIncs.size()>0){
+			return venHopIncs.get(0).getVenIncId();
+		}
+		return null;
+	}
 }

@@ -36,11 +36,13 @@ import com.dhcc.pms.dto.sys.SysImpModelDto;
 import com.dhcc.pms.dto.ven.VenIncDto;
 import com.dhcc.pms.entity.manf.HopManf;
 import com.dhcc.pms.entity.sys.ImpModel;
+import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.service.manf.HopManfService;
 import com.dhcc.pms.service.sys.SysImpModelService;
+import com.dhcc.pms.service.userManage.NormalAccountService;
 import com.dhcc.pms.service.ven.VenIncService;
 import com.dhcc.pms.service.ven.VendorService;
 
@@ -64,7 +66,8 @@ public class VenIncBlh extends AbstractBaseBlh {
 	@Resource
 	private VendorService vendorService;
 
-
+	@Resource
+	private NormalAccountService normalAccountService;
 	
 	public VenIncBlh() {
 		
@@ -427,5 +430,55 @@ public class VenIncBlh extends AbstractBaseBlh {
 			throw new DataBaseException(e.getMessage(), e);
 		}
 
+	}
+	
+	
+	
+	/**
+	 * 
+	* @Title: VenIncBlh.java
+	* @Description: TODO(同步供应商药品)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月11日 下午4:11:19
+	* @version V1.0
+	 */
+	public void SynchVenInc(BusinessRequest res){
+		VenIncDto dto = super.getDto(VenIncDto.class, res);
+		if(StringUtils.isNullOrEmpty(dto.getVenIncWeb().getPassWord())){
+			dto.getOperateResult().setResultCode("-2");
+			dto.getOperateResult().setResultContent("密码不能为空");
+			return;
+		}
+		if(StringUtils.isNullOrEmpty(dto.getVenIncWeb().getUserName())){
+			dto.getOperateResult().setResultCode("-2");
+			dto.getOperateResult().setResultContent("用户名不能为空");
+			return;
+		}
+		NormalAccount normalAccount=normalAccountService.getNormalAccountByAccount(dto.getVenIncWeb().getUserName());
+		if(normalAccount==null){
+			dto.getOperateResult().setResultCode("-3");
+			dto.getOperateResult().setResultContent("没有该用户");
+			return;
+		}
+		if(!normalAccount.getPassword().equals(dto.getVenIncWeb().getPassWord())){
+			dto.getOperateResult().setResultCode("-4");
+			dto.getOperateResult().setResultContent("密码不对");
+			return;
+		}
+		if(!normalAccount.getNormalUser().getType().toString().equals("2")){
+			dto.getOperateResult().setResultCode("-5");
+			dto.getOperateResult().setResultContent("用户类型不对");
+			return;
+		}
+		for(VenInc venInc:dto.getVenIncs()){
+			if(venIncService.getVenIncByCode(venInc.getVenIncCode(),normalAccount.getNormalUser().getVendorId().longValue())==null){
+				venInc.setVenIncVenid(normalAccount.getNormalUser().getVendorId());
+				commonService.saveOrUpdate(venInc);
+			}
+		}
+		dto.getOperateResult().setResultCode("0");
+		dto.getOperateResult().setResultContent("操作成功");
 	}
 }

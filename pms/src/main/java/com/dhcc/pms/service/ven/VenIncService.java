@@ -86,4 +86,19 @@ public interface VenIncService {
 	* @version V1.0
 	 */
 	public Long getHopIncByVenIncCode(String code);
+	
+	
+	/**
+	 * 
+	* @Title: VenIncService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param code
+	* @param venId
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年7月11日 下午4:42:29
+	* @version V1.0
+	 */
+	public Long getVenIncByCode(String code,Long venId);
 }

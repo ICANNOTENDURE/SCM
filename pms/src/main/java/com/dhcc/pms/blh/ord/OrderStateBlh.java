@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
+import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
 import com.dhcc.framework.util.StringUtils;
@@ -25,6 +26,7 @@ import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
+import com.dhcc.pms.entity.vo.ws.OperateResult;
 import com.dhcc.pms.service.ord.OrderStateService;
 import com.dhcc.pms.service.userManage.NormalAccountService;
 import com.dhcc.pms.service.ven.VenDeliverService;
@@ -233,24 +235,27 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	*/
 	public void recievedMsg(BusinessRequest res){
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
-		if (dto.getOrder()==null){
+        OperateResult operateResult=new OperateResult();
+        operateResult.setResultCode("-1");
+        operateResult.setResultContent("falie");
+        dto.setOperateResult(operateResult);
+		if (StringUtils.isNullOrEmpty(dto.getOrderIdStr())){
 			dto.getOperateResult().setResultCode("-1");
 			dto.getOperateResult().setResultContent("入参为空");
 			return;
 		}
-		if (dto.getOrder().getOrderId()==null){
-			dto.getOperateResult().setResultCode("-1");
-			dto.getOperateResult().setResultContent("入参为空");
-			return;
+		String[] strs=dto.getOrderIdStr().split(BaseConstants.COMMA);
+		for(String id:strs){
+			Order order=commonService.get(Order.class, Long.valueOf(id));
+			if (order==null){
+				dto.getOperateResult().setResultCode("-2");
+				dto.getOperateResult().setResultContent("入参无效");
+				return;
+			}
+			order.setSendFlag(1l);
+			commonService.saveOrUpdate(order);
 		}
-		Order order=commonService.get(Order.class, dto.getOrder().getOrderId());
-		if (order==null){
-			dto.getOperateResult().setResultCode("-2");
-			dto.getOperateResult().setResultContent("入参无效");
-			return;
-		}
-		order.setSendFlag(1l);
-		commonService.saveOrUpdate(order);
+		
 		dto.getOperateResult().setResultCode("0");
 		dto.getOperateResult().setResultContent("success");
 	}

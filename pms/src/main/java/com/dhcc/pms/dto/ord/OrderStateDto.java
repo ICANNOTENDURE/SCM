@@ -67,8 +67,24 @@ public class OrderStateDto extends BaseDto {
 	//webservice 入参
 	private List<VenDeliveritm> deliveritms;
 	
-
+	private String orderIdStr;
 	
+	
+	
+	/**
+	 * @return the orderIdStr
+	 */
+	public String getOrderIdStr() {
+		return orderIdStr;
+	}
+
+	/**
+	 * @param orderIdStr the orderIdStr to set
+	 */
+	public void setOrderIdStr(String orderIdStr) {
+		this.orderIdStr = orderIdStr;
+	}
+
 	/**
 	 * @return the deliveritms
 	 */

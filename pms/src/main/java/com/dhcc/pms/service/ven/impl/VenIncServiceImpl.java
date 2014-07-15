@@ -121,4 +121,13 @@ public class VenIncServiceImpl implements VenIncService {
 		return hopIncDao.getHopIncByVenInc(venincidLong);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenIncService#getVenIncByCode(java.lang.String, java.lang.Long)
+	 */
+	@Override
+	public Long getVenIncByCode(String code, Long venId) {
+		// TODO Auto-generated method stub
+		return venIncDao.getVenIncByCode(code,venId);
+	}
+
 }

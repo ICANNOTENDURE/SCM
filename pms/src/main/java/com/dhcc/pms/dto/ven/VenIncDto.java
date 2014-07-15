@@ -12,6 +12,8 @@ import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.vo.ven.ShowVenIncVo;
 import com.dhcc.pms.entity.vo.ven.VenIncVo;
+import com.dhcc.pms.entity.vo.ws.OperateResult;
+import com.dhcc.pms.entity.vo.ws.VenIncWeb;
 
 public class VenIncDto extends BaseDto {
 	
@@ -36,9 +38,49 @@ public class VenIncDto extends BaseDto {
 	
 	private File upload;
 	
+	private  OperateResult operateResult;
+	
+	
+	private VenIncWeb venIncWeb;
 	
 	
 	
+
+	
+
+
+	/**
+	 * @return the venIncWeb
+	 */
+	public VenIncWeb getVenIncWeb() {
+		return venIncWeb;
+	}
+
+
+	/**
+	 * @param venIncWeb the venIncWeb to set
+	 */
+	public void setVenIncWeb(VenIncWeb venIncWeb) {
+		this.venIncWeb = venIncWeb;
+	}
+
+
+	/**
+	 * @return the operateResult
+	 */
+	public OperateResult getOperateResult() {
+		return operateResult;
+	}
+
+
+	/**
+	 * @param operateResult the operateResult to set
+	 */
+	public void setOperateResult(OperateResult operateResult) {
+		this.operateResult = operateResult;
+	}
+
+
 	/**
 	 * @return the upload
 	 */
