@@ -9,10 +9,19 @@
 <script type="text/javascript"
 	src="<%=request.getContextPath()%>/js/uploadify/jquery.uploadify.min.js"></script>
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/uploadify.css">	
+	href="<%=request.getContextPath()%>/css/uploadify.css">		
 <script type="text/javascript"
-	src="<%=request.getContextPath()%>/js/dhcc/pms/ven/VenInc.js"></script>
-
+	src="<%=request.getContextPath()%>/js/dhcc/pms/ven/VenInc.js"></script>	
+<style>
+.idContainer{
+		border:1px solid #000;
+		width:300px; 
+		height:250px; 
+		background:#FFF center no-repeat;
+		position: absolute;
+		align:"center";
+		}
+</style>
 </head>
 <body>
 	<div id="toolbar" class="toolbar">
@@ -35,12 +44,13 @@
 	</table>
 	
 	<div id="drugInfoWin" class="dialog" title="新增供应商信息"
-		data-options="modal:true,width:750,height:500,closed:true,buttons:'#btnDiv0'"
+		data-options="modal:true,width:900,height:600,closed:true,buttons:'#btnDiv0'"
 		style="vertical-align: middle;">
 		<form id="incdetail" method="post">
-			<table style="width: 100%;" >
+			<table style="width: 100%;" id="tableDetail">
 				<tr style="display: none">
 					<input type="hidden" name="dto.venInc.venIncId" />
+					<input  type="hidden" name="dto.venInc.venIncVenid" id="venIncVenid"/>
 				</tr>
 				<tr>
 					<td class="textLabel">药品代码:</td>
@@ -77,20 +87,20 @@
 					<td class="textParent"><input style="width: 250px;"
 						class="combobox" type="text" name="dto.venInc.venIncManfid"
 						data-options="required:true" id="venIncManfid" /></td>
-					<td class="textLabel">供应商ID:</td>
+					<td class="textLabel">别名:</td>
 					<td class="textParent"><input style="width: 250px;"
-						class="combobox" type="text" name="dto.venInc.venIncVenid"
-						data-options="required:true" id="venIncVenid"/></td>
+						 type="text" name="dto.venInc.venIncAlias"
+						 id="venIncAlias" /></td>	
 				</tr>
 				<tr>
 					<td class="textLabel">转换系数:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.venInc.venIncFac"
-						data-options="required:true" id="venIncFac" /></td>
+						 id="venIncFac" /></td>
 					<td class="textLabel">价格:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.venInc.venIncPrice"
-						data-options="required:true" id="venIncPrice" /></td>
+						 id="venIncPrice" /></td>
 				</tr>
 				<tr>
 					<td class="textLabel">供应商系统药品ID:</td>
@@ -113,27 +123,16 @@
 						 id="venIncSp" /></td>	
 				</tr>
 				<tr>
-					<td class="textLabel">别名:</td>
-					<td class="textParent"><input style="width: 250px;"
-						 type="text" name="dto.venInc.venIncAlias"
-						 id="venIncAlias" /></td>
+					
 				</tr>
 				<tr>
-					<td class="textLabel">图片顺序:</td>
-					<td class="textParent"><input style="width: 250px;"
-						class="validatebox" type="text" name="xxxx"
-						data-options="required:true" id="xxxx" /></td>
-					<td class="textLabel">(以^作为分隔)</td>
-				</tr>
-				<tr>					
-					<td class="textLabel">图片路径:</td>
-					<td class="textParent"><input style="width: 250px;"
-					   	id="file_upload" type="file" name="upload" multiple="true"
-						data-options="required:true" id="xxx" /><input type="button" 
-						name="uploadPics" value="上传图片" id="uploadPic"/>
-					<div id="queues" name="queue"></div></td>
-					
-				</tr>											
+					<td class="textLabel">上传图片:</td>
+					<td class="textParent" style="text-align: left; width: 30%">
+								<input id="upload"
+								name="upload" type="file" multiple="true" style="width: 100%">
+								<div id="queue" name="queue"></div>
+					</td>
+				</tr>										
 			</table>			
 					
 			<div id="btnDiv0" align="center">
@@ -197,7 +196,7 @@
 	
 	
 	<div id="importDialog" class="dialog" title="导入供应商药品"
-		style="width: 400px; height: 200px; background-color: #F5FAFD;"
+		style="width: 600px; height: 400px; background-color: #F5FAFD;"
 		data-options="
 				modal:true,
 		        closed:true,
@@ -209,10 +208,39 @@
 					<td class="textLabel" style="text-align: right; width: 40%">导入Excel文件:</td>
 					<td class="textParent" style="text-align: left; width: 60%"><input
 						style="width: 250px;" class="validatebox" type="file"
-						name="upload" id="orderUpload"></input></td>
+						id="import" ></input></td>
 				</tr>
 			</table>
+			<table>
+	    		<tr id="impModel">
+	    			<td class="time">模版 </td>
+	    		</tr>
+	    	</table>
 	</div>
 	
+	
+	
+	<div id="gg" class="dialog" title="请等待"  style="width:600px;height:400px;padding:10px;"
+				data-options="
+				modal:true,
+				draggable:false,
+				closable:false,
+				closed:true,
+				collapsible:false,
+				minimizable:false,
+				maximizable:false">
+				
+        		<p1>正在处理上传数据，请等待</p1>
+    </div>
+    <style type="text/css">
+
+    .item{
+	    text-align:center;
+	    border:1px solid #499B33;
+	    background:#fafafa;
+	    color:#444;
+	    width:90px;
+    }
+    </style>	
 </body>
 </html>

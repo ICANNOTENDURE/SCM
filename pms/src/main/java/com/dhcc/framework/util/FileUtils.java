@@ -32,8 +32,7 @@ public class FileUtils {
 	* @return:        
 	* @Author:        周鑫
 	 */
-	@SuppressWarnings("unused")
-	private String getFileExp(String fileName) throws Exception{
+	public static String getFileExp(String fileName) throws Exception{
 		int pos = fileName.lastIndexOf(".");
 		return fileName.substring(pos);
 	}

@@ -36,6 +36,7 @@ import com.dhcc.pms.dto.ven.VenIncDto;
 			  @JResult(BlhMethod="saveContranst",ognlExpress="dto"),
 			  @JResult(BlhMethod="saveContranstInc",ognlExpress="dto"),
 			  @JResult(BlhMethod="updateContranstInc",ognlExpress="dto"),
+			  @JResult(BlhMethod="delete",ognlExpress="dto"),
 			  @JResult(BlhMethod="deleteContranstInc",ognlExpress="dto")
 			 })
 public class VenIncAction extends BaseAction {

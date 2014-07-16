@@ -32,7 +32,8 @@ import com.dhcc.pms.dto.ven.VenIncPicDto;
 })
 @InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
 @Blh("venIncPicBlh")
-@JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.venIncPic")})
+@JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.venIncPic"),
+			  @JResult(BlhMethod="delete",ognlExpress="dto")})
 public class VenIncPicAction extends BaseAction {
 	
 	private static final long serialVersionUID = 1L;

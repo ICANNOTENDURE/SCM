@@ -43,10 +43,6 @@ public class VenIncDto extends BaseDto {
 	
 	private VenIncWeb venIncWeb;
 	
-	
-	
-
-	
 
 
 	/**

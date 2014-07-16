@@ -6,6 +6,7 @@ package com.dhcc.pms.blh.ven;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -39,7 +41,7 @@ import com.dhcc.pms.entity.sys.ImpModel;
 import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
-import com.dhcc.pms.entity.ven.Vendor;
+import com.dhcc.pms.entity.ven.VenIncPic;
 import com.dhcc.pms.service.manf.HopManfService;
 import com.dhcc.pms.service.sys.SysImpModelService;
 import com.dhcc.pms.service.userManage.NormalAccountService;
@@ -98,8 +100,8 @@ public class VenIncBlh extends AbstractBaseBlh {
 		if(StringUtils.isNullOrEmpty(dto.getVenInc().getVenIncAlias())){
 			dto.getVenInc().setVenIncAlias(PingYinUtil.getFirstSpell(dto.getVenInc().getVenIncName()));
 		}
-		if(dto.getVenInc().getVenIncId()==null||
-				(dto.getVenInc().getVenIncId()).equals("")){
+		dto.getVenInc().setVenIncVenid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
+		if(dto.getVenInc().getVenIncId()==null||(dto.getVenInc().getVenIncId()).equals("")){
 			dto.getVenInc().setVenIncId(null);						
 			venIncService.save(dto);		
 		}else {
@@ -113,9 +115,12 @@ public class VenIncBlh extends AbstractBaseBlh {
 	public void delete(BusinessRequest res) {
 	
 		VenIncDto dto = super.getDto(VenIncDto.class, res);
-		
-		//调用对应的service方法
-		venIncService.delete(dto);
+		VenInc venInc=commonService.get(VenInc.class, dto.getVenInc().getVenIncId());
+		List<VenIncPic> incPics=commonService.findByProperty(VenIncPic.class, "venIncPicVenincid", dto.getVenInc().getVenIncId());
+		for(VenIncPic venIncPic:incPics){
+			commonService.delete(venIncPic);
+		}
+		commonService.delete(venInc);
 	}
 	
 	//更新
@@ -160,16 +165,11 @@ public class VenIncBlh extends AbstractBaseBlh {
 		if(dto.getPageModel() == null){
 			dto.setPageModel(new PagerModel());
 		}
-
-		VenInc venInc=new VenInc();
-		venInc.setVenIncName(dto.getComgridparam());
-		dto.setVenInc(venInc);
-
+		if(dto.getVenInc()==null){
+			dto.setVenInc(new VenInc());
+			dto.getVenInc().setVenIncName(dto.getComgridparam());
+		}
 		venIncService.getListInfo(dto);
-		//List<VenIncVo> venIncVos=new ArrayList<VenIncVo>();		
-		//venIncVos=venIncService.getListInfo(dto);
-		//WebContext webContext = WebContextHolder.getContext();
-		//webContext.getResponse().getWriter().write(JsonUtils.toJson(venIncVos));
 				
 	}
 	
@@ -283,8 +283,9 @@ public class VenIncBlh extends AbstractBaseBlh {
 	* @author zhouxin  
 	* @date 2014年6月12日 下午1:53:30
 	* @version V1.0
+	 * @throws IOException 
 	 */
-	public void upload(BusinessRequest res){
+	public void upload(BusinessRequest res) throws IOException{
 		
 		VenIncDto dto = super.getDto(VenIncDto.class, res);
 
@@ -311,9 +312,9 @@ public class VenIncBlh extends AbstractBaseBlh {
         	modelMap.put(Integer.valueOf(listImpModels.get(i).getSeq().toString()), listImpModels.get(i).getName());
         }
         Map<String,String> manfMap = new HashMap<String,String>();
-        Map<String,String> venMap = new HashMap<String,String>();
+//        Map<String,String> venMap = new HashMap<String,String>();
         String manfId="";
-        String venId="";
+ //       String venId="";
         //读取excel
         try {
 			List<VenInc> venIncs = new ArrayList<VenInc>();
@@ -380,31 +381,32 @@ public class VenIncBlh extends AbstractBaseBlh {
 								manfId="";
 							}
 							break;
-						case "供应商":
-							if(cell!=null){
-								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-								venId=venMap.get(cell.toString());
-								if(StringUtils.isNullOrEmpty(venId)){
-									Long vendorIdLong=vendorService.findVendorIdByName(cell.toString());
-									if(vendorIdLong==null){
-										Vendor hopVendor=new Vendor();
-										hopVendor.setName(cell.toString());
-										commonService.saveOrUpdate(hopVendor);
-										venInc.setVenIncVenid(hopVendor.getVendorId());
-										venMap.put(cell.toString(), hopVendor.getVendorId().toString());
-									}else{
-										venInc.setVenIncVenid(vendorIdLong);
-										venMap.put(cell.toString(), vendorIdLong.toString());
-									}
-								}else{
-									venInc.setVenIncVenid(Long.valueOf(venId));
-								}
-								venId="";
-							}
-							break;
+//						case "供应商":
+//							if(cell!=null){
+//								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+//								venId=venMap.get(cell.toString());
+//								if(StringUtils.isNullOrEmpty(venId)){
+//									Long vendorIdLong=vendorService.findVendorIdByName(cell.toString());
+//									if(vendorIdLong==null){
+//										Vendor hopVendor=new Vendor();
+//										hopVendor.setName(cell.toString());
+//										commonService.saveOrUpdate(hopVendor);
+//										venInc.setVenIncVenid(hopVendor.getVendorId());
+//										venMap.put(cell.toString(), hopVendor.getVendorId().toString());
+//									}else{
+//										venInc.setVenIncVenid(vendorIdLong);
+//										venMap.put(cell.toString(), vendorIdLong.toString());
+//									}
+//								}else{
+//									venInc.setVenIncVenid(Long.valueOf(venId));
+//								}
+//								venId="";
+//							}
+//							break;
 						
 					}	
 				}
+				venInc.setVenIncVenid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
 				venIncs.add(venInc);
 			}
 			
@@ -412,24 +414,18 @@ public class VenIncBlh extends AbstractBaseBlh {
 			venIncService.exportVenInc(dto);
 			
 			workbook=null;
-			//删除upload文件夹下的所有文件
-			if(dstFile.isFile() || dstFile.list().length ==0)  {  
-				dstFile.delete();       
-			}else{      
-				File[] tempFiles = dstFile.listFiles();  
-				for (int i = 0; i < tempFiles.length; i++) {  
-					tempFiles[i].delete();      
-				}
-			}
+			
 			
 			dto.setVenIncs(null);
 			dto.setOpFlg("1");
 			manfMap=null;
-			venMap=null;
-			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
+//			venMap=null;
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DataBaseException(e.getMessage(), e);
+		}finally{
+			FileUtils.forceDelete(dstFile);
 		}
 
 	}
@@ -483,4 +479,8 @@ public class VenIncBlh extends AbstractBaseBlh {
 		dto.getOperateResult().setResultCode("0");
 		dto.getOperateResult().setResultContent("操作成功");
 	}
+	
+	
+	
+	
 }

@@ -15,6 +15,11 @@ import com.dhcc.framework.transmission.dto.BaseDto;
 public class VenIncPicDto extends BaseDto {
 
 	private static final long serialVersionUID = 1L;
+	
+	private Long vendorIncId;
+	
+	private Long vendorIncPicId;
+	
 	private VenIncPic venIncPic;
 	private List<VenInc> venIncs;
 	private File upload;
@@ -107,5 +112,39 @@ public class VenIncPicDto extends BaseDto {
 	public void setVenIncPicVos(List<VenIncPicVo> venIncPicVos) {
 		this.venIncPicVos = venIncPicVos;
 	}
+
+
+	/**
+	 * @return the vendorIncId
+	 */
+	public Long getVendorIncId() {
+		return vendorIncId;
+	}
+
+
+	/**
+	 * @param vendorIncId the vendorIncId to set
+	 */
+	public void setVendorIncId(Long vendorIncId) {
+		this.vendorIncId = vendorIncId;
+	}
+
+
+	/**
+	 * @return the vendorIncPicId
+	 */
+	public Long getVendorIncPicId() {
+		return vendorIncPicId;
+	}
+
+
+	/**
+	 * @param vendorIncPicId the vendorIncPicId to set
+	 */
+	public void setVendorIncPicId(Long vendorIncPicId) {
+		this.vendorIncPicId = vendorIncPicId;
+	}
+
+	
 	
 }

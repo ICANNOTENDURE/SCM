@@ -27,7 +27,7 @@
  	        'debug' : false,
  	        'fileObjName':'dto.upload',
  	        'auto': true,
- 	        'removeCompleted':false,
+ 	        'removeCompleted':true,
  	        'onSelect': function(){  
  	        	$("#gg").dialog("open");	
             }, 

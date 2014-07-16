@@ -127,5 +127,8 @@ public class VenIncPicDao extends HibernatePersistentObjectDAO<VenIncPic> {
 		pagerModel.setTotals(totalRows);
 		return (List<VenIncPicVo>)findByHqlWithValuesMap(hqlBuffer.toString(), 
 				pagerModel.getPageNo(),pagerModel.getPageSize(),hqlParamMap, true);
-	} 
+	}
+	
+	
+	
 }

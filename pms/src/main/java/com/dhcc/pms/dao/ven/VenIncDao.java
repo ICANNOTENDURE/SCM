@@ -136,23 +136,6 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 	public void getListInfo(PagerModel pagerModel,List<ShowVenIncVo> showVenIncVos, VenInc venInc) {
 		Map<String,Object> hqlParamMap = new HashMap<String,Object>();
 		StringBuffer hqlBuffer = new StringBuffer();
-//		hqlBuffer.append(" select new com.dhcc.pms.entity.vo.ven.VenIncVo(");
-//		hqlBuffer.append(" h.venIncId, ");
-//		hqlBuffer.append(" h.venIncCode, ");
-//		hqlBuffer.append(" h.venIncName, ");
-//		hqlBuffer.append(" h.venIncUomcode, ");
-//		hqlBuffer.append(" h.venIncUomname, ");
-//		hqlBuffer.append(" h.venIncBuomcode, ");
-//		hqlBuffer.append(" h.venIncBuomname, ");
-//		hqlBuffer.append(" h.venIncPrice, ");
-//		hqlBuffer.append(" h.venIncFac, ");
-//		hqlBuffer.append(" h.venIncManfid, ");
-//		hqlBuffer.append(" hm.manfName, ");
-//		hqlBuffer.append(" h.venIncVenid, ");
-//		hqlBuffer.append(" v.name, ");
-//		hqlBuffer.append(" h.venIncVensysid) ");
-//		hqlBuffer.append(" from VenInc h , Vendor v ,HopManf hm ");		
-//		hqlBuffer.append(" where h.venIncVenid=v.vendorId and h.venIncManfid=hm.hopManfId");
 		hqlBuffer.append("select ");
 		hqlBuffer.append("t1.VEN_INC_CODE     as  veninccode, ");
 		hqlBuffer.append("t1.VEN_INC_NAME     as  venincname, ");
@@ -203,17 +186,23 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 				hqlBuffer.append(" AND t1.VEN_INC_VENSYSID =:vensysDr ");
 				hqlParamMap.put("vensysDr",vensysDr);
 			}
+			if(!StringUtils.isNullOrEmpty(venInc.getVenIncAlias())){
+				hqlBuffer.append(" AND t1.VEN_INC_ALIAS like :venalias ");
+				hqlParamMap.put("venalias","%"+venInc.getVenIncAlias()+"%");
+			}
 							
 		}
-		
+		String type=WebContextHolder.getContext().getVisit().getUserInfo().getUserType().toString();
+		if(type.equals("2")){
+			hqlBuffer.append(" AND t1.VEN_INC_VENID =:venDr ");
+			hqlParamMap.put("venDr",WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
+		}
+		hqlBuffer.append(" order by t1.VEN_INC_ROWID desc");
 		pagerModel.setQueryHql(hqlBuffer.toString());
 		pagerModel.setHqlParamMap(hqlParamMap);
 		jdbcTemplateWrapper.fillPagerModelData(pagerModel, ShowVenIncVo.class, "VEN_INC_ROWID");
 		
-		//药品列表信息
-		//@SuppressWarnings("unchecked")
-		//List<VenIncVo> venIncList=(List<VenIncVo>)findByHqlWithValuesMap(hqlBuffer.toString(), hqlParamMap, true);
-		//return venIncList;
+
 	} 
 	
 	

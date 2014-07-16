@@ -97,7 +97,7 @@ $(function (){
         'debug' : false,
         'fileObjName':'dto.upload',
         'auto': true,
-        'removeCompleted':false,
+        'removeCompleted':true,
         'checkExisting':false,
         'onSelect': function(){  
 	        	$("#gg").dialog("open");	
@@ -285,7 +285,6 @@ function append() {
 //导入订单
 function importOrder(){
 	$('#importDialog').dialog('open');
-	$('#orderUpload-queue').html("");
 	$('#impModel').html("");
 	$('#impModel').append("<td class='time'>模版 </td>");
 	$.post(

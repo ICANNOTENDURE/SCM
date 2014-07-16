@@ -30,7 +30,6 @@ $(function (){
 	    fit:true,
 	    fitColumns:true,
 	    columns:[[ 
-            {field:'ck1',checkbox:true},  
 	        {field:'venincid',title:'表ID',hidden:true},  
 	        {field:'veninccode',title:'药品代码',width:200},
 	        {field:'venincname',title:'药品名称',width:200},
@@ -48,7 +47,9 @@ $(function (){
 	        {field:'venincpicid',title:'药品图片表id',hidden:true},
 	        {field:'venincpicpath',title:'图片路径',hidden:true},
 	        {field:'venincpicseq',title:'图片顺序',hidden:true},
-	    ]]	 
+	    ]],
+	    pageSize:20,
+	    pageList:[20,30,40,50]
 	});
 	
 	//新增或更新成功的回调函数
@@ -89,25 +90,43 @@ $(function (){
 	
 	
 	
-	$("#orderUpload").uploadify({
+	$("#upload").uploadify({
         'swf': $WEB_ROOT_PATH + '/images/uploadify.swf',
-        'uploader': $WEB_ROOT_PATH + '/ven/venIncCtrl!upload.htm',
+        'uploader': $WEB_ROOT_PATH + '/ven/venIncPicCtrl!upload.htm',
         //在浏览窗口底部的文件类型下拉菜单中显示的文本
         'buttonText':'Upload',
         'fileTypeDesc': '支持的格式：',
-        'fileTypeExts': '*.xls',
+        'fileTypeExts': '*.jpg;*.jpeg;*.png',
         'fileSizeLimit': '30MB',
         'width': '60',
         'height': '20',
         'debug' : false,
         'fileObjName':'dto.upload',
         'auto': true,
-        'removeCompleted':false,
+        'removeCompleted':true,
+        'onUploadStart': function(file) {
+        	if($("#incdetail input[name='dto.venInc.venIncId']").val()==""){
+        		$CommonUI.alert("请先保存药品信息,再上传图片");
+        		$('#upload').uploadify('cancel');
+        	}else{
+        		$("#upload").uploadify("settings", 'formData', {'dto.vendorIncId':$("#incdetail input[name='dto.venInc.venIncId']").val()});
+        	};
+        },
         //上传成功
         'onUploadSuccess':function(file, data, response){
         	var obj=eval('('+data+')');
         	if(obj.opFlg=="1"){
-        		$("#importDialog").dialog('close');
+        		//$("#importDialog").dialog('close');
+        		dd=obj.venIncPic;
+        		imgUrl=$WEB_ROOT_PATH +"/uploadPic/"+dd.venIncPicPath;
+			 	imgId="item"+dd.venIncPicId;
+			 	html="<tr id='tr"+dd.venIncPicId+"' name='trPic'><td class='textLabel'>图片:</td><td ><img src='"+imgUrl+"' width=105px></img>";
+			 	html=html+"<div><a class='dhc-linkbutton l-btn l-btn-plain'  onclick='javascript:viewPic("+imgId+")' ><span class='l-btn-left'><span class='l-btn-text icon-search l-btn-icon-left'>预览</span></span></a>";
+			 	html=html+"<a class='dhc-linkbutton l-btn l-btn-plain'  onclick='javascript:delPic("+dd.venIncPicId+")' ><span class='l-btn-left'><span class='l-btn-text icon-cancel l-btn-icon-left'>删除</span></span></a></div>";
+			 	html=html+"<div id='"+imgId+"' src='"+imgUrl+"' style='float:left'></div></td></tr>";
+			 	//alert(html);
+			 	$('#tableDetail').append(html);
+        		
         		
         	}else{
         		$CommonUI.alert(obj.msg);
@@ -140,6 +159,7 @@ function addClick() {
 	$CommonUI.getDialog("#drugInfoWin").dialog("open");
 	$CommonUI.getForm('#incdetail').form('clear');
 	$("#saveOrUpdateIncBtn").show();
+	$("tr[name='trPic']").remove();
 }
 
 //編輯一行记录
@@ -158,8 +178,52 @@ function editRow() {
 	$.getJSON(url, function(data){
 		$CommonUI.fillBlock('#drugInfoWin',data);
 	});
+	$("tr[name='trPic']").remove();
+	$.post(
+			 $WEB_ROOT_PATH+'/ven/venIncPicCtrl!listIncPic.htm',
+			 {
+				 "dto.vendorIncId":Id,
+			 },
+			 function(data){
+				 $.each(data,function(i,dd){
+					 	imgUrl=$WEB_ROOT_PATH +"/uploadPic/"+dd.venIncPicPath;
+					 	imgId="item"+dd.venIncPicId;
+					 	html="<tr id='tr"+dd.venIncPicId+"' name='trPic'><td class='textLabel'>图片:</td><td ><img src='"+imgUrl+"' width=105px></img>";
+					 	html=html+"<div><a class='dhc-linkbutton l-btn l-btn-plain'  onclick='javascript:viewPic("+imgId+")' ><span class='l-btn-left'><span class='l-btn-text icon-search l-btn-icon-left'>预览</span></span></a>";
+					 	html=html+"<a class='dhc-linkbutton l-btn l-btn-plain'  onclick='javascript:delPic("+dd.venIncPicId+")' ><span class='l-btn-left'><span class='l-btn-text icon-cancel l-btn-icon-left'>删除</span></span></a></div>";
+					 	html=html+"<div id='"+imgId+"' src='"+imgUrl+"' style='float:left'></div></td></tr>";
+					 	//alert(html);
+					 	$('#tableDetail').append(html);
+						
+				 });
+	         },
+			 'json'
+	 );
 }
 
+function viewPic(imgId){
+	$CommonUI.imageTransfer(imgId,$WEB_ROOT_PATH+"/js",450,300,{
+		'Close':true,
+		'Reset':true
+	});
+}
+function delPic(picId){
+	$CommonUI.confirm('确定删除吗？', 'question', 0, function(){
+		$.post(
+				 $WEB_ROOT_PATH+'/ven/venIncPicCtrl!delete.htm',
+				 {
+					 "dto.venIncPic.venIncPicId":picId,
+				 },
+				 function(data){
+					 if(data.dto.opFlg=="1"){
+						 $("#tr"+picId).remove();
+					 }
+		         },
+				 'json'
+		 );
+	});
+	
+}
 // 取消按钮
 function cancelClick() {
 	$CommonUI.getWindow("#drugInfoWin").dialog("close");
@@ -173,7 +237,7 @@ function delRow() {
 	}
 	$CommonUI.confirm('确定删除吗？', 'question', 0, function(){
 		var row = $CommonUI.getDataGrid("#datagrid").datagrid('getSelected');
-		$.post($WEB_ROOT_PATH+"/ven/venIncCtrl!delete.htm", {'dto.venInc.venincid':row.venIncId},function(){
+		$.post($WEB_ROOT_PATH+"/ven/venIncCtrl!delete.htm", {'dto.venInc.venIncId':row.venincid},function(){
 			$CommonUI.getDataGrid("#datagrid").datagrid('reload');
 		} );
 	});
@@ -193,4 +257,67 @@ function selectCanBtClick() {
 //导入订单
 function importClick(){
 	$('#importDialog').dialog('open');
+	$('#impModel').html("");
+	$('#impModel').append("<td class='time'>模版 </td>");
+	$.post(
+		$WEB_ROOT_PATH+"/sys/sysImpModelCtrl!listImpModel.htm",
+		{
+			'dto.impModel.type':'VENINC'
+		},
+		function(data){
+			$.each(data,function(i,dd){
+					$('#impModel').append("<td class='drop'><div class='item'>"+dd.name+"</div></td>");
+			});
+		},
+		"json"
+	);
+	$("#import").uploadify({
+        'swf': $WEB_ROOT_PATH + '/images/uploadify.swf',
+        'uploader': $WEB_ROOT_PATH + '/ven/venIncCtrl!upload.htm',
+        //在浏览窗口底部的文件类型下拉菜单中显示的文本
+        'buttonText':'Upload',
+        'fileTypeDesc': '支持的格式：',
+        'fileTypeExts': '*.xlsx;*.xls',
+        'fileSizeLimit': '300MB',
+        'width': '60',
+        'height': '20',
+        'debug' : false,
+        'fileObjName':'dto.upload',
+        'auto': true,
+        'removeCompleted':true,
+        //上传成功
+        'onSelect': function(){  
+        	$("#gg").dialog("open");	
+        }, 
+        'onUploadSuccess':function(file, data, response){
+        	$("#gg").dialog("close");
+        	var obj=eval('('+data+')');
+        	if(obj.opFlg=="1"){
+        		$CommonUI.alert("导入成功");
+        		$("#importDialog").dialog('close');
+        		$CommonUI.getDataGrid("#datagrid").datagrid('load');
+        	}else{
+        		$CommonUI.alert(obj.msg);
+        	};
+        },
+        //检测FLASH失败调用
+        'onFallback': function() {
+        	$("#gg").dialog("close");
+            alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+        },
+        //返回一个错误，选择文件的时候触发
+        'onSelectError': function(file, errorCode, errorMsg) {
+        	$("#gg").dialog("close");
+            switch (errorCode) {
+            case - 100 : alert("上传的文件数量已经超出系统限制的" + $('#file_upload').uploadify('settings', 'queueSizeLimit') + "个文件！");
+                break;
+            case - 110 : alert("文件 [" + file.name + "] 大小超出系统限制的" + $('#file_upload').uploadify('settings', 'fileSizeLimit') + "大小！");
+                break;
+            case - 120 : alert("文件 [" + file.name + "] 大小异常！");
+                break;
+            case - 130 : alert("文件 [" + file.name + "] 类型不正确！");
+                break;
+            }
+        }
+    });
 }

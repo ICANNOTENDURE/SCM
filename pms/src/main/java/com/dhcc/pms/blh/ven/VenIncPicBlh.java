@@ -4,13 +4,8 @@
  */
 package com.dhcc.pms.blh.ven;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,19 +14,19 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import com.dhcc.framework.app.service.CommonService;
-
+import org.apache.commons.io.FileUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
+import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.PagerModel;
-import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
 import com.dhcc.framework.web.context.WebContext;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ven.VenIncPicDto;
+import com.dhcc.pms.entity.ven.VenIncPic;
 import com.dhcc.pms.entity.vo.ven.VenIncPicVo;
 import com.dhcc.pms.service.ven.VenIncPicService;
 
@@ -45,9 +40,6 @@ public class VenIncPicBlh extends AbstractBaseBlh {
 	
 	@Resource
 	private CommonService commonService;
-	
-	//最大缓存空间
-	private static final int BUFFER_SIZE = 16 * 1024;
 	
 	private String venIncPicPathString;
 	
@@ -93,8 +85,18 @@ public class VenIncPicBlh extends AbstractBaseBlh {
 	
 		VenIncPicDto dto = super.getDto(VenIncPicDto.class, res);
 		
-		//调用对应的service方法
-		venIncPicService.delete(dto);
+		VenIncPic venIncPic=commonService.get(VenIncPic.class,dto.getVenIncPic().getVenIncPicId());
+		String parentPath = ServletActionContext.getServletContext().getRealPath("/uploadPic");
+		try {
+			FileUtils.forceDelete(new File(parentPath,venIncPic.getVenIncPicPath()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			//调用对应的service方法
+			commonService.delete(venIncPic);
+		}
+		
 	}
 	
 	//更新
@@ -148,9 +150,9 @@ public class VenIncPicBlh extends AbstractBaseBlh {
 		SimpleDateFormat smDateFormat=new SimpleDateFormat("yyyy-MM-dd+HH-mm-ss");
 		try{
 			//生成随机文件名
-			String newFileName =smDateFormat.format(date) +UUID.randomUUID()+ this.getFileExp(dto.getUploadFileName());
+			String newFileName =smDateFormat.format(date) +UUID.randomUUID()+ com.dhcc.framework.util.FileUtils.getFileExp(dto.getUploadFileName());
 				//获取文件存储路径
-				String storageFileName = ServletActionContext.getServletContext().getRealPath("/uploads");
+				String storageFileName = ServletActionContext.getServletContext().getRealPath("/uploadPic");
 				//判断文件存储路径是否存在，若不存在则自动新建
 				File document = new File(storageFileName);
 			if(!document.exists()) {
@@ -158,61 +160,34 @@ public class VenIncPicBlh extends AbstractBaseBlh {
 			}
 		
 			File dstFile = new File(storageFileName,newFileName); 
-			this.copyFile(dto.getUpload(), dstFile);
-			//给hopIncPic中的hopIncPicPath字段赋值
-			venIncPicPathString=newFileName;
+			FileUtils.copyFile(dto.getUpload(), dstFile);
+			
+			VenIncPic venIncPic=new VenIncPic();
+			venIncPic.setVenIncPicPath(newFileName);
+			venIncPic.setVenIncPicVenincid(dto.getVendorIncId());
+			commonService.saveOrUpdate(venIncPic);
+			dto.setVenIncPic(venIncPic);
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
 		}catch(Exception e)	{
 			e.printStackTrace();
 		}
-        
-        //WebContext context=WebContextHolder.getContext();
-        
 	}
+	
 	
 	/**
 	 * 
-	 * 方法名:         getFileExp
-	 * 方法功能描述:     获取文件的后缀名
-	 * @param:         
-	 * @return:        
-	 * @Author:      周鑫
+	* @Title: VenIncPicBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月15日 下午5:30:08
+	* @version V1.0
+	 * @throws IOException 
 	 */
-	private String getFileExp(String fileName) throws Exception{
-		int pos = fileName.lastIndexOf(".");
-		return fileName.substring(pos);
-	}
-	/**
-	 * 
-	 * 方法名:          copyFile
-	 * 方法功能描述:    拷贝源文件到指定位置
-	 * @param:         
-	 * @return:        
-	 * @Author:        周鑫
-	 */
-	private void copyFile(File srcFile,File dstFile){
-		InputStream inputStream = null;
-		OutputStream outputStream = null;
-		try {
-			try{
-				inputStream = new BufferedInputStream(new FileInputStream(srcFile),BUFFER_SIZE);
-				outputStream = new BufferedOutputStream(new FileOutputStream(dstFile), BUFFER_SIZE);
-				byte[] buffer = new byte[BUFFER_SIZE];
-				while(inputStream.read(buffer)>0){
-					outputStream.write(buffer);
-				}
-			}finally{
-				if(null!=inputStream){
-					inputStream.close();
-				}
-				if(null!=outputStream){
-					outputStream.close();
-				}
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new DataBaseException(e.getMessage(), e);
-		}
+	public void listIncPic(BusinessRequest res) throws IOException{
+		VenIncPicDto dto = super.getDto(VenIncPicDto.class, res);
+		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(commonService.findByProperty(VenIncPic.class, "venIncPicVenincid", dto.getVendorIncId())));
 	}
 	
 
