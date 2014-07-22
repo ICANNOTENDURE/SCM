@@ -4,7 +4,10 @@
  */
 package com.dhcc.pms.service.ord.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -193,7 +196,22 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<ExportOrderVo> ExportOrder(Long dto) {
 		// TODO Auto-generated method stub
-		return orderDao.ExportOrder(dto);
+		List<ExportOrderVo> exportOrderVos=new ArrayList<ExportOrderVo>();
+		Map<String, ExportOrderVo> map=new HashMap<String,ExportOrderVo>();
+		for(ExportOrderVo exportOrderVo:orderDao.ExportOrder(dto)){
+			if(map.containsKey(exportOrderVo.getOrderitmid().toString())){
+				ExportOrderVo exportOrderVo2=map.get(exportOrderVo.getOrderitmid().toString());
+				map.get(exportOrderVo.getOrderitmid().toString()).setVeninccode(exportOrderVo2.getVeninccode()+","+exportOrderVo.getVeninccode());
+			}else{
+				map.put(exportOrderVo.getOrderitmid().toString(), exportOrderVo);
+			}
+		}
+		for(Map.Entry<String, ExportOrderVo> entry: map.entrySet()) {
+			exportOrderVos.add(entry.getValue());
+		}
+
+		map=null;
+		return exportOrderVos;
 	}
 
 }

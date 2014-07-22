@@ -20,6 +20,8 @@ public class VenIncPicDto extends BaseDto {
 	
 	private Long vendorIncPicId;
 	
+	private Long vendorIncPicSeq;
+	
 	private VenIncPic venIncPic;
 	private List<VenInc> venIncs;
 	private File upload;
@@ -143,6 +145,22 @@ public class VenIncPicDto extends BaseDto {
 	 */
 	public void setVendorIncPicId(Long vendorIncPicId) {
 		this.vendorIncPicId = vendorIncPicId;
+	}
+
+
+	/**
+	 * @return the vendorIncPicSeq
+	 */
+	public Long getVendorIncPicSeq() {
+		return vendorIncPicSeq;
+	}
+
+
+	/**
+	 * @param vendorIncPicSeq the vendorIncPicSeq to set
+	 */
+	public void setVendorIncPicSeq(Long vendorIncPicSeq) {
+		this.vendorIncPicSeq = vendorIncPicSeq;
 	}
 
 	

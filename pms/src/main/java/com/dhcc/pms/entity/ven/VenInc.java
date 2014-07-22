@@ -38,10 +38,10 @@ public class VenInc implements Serializable {
 	private String venIncCode;
 
 	@Column(name="VEN_INC_FAC")
-	private  Long venIncFac;
+	private  Float venIncFac;
 	
 	@Column(name="VEN_INC_PRICE")
-	private Long venIncPrice;
+	private Float venIncPrice;
 	
 	@Column(name="VEN_INC_NAME")
 	private String venIncName;
@@ -71,7 +71,7 @@ public class VenInc implements Serializable {
 	private String venIncAlias;
 	
 	@Column(name="VEN_INC_Sp")
-	private Long venIncSp;
+	private Float venIncSp;
 	
 	public VenInc() {
 	}
@@ -124,33 +124,7 @@ public class VenInc implements Serializable {
 		this.venIncCode = venIncCode;
 	}
 
-	/**
-	 * @return the venIncFac
-	 */
-	public Long getVenIncFac() {
-		return venIncFac;
-	}
 
-	/**
-	 * @param venIncFac the venIncFac to set
-	 */
-	public void setVenIncFac(Long venIncFac) {
-		this.venIncFac = venIncFac;
-	}
-
-	/**
-	 * @return the venIncPrice
-	 */
-	public Long getVenIncPrice() {
-		return venIncPrice;
-	}
-
-	/**
-	 * @param venIncPrice the venIncPrice to set
-	 */
-	public void setVenIncPrice(Long venIncPrice) {
-		this.venIncPrice = venIncPrice;
-	}
 
 	/**
 	 * @return the venIncName
@@ -279,18 +253,48 @@ public class VenInc implements Serializable {
 	}
 
 	/**
+	 * @return the venIncFac
+	 */
+	public Float getVenIncFac() {
+		return venIncFac;
+	}
+
+	/**
+	 * @param venIncFac the venIncFac to set
+	 */
+	public void setVenIncFac(Float venIncFac) {
+		this.venIncFac = venIncFac;
+	}
+
+	/**
+	 * @return the venIncPrice
+	 */
+	public Float getVenIncPrice() {
+		return venIncPrice;
+	}
+
+	/**
+	 * @param venIncPrice the venIncPrice to set
+	 */
+	public void setVenIncPrice(Float venIncPrice) {
+		this.venIncPrice = venIncPrice;
+	}
+
+	/**
 	 * @return the venIncSp
 	 */
-	public Long getVenIncSp() {
+	public Float getVenIncSp() {
 		return venIncSp;
 	}
 
 	/**
 	 * @param venIncSp the venIncSp to set
 	 */
-	public void setVenIncSp(Long venIncSp) {
+	public void setVenIncSp(Float venIncSp) {
 		this.venIncSp = venIncSp;
 	}
+
+	
 
 	
 

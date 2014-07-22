@@ -35,7 +35,7 @@ public class VenHopInc implements Serializable {
 	private Long venIncId;
 
 	@Column(name="VEN_INC_FAC")
-	private Long venIncFac;
+	private Float venIncFac;
 
 	/**
 	 * @return the venHopIncId
@@ -82,14 +82,14 @@ public class VenHopInc implements Serializable {
 	/**
 	 * @return the venIncFac
 	 */
-	public Long getVenIncFac() {
+	public Float getVenIncFac() {
 		return venIncFac;
 	}
 
 	/**
 	 * @param venIncFac the venIncFac to set
 	 */
-	public void setVenIncFac(Long venIncFac) {
+	public void setVenIncFac(Float venIncFac) {
 		this.venIncFac = venIncFac;
 	}
 	

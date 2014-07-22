@@ -21,6 +21,7 @@ public class Order implements Serializable {
 	private Long orderId;
 
 	@Temporal(TemporalType.DATE)
+	@Column(name="DELIVERYDATE")
 	private Date deliveryDate;
 	
 	@Column(name="EMFLAG")

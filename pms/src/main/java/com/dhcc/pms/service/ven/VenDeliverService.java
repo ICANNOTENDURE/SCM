@@ -145,4 +145,44 @@ public interface VenDeliverService {
 	* @version V1.0
 	 */
 	public void deliver(Map<String, List<VenDeliveritm>> map);
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(检查发票是否重复录入)
+	* @param inv
+	* @param orditmId
+	* @return
+	* @return:boolean 
+	* @author zhouxin  
+	* @date 2014年7月22日 下午3:37:32
+	* @version V1.0
+	 */
+	public boolean checkInvExist(String inv,Long orditmId);
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param hopId
+	* @param venId
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年7月22日 下午5:53:19
+	* @version V1.0
+	 */
+	public Float getFac(Long hopId,Long venId);
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月22日 下午7:47:23
+	* @version V1.0
+	 */
+	public void impByOrderItm(VenDeliverDto dto);
 }

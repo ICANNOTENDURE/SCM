@@ -329,7 +329,12 @@ public class OrderBlh extends AbstractBaseBlh {
 			if(!dto.getOpFlg().equals("1")){
 				return;
 			}
-			
+			order.setHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+			if(WebContextHolder.getContext().getVisit().getUserInfo().getHopId()==null){
+				dto.setOpFlg("-2");
+				dto.setMsg("登录超时,请重新登录");
+				return;
+			}
 			dto.setOrder(order);
 			//明细
 			for (int numRows = 1; numRows <= sheet.getLastRowNum(); numRows++) {
@@ -499,6 +504,13 @@ public class OrderBlh extends AbstractBaseBlh {
 	
 		OrderDto dto = super.getDto(OrderDto.class, res);
 		commonService.saveOrUpdate(dto.getOrder());
+		dto.setOpFlg("1");
+	}
+	
+	public void exeOrder(BusinessRequest res) {
+		
+		OrderDto dto = super.getDto(OrderDto.class, res);
+		orderService.exeOrder(dto);
 		dto.setOpFlg("1");
 	}
 }

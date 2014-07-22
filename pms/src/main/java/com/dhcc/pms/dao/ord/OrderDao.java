@@ -488,17 +488,39 @@ public void impOrder(OrderDto dto){
    @SuppressWarnings("unchecked")
 public List<ExportOrderVo> ExportOrder(Long orderId){
 	   
+	   Order order=super.get(Order.class, orderId);
+	   ExeState exeState=super.get(ExeState.class, order.getExeStateId());
+	   if(exeState.getStateId().toString().endsWith("1")){
+		   ExeState exeState1=new ExeState();
+
+		   exeState1.setStateId(2l);
+		   exeState1.setRemark("下载订单");
+		   exeState1.setUserid(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
+		   exeState1.setOrdId(orderId);
+		   exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
+		   super.save(exeState1);
+		   
+		   
+		   order.setExeStateId(exeState1.getExestateId());
+		   super.saveOrUpdate(order);
+	   }
+	   
 	   StringBuffer hqlBuffer = new StringBuffer();
 		hqlBuffer.append("select ");
 		hqlBuffer.append("t2.order_no as no, ");
 		hqlBuffer.append("t4.ctloc_name as purloc, ");
 		hqlBuffer.append("t3.ctloc_name as recloc, ");
-		hqlBuffer.append("t7.ven_inc_venid as venincid, ");
+		hqlBuffer.append("t7.ven_inc_code as veninccode, ");
 		hqlBuffer.append("t7.ven_inc_name as venincname, ");
 		hqlBuffer.append("t5.inc_id as hopincid, ");
 		hqlBuffer.append("t5.inc_name as hopincname, ");
 		hqlBuffer.append("t1.reqqty as qty , ");
 		hqlBuffer.append("t1.rp as rp, ");
+		hqlBuffer.append("t1.ORDERITM_ID as orderitmid, ");
+		hqlBuffer.append("t6.VEN_INC_FAC as fac, ");
+		hqlBuffer.append("t7.VEN_INC_UOMNAME as venuom, ");
+		hqlBuffer.append("t1.rp/t6.VEN_INC_FAC as venrp, ");
+		hqlBuffer.append("t1.reqqty/t6.VEN_INC_FAC as venqty, ");
 		hqlBuffer.append("t1.uom as uom ");
 		hqlBuffer.append("from t_ord_orderitm t1 ");
 		hqlBuffer.append("left join t_ord_order t2 on t1.ord_id=t2.order_id  ");

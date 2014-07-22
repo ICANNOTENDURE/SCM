@@ -42,6 +42,7 @@ import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.ven.VenIncPic;
+import com.dhcc.pms.entity.vo.ws.VenIncItmWeb;
 import com.dhcc.pms.service.manf.HopManfService;
 import com.dhcc.pms.service.sys.SysImpModelService;
 import com.dhcc.pms.service.userManage.NormalAccountService;
@@ -100,25 +101,32 @@ public class VenIncBlh extends AbstractBaseBlh {
 		if(StringUtils.isNullOrEmpty(dto.getVenInc().getVenIncAlias())){
 			dto.getVenInc().setVenIncAlias(PingYinUtil.getFirstSpell(dto.getVenInc().getVenIncName()));
 		}
-		dto.getVenInc().setVenIncVenid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
+		
 		if(dto.getVenInc().getVenIncId()==null||(dto.getVenInc().getVenIncId()).equals("")){
-			dto.getVenInc().setVenIncId(null);						
+			dto.getVenInc().setVenIncId(null);
+			dto.getVenInc().setVenIncVenid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
 			venIncService.save(dto);		
 		}else {
-				
+			//if(StringUtils.isNullOrEmpty(dto.getVenInc().getVenIncVenid().toString())){{}
+				dto.getVenInc().setVenIncVenid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
+			//}	
 			venIncService.update(dto);
 		}	
 		
 	}
 	
 	//删除
-	public void delete(BusinessRequest res) {
+	public void delete(BusinessRequest res) throws IOException {
 	
 		VenIncDto dto = super.getDto(VenIncDto.class, res);
 		VenInc venInc=commonService.get(VenInc.class, dto.getVenInc().getVenIncId());
 		List<VenIncPic> incPics=commonService.findByProperty(VenIncPic.class, "venIncPicVenincid", dto.getVenInc().getVenIncId());
 		for(VenIncPic venIncPic:incPics){
 			commonService.delete(venIncPic);
+			File file=new File(ServletActionContext.getServletContext().getRealPath("/uploadPic"),venIncPic.getVenIncPicPath());
+			if(file.exists()){
+				FileUtils.forceDelete(file);
+			}
 		}
 		commonService.delete(venInc);
 	}
@@ -288,7 +296,7 @@ public class VenIncBlh extends AbstractBaseBlh {
 	public void upload(BusinessRequest res) throws IOException{
 		
 		VenIncDto dto = super.getDto(VenIncDto.class, res);
-
+		Long vendorId=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
 		//生成随机文件名
 		String newFileName =UUID.randomUUID().toString();
 		//获取文件存储路径
@@ -312,9 +320,7 @@ public class VenIncBlh extends AbstractBaseBlh {
         	modelMap.put(Integer.valueOf(listImpModels.get(i).getSeq().toString()), listImpModels.get(i).getName());
         }
         Map<String,String> manfMap = new HashMap<String,String>();
-//        Map<String,String> venMap = new HashMap<String,String>();
         String manfId="";
- //       String venId="";
         //读取excel
         try {
 			List<VenInc> venIncs = new ArrayList<VenInc>();
@@ -356,6 +362,18 @@ public class VenIncBlh extends AbstractBaseBlh {
 								venInc.setVenIncSpec(cell.toString());
 							}
 							break;
+						case "进价":
+							if(cell!=null){
+								cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+								venInc.setVenIncPrice((float)cell.getNumericCellValue());
+							}
+							break;
+						case "单位描述":
+							if(cell!=null){
+								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+								venInc.setVenIncUomname(cell.toString());
+							}
+							break;	
 						case "生产厂家":
 							if(cell!=null){
 								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -381,33 +399,15 @@ public class VenIncBlh extends AbstractBaseBlh {
 								manfId="";
 							}
 							break;
-//						case "供应商":
-//							if(cell!=null){
-//								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-//								venId=venMap.get(cell.toString());
-//								if(StringUtils.isNullOrEmpty(venId)){
-//									Long vendorIdLong=vendorService.findVendorIdByName(cell.toString());
-//									if(vendorIdLong==null){
-//										Vendor hopVendor=new Vendor();
-//										hopVendor.setName(cell.toString());
-//										commonService.saveOrUpdate(hopVendor);
-//										venInc.setVenIncVenid(hopVendor.getVendorId());
-//										venMap.put(cell.toString(), hopVendor.getVendorId().toString());
-//									}else{
-//										venInc.setVenIncVenid(vendorIdLong);
-//										venMap.put(cell.toString(), vendorIdLong.toString());
-//									}
-//								}else{
-//									venInc.setVenIncVenid(Long.valueOf(venId));
-//								}
-//								venId="";
-//							}
-//							break;
 						
 					}	
 				}
-				venInc.setVenIncVenid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
-				venIncs.add(venInc);
+				if(venIncService.getVenIncByCode(venInc.getVenIncCode(),vendorId)==null){
+					venInc.setVenIncVenid(vendorId);
+					venIncs.add(venInc);
+				};
+				
+				
 			}
 			
 			dto.setVenIncs(venIncs);
@@ -419,7 +419,6 @@ public class VenIncBlh extends AbstractBaseBlh {
 			dto.setVenIncs(null);
 			dto.setOpFlg("1");
 			manfMap=null;
-//			venMap=null;
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -470,8 +469,37 @@ public class VenIncBlh extends AbstractBaseBlh {
 			dto.getOperateResult().setResultContent("用户类型不对");
 			return;
 		}
-		for(VenInc venInc:dto.getVenIncs()){
-			if(venIncService.getVenIncByCode(venInc.getVenIncCode(),normalAccount.getNormalUser().getVendorId().longValue())==null){
+		Map<String,String> manfMap = new HashMap<String,String>();
+		for(VenIncItmWeb venIncItmWeb:dto.getVenIncWeb().getIncItmWebs()){
+			
+			if(venIncService.getVenIncByCode(venIncItmWeb.getVenIncCode(),normalAccount.getNormalUser().getVendorId().longValue())==null){
+				VenInc venInc=new VenInc();
+				venInc.setVenIncAlias(PingYinUtil.getFirstSpell(venIncItmWeb.getVenIncName()));
+				venInc.setVenIncCat(venIncItmWeb.getVenIncCat());
+				venInc.setVenIncName(venIncItmWeb.getVenIncName());
+				venInc.setVenIncPrice(venIncItmWeb.getVenIncPrice());
+				venInc.setVenIncSpec(venIncItmWeb.getVenIncSpec());
+				venInc.setVenIncCode(venIncItmWeb.getVenIncCode());
+				venInc.setVenIncUomname(venIncItmWeb.getVenIncUom());
+				
+				if(!StringUtils.isNullOrEmpty(venIncItmWeb.getVenIncManf())){
+					if(!manfMap.containsKey(venIncItmWeb.getVenIncManf())){
+						Long tmpmanfid = hopManfService.getIdByName(venIncItmWeb.getVenIncManf());
+						if(tmpmanfid==null){
+							HopManf manf=new HopManf();
+							manf.setManfName(venIncItmWeb.getVenIncManf());
+							manf.setManfHisid(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+							commonService.saveOrUpdate(manf);
+							venInc.setVenIncManfid(manf.getHopManfId());
+							manfMap.put(venIncItmWeb.getVenIncManf(),manf.getHopManfId().toString());
+						}else{
+							venInc.setVenIncManfid(tmpmanfid);
+							manfMap.put(venIncItmWeb.getVenIncManf(),tmpmanfid.toString());
+						}
+					}else{
+						venInc.setVenIncManfid(Long.valueOf(manfMap.get(venIncItmWeb.getVenIncManf())));
+					}
+				}
 				venInc.setVenIncVenid(normalAccount.getNormalUser().getVendorId());
 				commonService.saveOrUpdate(venInc);
 			}

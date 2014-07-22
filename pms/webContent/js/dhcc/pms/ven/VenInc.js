@@ -1,6 +1,8 @@
 // zxx 2014-04-19
 $(function (){
 	
+
+	
 	//获取下拉厂商的所有下拉框
 	var manfCombox=[$CommonUI.getComboBox('#venIncManfid'),$CommonUI.getComboBox('#venIncManfids')];
 	for(var i=0;i<manfCombox.length;i++){
@@ -89,7 +91,6 @@ $(function (){
 	$('#title1').css({width:500,height:60});
 	
 	
-	
 	$("#upload").uploadify({
         'swf': $WEB_ROOT_PATH + '/images/uploadify.swf',
         'uploader': $WEB_ROOT_PATH + '/ven/venIncPicCtrl!upload.htm',
@@ -109,7 +110,7 @@ $(function (){
         		$CommonUI.alert("请先保存药品信息,再上传图片");
         		$('#upload').uploadify('cancel');
         	}else{
-        		$("#upload").uploadify("settings", 'formData', {'dto.vendorIncId':$("#incdetail input[name='dto.venInc.venIncId']").val()});
+        		$("#upload").uploadify("settings", 'formData', {'dto.vendorIncId':$("#incdetail input[name='dto.venInc.venIncId']").val(),'dto.vendorIncPicSeq':$("#venIncSeq").val()});
         	};
         },
         //上传成功
@@ -123,7 +124,8 @@ $(function (){
 			 	html="<tr id='tr"+dd.venIncPicId+"' name='trPic'><td class='textLabel'>图片:</td><td ><img src='"+imgUrl+"' width=105px></img>";
 			 	html=html+"<div><a class='dhc-linkbutton l-btn l-btn-plain'  onclick='javascript:viewPic("+imgId+")' ><span class='l-btn-left'><span class='l-btn-text icon-search l-btn-icon-left'>预览</span></span></a>";
 			 	html=html+"<a class='dhc-linkbutton l-btn l-btn-plain'  onclick='javascript:delPic("+dd.venIncPicId+")' ><span class='l-btn-left'><span class='l-btn-text icon-cancel l-btn-icon-left'>删除</span></span></a></div>";
-			 	html=html+"<div id='"+imgId+"' src='"+imgUrl+"' style='float:left'></div></td></tr>";
+			 	html=html+"<div id='"+imgId+"' src='"+imgUrl+"' style='float:left'></div></td>";
+			 	html=html+"<td class='textLabel'>顺序:</td><td class='textParent'><input style='width: 250px;' type='text'  onnlur='saveSeq("+dd.venIncPicId+")' name='pic"+dd.venIncPicId+"' value="+dd.venIncPicSeq+" /></td></tr>";
 			 	//alert(html);
 			 	$('#tableDetail').append(html);
         		
@@ -160,6 +162,17 @@ function addClick() {
 	$CommonUI.getForm('#incdetail').form('clear');
 	$("#saveOrUpdateIncBtn").show();
 	$("tr[name='trPic']").remove();
+	
+}
+
+function saveSeq(venIncPicId){
+	$.post(
+			 $WEB_ROOT_PATH+'/ven/venIncPicCtrl!saveSeq.htm',
+			 {
+				 "dto.vendorIncPicId":venIncPicId,
+				 "dto.vendorIncPicSeq":$("input[name='pic"+venIncPicId+"']").val(),
+			 }
+	 );
 }
 
 //編輯一行记录
@@ -191,7 +204,9 @@ function editRow() {
 					 	html="<tr id='tr"+dd.venIncPicId+"' name='trPic'><td class='textLabel'>图片:</td><td ><img src='"+imgUrl+"' width=105px></img>";
 					 	html=html+"<div><a class='dhc-linkbutton l-btn l-btn-plain'  onclick='javascript:viewPic("+imgId+")' ><span class='l-btn-left'><span class='l-btn-text icon-search l-btn-icon-left'>预览</span></span></a>";
 					 	html=html+"<a class='dhc-linkbutton l-btn l-btn-plain'  onclick='javascript:delPic("+dd.venIncPicId+")' ><span class='l-btn-left'><span class='l-btn-text icon-cancel l-btn-icon-left'>删除</span></span></a></div>";
-					 	html=html+"<div id='"+imgId+"' src='"+imgUrl+"' style='float:left'></div></td></tr>";
+					 	html=html+"<div id='"+imgId+"' src='"+imgUrl+"' style='float:left'></div></td>";
+					 	html=html+"<td class='textLabel'>顺序:</td><td class='textParent'><input style='width: 250px;' type='text'  onblur='saveSeq("+dd.venIncPicId+")' name='pic"+dd.venIncPicId+"' value='"+dd.venIncPicSeq+"'/></td></tr>";
+					 	
 					 	//alert(html);
 					 	$('#tableDetail').append(html);
 						
@@ -199,6 +214,8 @@ function editRow() {
 	         },
 			 'json'
 	 );
+	
+	
 }
 
 function viewPic(imgId){

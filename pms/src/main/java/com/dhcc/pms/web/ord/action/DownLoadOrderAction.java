@@ -110,7 +110,7 @@ public class DownLoadOrderAction extends ActionSupport {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet();  
 		
-		sheet.protectSheet("123");
+		//sheet.protectSheet("123");
 		HSSFCell cell=null;
 		HSSFRow row=null;
 		
@@ -132,19 +132,35 @@ public class DownLoadOrderAction extends ActionSupport {
 		cell.setCellValue("药品名称");
 		
 		cell = row.createCell(5, HSSFCell.CELL_TYPE_NUMERIC);
-		cell.setCellValue("数量");
+		cell.setCellValue("医院单位数量");
 		
 		cell = row.createCell(6, HSSFCell.CELL_TYPE_STRING);
-		cell.setCellValue("单位");
+		cell.setCellValue("医院单位");
 		
 		cell = row.createCell(7, HSSFCell.CELL_TYPE_NUMERIC);
-		cell.setCellValue("进价");
+		cell.setCellValue("医院单位进价");
 		
 		cell = row.createCell(8, HSSFCell.CELL_TYPE_STRING);
 		cell.setCellValue("医院标识");
 		
 		cell = row.createCell(9, HSSFCell.CELL_TYPE_STRING);
 		cell.setCellValue("医院药品名称");
+
+		cell = row.createCell(10, HSSFCell.CELL_TYPE_STRING);
+		cell.setCellValue("供应商单位");
+		
+		cell = row.createCell(11, HSSFCell.CELL_TYPE_NUMERIC);
+		cell.setCellValue("供应商单位数量");
+		
+		cell = row.createCell(12, HSSFCell.CELL_TYPE_NUMERIC);
+		cell.setCellValue("供应商单位进价");
+		
+		cell = row.createCell(13, HSSFCell.CELL_TYPE_NUMERIC);
+		cell.setCellValue("供应商单位到医院单位转换系数");
+		
+		cell = row.createCell(14, HSSFCell.CELL_TYPE_NUMERIC);
+		cell.setCellValue("订单明细ID");
+		
 		List<ExportOrderVo> exportOrderVos=orderService.ExportOrder(Long.valueOf(WebContextHolder.getContext().getRequest().getParameter("orderId")));
 		int i=1;
 		for(ExportOrderVo tmpExportOrderVo:exportOrderVos){
@@ -160,27 +176,38 @@ public class DownLoadOrderAction extends ActionSupport {
 			cell.setCellValue(tmpExportOrderVo.getRecloc());
 			
 			cell = row.createCell(3, HSSFCell.CELL_TYPE_STRING);
-			cell.setCellValue(tmpExportOrderVo.getVenincid());
+			cell.setCellValue(tmpExportOrderVo.getVeninccode());
 			
 			cell = row.createCell(4, HSSFCell.CELL_TYPE_STRING);
 			cell.setCellValue(tmpExportOrderVo.getVenincname());
 			
 			cell = row.createCell(5, HSSFCell.CELL_TYPE_NUMERIC);
-			if(tmpExportOrderVo.getQty()!=null){
 				cell.setCellValue(tmpExportOrderVo.getQty());
-			}
 			cell = row.createCell(6, HSSFCell.CELL_TYPE_STRING);
 			cell.setCellValue(tmpExportOrderVo.getUom());
 			
 			cell = row.createCell(7, HSSFCell.CELL_TYPE_NUMERIC);
-			if(tmpExportOrderVo.getRp()!=null){
 				cell.setCellValue(tmpExportOrderVo.getRp());
-			}
 			cell = row.createCell(8, HSSFCell.CELL_TYPE_STRING);
 			cell.setCellValue(tmpExportOrderVo.getHopincid());
 			
 			cell = row.createCell(9, HSSFCell.CELL_TYPE_STRING);
 			cell.setCellValue(tmpExportOrderVo.getHopincname());
+			
+			cell = row.createCell(10, HSSFCell.CELL_TYPE_STRING);
+			cell.setCellValue(tmpExportOrderVo.getVenuom());
+			
+			cell = row.createCell(11, HSSFCell.CELL_TYPE_NUMERIC);
+			cell.setCellValue(tmpExportOrderVo.getVenqty());
+			
+			cell = row.createCell(12, HSSFCell.CELL_TYPE_NUMERIC);
+			cell.setCellValue(tmpExportOrderVo.getVenrp());
+			
+			cell = row.createCell(13, HSSFCell.CELL_TYPE_NUMERIC);
+			cell.setCellValue(tmpExportOrderVo.getFac());
+			
+			cell = row.createCell(14, HSSFCell.CELL_TYPE_STRING);
+			cell.setCellValue(tmpExportOrderVo.getOrderitmid());
 			++i;
 		}
 		

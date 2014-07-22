@@ -30,9 +30,41 @@ public class VenIncContranstVo {
 	
 	private String spec;
 	
+	private float rp;
+	
+	private String picpath;
 	
 	
 	
+	
+	/**
+	 * @return the rp
+	 */
+	public float getRp() {
+		return rp;
+	}
+
+	/**
+	 * @param rp the rp to set
+	 */
+	public void setRp(float rp) {
+		this.rp = rp;
+	}
+
+	/**
+	 * @return the picpath
+	 */
+	public String getPicpath() {
+		return picpath;
+	}
+
+	/**
+	 * @param picpath the picpath to set
+	 */
+	public void setPicpath(String picpath) {
+		this.picpath = picpath;
+	}
+
 	/**
 	 * @return the hopinccode
 	 */

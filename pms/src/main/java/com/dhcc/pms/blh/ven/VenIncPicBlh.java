@@ -165,6 +165,10 @@ public class VenIncPicBlh extends AbstractBaseBlh {
 			VenIncPic venIncPic=new VenIncPic();
 			venIncPic.setVenIncPicPath(newFileName);
 			venIncPic.setVenIncPicVenincid(dto.getVendorIncId());
+			venIncPic.setVenIncPicSeq(dto.getVendorIncPicSeq());
+			if(venIncPic.getVenIncPicSeq()==null){
+				venIncPic.setVenIncPicSeq(1l);
+			}
 			commonService.saveOrUpdate(venIncPic);
 			dto.setVenIncPic(venIncPic);
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
@@ -190,6 +194,23 @@ public class VenIncPicBlh extends AbstractBaseBlh {
 		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(commonService.findByProperty(VenIncPic.class, "venIncPicVenincid", dto.getVendorIncId())));
 	}
 	
+	
+	/**
+	 * 
+	* @Title: VenIncPicBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月17日 上午10:15:05
+	* @version V1.0
+	 */
+	public void saveSeq(BusinessRequest res) {
+		VenIncPicDto dto = super.getDto(VenIncPicDto.class, res);
+		VenIncPic venIncPic=commonService.get(VenIncPic.class, dto.getVendorIncPicId());
+		venIncPic.setVenIncPicSeq(dto.getVendorIncPicSeq());
+		commonService.saveOrUpdate(venIncPic);
+	}
 
 	
 }

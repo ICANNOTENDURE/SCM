@@ -4,7 +4,9 @@
  */
 package com.dhcc.pms.service.ord.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,6 +17,7 @@ import com.dhcc.pms.dao.ord.OrderStateDao;
 import com.dhcc.pms.dto.ord.OrderStateDto;
 import com.dhcc.pms.entity.ord.State;
 import com.dhcc.pms.entity.vo.ord.OrderExeStateVo;
+import com.dhcc.pms.entity.vo.ws.OrderItmWebVo;
 import com.dhcc.pms.entity.vo.ws.OrderWebVo;
 import com.dhcc.pms.service.ord.OrderStateService;
 
@@ -81,6 +84,21 @@ public class OrderStateServiceImpl implements OrderStateService {
 		orderStateDao.listOrderWS(dto);
 		for(OrderWebVo orderWSVo:(List<OrderWebVo>)dto.getOrderWSVos()){
 			orderStateDao.listOrderItmWS(orderWSVo);
+			List<OrderItmWebVo> orderItmWebVos=orderWSVo.getOrderItmWSVos();
+			Map<String, OrderItmWebVo> map=new HashMap<String,OrderItmWebVo>();
+			for(OrderItmWebVo orderItmWebVo:orderItmWebVos){
+				if(map.containsKey(orderItmWebVo.getOrderitmid().toString())){
+					OrderItmWebVo orderItmWebVotmp=map.get(orderItmWebVo.getOrderitmid().toString());
+					map.get(orderItmWebVo.getOrderitmid().toString()).setVeninccode(orderItmWebVo.getVeninccode()+","+orderItmWebVotmp.getVeninccode());
+				}else{
+					map.put(orderItmWebVo.getOrderitmid().toString(), orderItmWebVo);
+				}
+			}
+			orderWSVo.getOrderItmWSVos().removeAll(orderWSVo.getOrderItmWSVos());
+			for(Map.Entry<String, OrderItmWebVo> entry: map.entrySet()) {
+				orderItmWebVos.add(entry.getValue());
+			}
+			map=null;
 		}
 	}	
 	/*	

@@ -232,6 +232,8 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 		hqlBuffer.append("t3.ven_inc_rowid  as venincid, ");
 		hqlBuffer.append("t3.ven_inc_name as venincname, ");
 		hqlBuffer.append("t5.name as venname, ");
+		hqlBuffer.append("t3.VEN_INC_PRICE as rp, ");
+		hqlBuffer.append("t8.VEN_INC_PIC_PATH as picpath, ");
 		hqlBuffer.append("t3.ven_inc_vensysid as vensysid ");
 		hqlBuffer.append(" from t_hop_inc t1 ");
 		hqlBuffer.append("left join t_ven_hop_inc t2 on t1.inc_id=t2.hop_inc_id ");
@@ -242,6 +244,7 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 				hqlParamMap.put("venDr",dto.getVenIncContranstDto().getVenId());
 			}
 		}
+		hqlBuffer.append("left join t_ven_inc_pic t8 on t2.ven_inc_id=t8.VEN_INC_PIC_VENINCID and t8.VEN_INC_PIC_SEQ=1");
 		hqlBuffer.append("left join t_sys_hospital t4 on t1.inc_hospid=t4.hospital_id ");
 		hqlBuffer.append("left join t_ven_vendor t5 on t5.ven_id=t3.ven_inc_venid ");
 		hqlBuffer.append("left join t_hop_manf t6 on t1.inc_manfid=t6.id ");

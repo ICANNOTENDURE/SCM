@@ -120,6 +120,33 @@ public class VenDeliverServiceImpl implements VenDeliverService {
 		// TODO Auto-generated method stub
 		venDeliverDao.Deliver(map);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#checkInvExist(java.lang.String, java.lang.Long)
+	 */
+	@Override
+	public boolean checkInvExist(String inv, Long orditmId) {
+		// TODO Auto-generated method stub
+		return venDeliverDao.checkInvExist(inv, orditmId);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#getFac(java.lang.Long, java.lang.Long)
+	 */
+	@Override
+	public Float getFac(Long hopId, Long venId) {
+		// TODO Auto-generated method stub
+		return venDeliverDao.getFac(hopId, venId);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#impByOrderItm(com.dhcc.pms.dto.ven.VenDeliverDto)
+	 */
+	@Override
+	public void impByOrderItm(VenDeliverDto dto) {
+		// TODO Auto-generated method stub
+		venDeliverDao.impByOrderItm(dto);
+	}
 	
 
 }

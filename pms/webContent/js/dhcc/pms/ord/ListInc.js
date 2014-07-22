@@ -4,7 +4,13 @@ $(function (){
 	
 		
 	$CommonUI.getDataGrid('#datagrid').datagrid({  
-	    url:$WEB_ROOT_PATH+'/hop/hopIncCtrl!list.htm',
+	    url:$WEB_ROOT_PATH+'/ven/venIncCtrl!listContrantInc.htm',
+	    queryParams: {
+	    	'dto.venIncContranstDto.incName': $("#incHopName").val(),
+	    	'dto.venIncContranstDto.incCode': $("#incHopCode").val(),
+	    	'dto.venIncContranstDto.flag': 1,
+	    	'dto.venInc.venIncAlias': $("#incHopAlias").val(),
+		},
 	    method:'post',
 	    loadMsg:'加载数据中.....',
 	    fit:true,
@@ -22,19 +28,20 @@ $(function (){
 					cc.push('<td colspan=3 style="padding:10px 5px;border:#9CC8F7 1px solid;">');
 					if (!frozen) {
 						img = rowData[1];
-						cc.push('<img src='+$WEB_ROOT_PATH+'/uploads/u24_normal.png style="width:90px;float:left">');
+						//cc.push('<img src='+$WEB_ROOT_PATH+'/uploads/u24_normal.png style="width:90px;float:left">');
+						cc.push('<img src='+$WEB_ROOT_PATH+'/uploadPic/'+rowData.picpath+' style="width:90px;float:left">');
 						cc.push('<div style="float:left;margin-left:20px;">');
 			
-						cc.push('<p><span class="c-label">代码: '+ rowData.incCode + '</span></p>');
-						cc.push('<p><span class="c-label">名称: '+ rowData.incName + '</span></p>');
-						cc.push('<p><span class="c-label">单位: '+ rowData.incUomname + '</span></p>');
+						cc.push('<p><span class="c-label">代码: '+ rowData.hopinccode + '</span></p>');
+						cc.push('<p><span class="c-label">名称: '+ rowData.hopincname + '</span></p>');
+						cc.push('<p><span class="c-label">单位: '+ rowData.uom + '</span></p>');
 					
 						cc.push('</div>');
 						cc.push('<div style="float:left;margin-left:20px;">');
 						
-						cc.push('<p><span class="c-label">产地: '+ rowData.manfName + '</span></p>');
-						cc.push('<p><span class="c-label">价格: '+ rowData.incRp + '</span></p>');
-						cc.push('<p><span class="c-label">基本单位: '+ rowData.incBuomname + '</span></p>');
+						cc.push('<p><span class="c-label">产地: '+ rowData.manf + '</span></p>');
+						cc.push('<p><span class="c-label">价格: '+ rowData.rp + '</span></p>');
+						cc.push('<p><span class="c-label">规格: '+ rowData.spec + '</span></p>');
 					
 						cc.push('</div>');
 
@@ -167,12 +174,16 @@ function goToShopp(){
 	window.location.href=$WEB_ROOT_PATH+'/ord/orderCtrl!shoppingCart.htm';
 	
 }
+
+function calSum(){
+	
+}
 function addShopping(rowIndex){
 	
-	incName=$('#datagrid').datagrid('getRows')[rowIndex]['incName'];
-	incId=$('#datagrid').datagrid('getRows')[rowIndex]['incId'];
-	incRp=$('#datagrid').datagrid('getRows')[rowIndex]['incRp'];
-	incUomname=$('#datagrid').datagrid('getRows')[rowIndex]['incUomname'];
+	incName=$('#datagrid').datagrid('getRows')[rowIndex]['hopincname'];
+	incId=$('#datagrid').datagrid('getRows')[rowIndex]['hopincid'];
+	incRp=$('#datagrid').datagrid('getRows')[rowIndex]['rp'];
+	incUomname=$('#datagrid').datagrid('getRows')[rowIndex]['uom'];
 	incQty=parseInt($("#tableQty"+rowIndex).val());
 	$.post(
 			$WEB_ROOT_PATH+'/ord/orderCtrl!saveShopCart.htm',

@@ -46,10 +46,12 @@
  	        },
  	        //检测FLASH失败调用
  	        'onFallback': function() {
+ 	        	$("#gg").dialog("close");	
  	            alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
  	        },
  	        //返回一个错误，选择文件的时候触发
  	        'onSelectError': function(file, errorCode, errorMsg) {
+ 	        	$("#gg").dialog("close");	
  	            switch (errorCode) {
  	            case - 100 : alert("上传的文件数量已经超出系统限制的" + $('#file_upload').uploadify('settings', 'queueSizeLimit') + "个文件！");
  	                break;
@@ -62,6 +64,21 @@
  	            }
  	        }
  	    });
+ 		
+ 		$('#impModel').html("");
+ 		$('#impModel').append("<td class='time'>模版 </td>");
+ 		$.post(
+ 			$WEB_ROOT_PATH+"/sys/sysImpModelCtrl!listImpModel.htm",
+ 			{
+ 				'dto.impModel.type':'VENINVBYORDER'
+ 			},
+ 			function(data){
+ 				$.each(data,function(i,dd){
+ 						$('#impModel').append("<td class='drop'><div class='item'>"+dd.name+"</div></td>");
+ 				});
+ 			},
+ 			"json"
+ 		);
  		
     });
  	 $(document).ready(function () {
@@ -88,6 +105,12 @@
 						name="upload" id="upload"></input></td>
 				</tr>
 			</table>
+			
+			<table>
+	    		<tr id="impModel">
+	    			<td class="time">模版 </td>
+	    		</tr>
+	    	</table>
 	</div>
 	 <div id="gg" class="dialog" title="请等待"  style="width:800px;height:400px;padding:10px;"
 				data-options="
@@ -101,5 +124,15 @@
 				
         		<p1>正在处理上传数据，请等待</p1>
     </div>
+    <style type="text/css">
+
+    .item{
+	    text-align:center;
+	    border:1px solid #499B33;
+	    background:#fafafa;
+	    color:#444;
+	    width:90px;
+    }
+    </style>
 </body>
 </html>

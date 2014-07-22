@@ -130,7 +130,13 @@
 					<td class="textParent" style="text-align: left; width: 30%">
 								<input id="upload"
 								name="upload" type="file" multiple="true" style="width: 100%">
-								<div id="queue" name="queue"></div>
+					</td>			
+								
+					<td class="textLabel">顺序:</td>
+					<td class="textParent" style="text-align: left; width: 30%">
+					<input style="width: 250px;"
+						 type="text" 
+						 id="venIncSeq"  value="1" />
 					</td>
 				</tr>										
 			</table>			
@@ -210,12 +216,18 @@
 						style="width: 250px;" class="validatebox" type="file"
 						id="import" ></input></td>
 				</tr>
+				<tr>
+					<td class="textLabel" style="text-align: right; width: 40%">下载模版:</td>
+					<td class="textParent" ><a href="../tmpl/importVenInc.xls">下载</a></td>
+				</tr>
 			</table>
 			<table>
 	    		<tr id="impModel">
 	    			<td class="time">模版 </td>
 	    		</tr>
 	    	</table>
+	    	<div id="err">
+	    	</div>
 	</div>
 	
 	

@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.mail.EmailException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -38,6 +39,7 @@ import com.dhcc.pms.dto.ven.VenDeliverDto;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.ord.ExeState;
 import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.ImpModel;
 import com.dhcc.pms.entity.userManage.NormalUser;
 import com.dhcc.pms.entity.ven.VenDeliver;
@@ -172,8 +174,9 @@ public class VenDeliverBlh extends AbstractBaseBlh {
 	* @author zhouxin  
 	* @date 2014年6月20日 下午1:58:28
 	* @version V1.0
+	 * @throws IOException 
 	 */
-	public void uploadAndroid(BusinessRequest res){
+	public void uploadAndroid(BusinessRequest res) throws IOException{
 		
 		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
 
@@ -291,31 +294,26 @@ public class VenDeliverBlh extends AbstractBaseBlh {
 					dto.getOrderMap().put(orderNo,venDeliveritms2);
 				}
 			}
+			
 			if(!dto.getOpFlg().equals("1")){
 				WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
 				return;
 			}
 			venDeliverService.impByOrder(dto);
 			workbook=null;
-			//删除upload文件夹下的所有文件
-			if(dstFile.isFile() || dstFile.list().length ==0)  {  
-				dstFile.delete();       
-			}else{      
-				File[] tempFiles = dstFile.listFiles();  
-				for (int i = 0; i < tempFiles.length; i++) {  
-					tempFiles[i].delete();      
-				}
-			}
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DataBaseException(e.getMessage(), e);
+		}finally{
+			//删除upload文件夹下的所有文件
+			FileUtils.forceDelete(dstFile);
 		}
 
 	}
 	
 	
-public void upload(BusinessRequest res){
+public void upload(BusinessRequest res) throws IOException{
 		
 		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
 
@@ -436,6 +434,9 @@ public void upload(BusinessRequest res){
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DataBaseException(e.getMessage(), e);
+		}finally{
+			//删除upload文件夹下的所有文件
+			FileUtils.forceDelete(dstFile);
 		}
 
 	}
@@ -551,5 +552,211 @@ public void upload(BusinessRequest res){
 	}
 	
 	
+	
+	
+	
+	
+	
+	/**
+	 * 
+	* @Title: VenDeliverBlh.java
+	* @Description: TODO(导入发票)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年6月20日 下午1:58:28
+	* @version V1.0
+	 * @throws IOException 
+	 */
+	public void uploadByOrderItmAndroid(BusinessRequest res) throws IOException{
+		
+		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
+		Long vendorId=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
+		//生成随机文件名
+		String newFileName =UUID.randomUUID().toString();
+		//获取文件存储路径
+		String storageFileName = ServletActionContext.getServletContext().getRealPath("/uploadtmps");
+		//判断文件存储路径是否存在，若不存在则自动新建
+		File document = new File(storageFileName);
+		if (!document.exists()) {
+			document.mkdir();
+		}
 
+		File dstFile = new File(storageFileName,newFileName); 
+        com.dhcc.framework.util.FileUtils.copyFile(dto.getUpload(), dstFile,BaseConstants.BUFFER_SIZE);
+        
+        //
+        SysImpModelDto SysImpModelDto=new SysImpModelDto();
+        SysImpModelDto.setImpModel(new ImpModel());
+        SysImpModelDto.getImpModel().setType("IMPBYORDERITEM");
+        List<ImpModel> listImpModels=sysImpModelService.getModelList(SysImpModelDto);
+        Map<Integer,String> modelMap=new HashMap<Integer,String>();
+        for(int i=0;i<listImpModels.size();i++){
+        	modelMap.put(Integer.valueOf(listImpModels.get(i).getSeq().toString()), listImpModels.get(i).getName());
+        }
+        dto.setMsg("<BR>");
+        //读取excel
+        try {
+        	dto.setOpFlg("1");
+			//读取Excel文件
+			HSSFWorkbook workbook = null;
+			HSSFSheet sheet = null;
+			HSSFRow row = null;
+			HSSFCell cell = null;
+			
+			workbook = new HSSFWorkbook(new FileInputStream(storageFileName + File.separator + newFileName));
+			sheet = workbook.getSheetAt(0);
+			
+			//明细
+			for (int numRows = 1; numRows <= sheet.getLastRowNum(); numRows++) {
+				
+				row = sheet.getRow(numRows);
+				
+				VenDeliveritm venDeliveritm = new VenDeliveritm();
+				String orderNo="";
+				String venincCode="";
+				for (int numCells = 0; numCells <= row.getLastCellNum(); numCells++) {
+					cell = row.getCell(numCells);
+					String colNameString=modelMap.get(numCells);
+					if(StringUtils.isNullOrEmpty(colNameString)) {colNameString=" ";};
+					switch (colNameString) {
+						case "订单明细ID":
+							if(cell!=null){
+								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+								if(!StringUtils.isNullOrEmpty(cell.getStringCellValue())){
+									venDeliveritm.setDeliveritmOrderitmid(Long.valueOf(cell.getStringCellValue()));
+								}
+							}
+							break ;
+						case "供应商药品代码":
+							if(cell!=null){
+								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+								if(!StringUtils.isNullOrEmpty(cell.getStringCellValue())){
+									venincCode=cell.getStringCellValue();
+								}
+							}
+							break;	
+						case "发票号":
+							if(cell!=null){
+								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+								if(!StringUtils.isNullOrEmpty(cell.getStringCellValue())){
+									venDeliveritm.setDeliveritmInvnoe(cell.getStringCellValue());
+								}
+							}
+							break;
+						case "数量":
+							if(cell!=null){
+								venDeliveritm.setDeliveritmQty((float)cell.getNumericCellValue());
+							}
+							break;
+						case "批号":
+							if(cell!=null){
+								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+								venDeliveritm.setDeliveritmBatno(cell.getStringCellValue());
+							}
+							break;
+						case "效期":
+							if(cell!=null){
+								venDeliveritm.setDeliveritmExpdate(cell.getDateCellValue());
+							}
+							break;
+						case "进价":
+							if(cell!=null){
+								cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+								venDeliveritm.setDeliveritmRp((float)cell.getNumericCellValue());
+							}
+							break;
+						case "进价金额":
+							if(cell!=null){
+								cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+								venDeliveritm.setDeliveritmRpamt((float)cell.getNumericCellValue());
+							}
+							break;	
+					}	
+				}
+
+				
+				if(venDeliveritm.getDeliveritmOrderitmid()==null){
+					dto.setOpFlg("-12");
+					dto.setMsg(dto.getMsg()+"第"+numRows+"行订单明细ID不能为空<br>");
+					continue;
+				}
+				if(StringUtils.isNullOrEmpty(venincCode)){
+					dto.setOpFlg("-12");
+					dto.setMsg(dto.getMsg()+"第"+numRows+"行供应商代码不能为空<br>");
+					continue;
+				}
+				if(StringUtils.isNullOrEmpty(venDeliveritm.getDeliveritmInvnoe())){
+					dto.setOpFlg("-12");
+					dto.setMsg(dto.getMsg()+"第"+numRows+"行发票号不能为空<br>");
+					continue;
+				}
+				
+				//查询订单号
+				OrderItm  orderItm=commonService.get(OrderItm.class, venDeliveritm.getDeliveritmOrderitmid());
+				if(orderItm==null){
+					dto.setOpFlg("-12");
+					dto.setMsg(dto.getMsg()+"第"+numRows+"行订单明细ID："+venDeliveritm.getDeliveritmOrderitmid()+"错误<br>");
+					continue;
+					
+				}
+				//处理转换系数
+				Long venIncId=venIncService.getVenIncByCode(venincCode.trim(),vendorId);
+				if(venIncId==null){
+					dto.setOpFlg("-11");
+					dto.setMsg(dto.getMsg()+"第"+numRows+"供应商药品代码："+venincCode+"错误<br>");
+					continue;
+				}
+				
+				orderNo =orderItm.getOrdId().toString();
+				//校验发票号是否重复
+				boolean invFlag=venDeliverService.checkInvExist(venDeliveritm.getDeliveritmInvnoe(), venDeliveritm.getDeliveritmOrderitmid());
+				if(!invFlag){
+					dto.setOpFlg("-11");
+					dto.setMsg(dto.getMsg()+"第"+numRows+"行发票号："+venDeliveritm.getDeliveritmInvnoe()+"重复<br>");
+					continue;
+				}
+				
+				
+				Float fac=venDeliverService.getFac(orderItm.getIncId(), venIncId);
+				if(fac==null){
+					dto.setOpFlg("-11");
+					dto.setMsg(dto.getMsg()+"第"+numRows+"药品转换系数维护错误<br>");
+					continue;
+				}
+				venDeliveritm.setDeliveritmHopincid(orderItm.getIncId());
+				venDeliveritm.setDeliveritmVenincid(venIncId);
+				venDeliveritm.setDeliveritmFac(fac);
+				venDeliveritm.setDeliveritmHisQty(venDeliveritm.getDeliveritmQty().floatValue()*fac.floatValue());
+				venDeliveritm.setDeliveritmHisRp(venDeliveritm.getDeliveritmRp().floatValue()*fac.floatValue());
+				if(dto.getOrderMap()!=null&&dto.getOrderMap().containsKey(orderNo)){
+					dto.getOrderMap().get(orderNo).add(venDeliveritm);
+				}else{
+					List<VenDeliveritm> venDeliveritms2=new ArrayList<VenDeliveritm>();
+					venDeliveritms2.add(venDeliveritm);
+					dto.getOrderMap().put(orderNo,venDeliveritms2);
+				}
+			}
+			
+			
+			workbook=null;
+		} catch (Exception e) {
+			dto.setOpFlg("-2");
+			dto.setMsg(e.getMessage());
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
+			e.printStackTrace();
+			throw new DataBaseException(e.getMessage(), e);
+			
+		}finally{
+			//删除upload文件夹下的所有文件
+			FileUtils.forceDelete(dstFile);
+		}
+        if(!dto.getOpFlg().equals("1")){
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
+			return;
+		}
+        venDeliverService.impByOrderItm(dto);
+		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
+
+	}
 }

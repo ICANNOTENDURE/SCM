@@ -488,6 +488,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("t4.ctloc_name as recloc, ");
 		hqlBuffer.append("t5.ctloc_name as purloc, ");
 		hqlBuffer.append("t6.ctlocdes_destination as desction, ");
+		hqlBuffer.append("t1.DELIVERYDATE as deliverdate, ");
 		hqlBuffer.append("t10.HOSPITAL_NAME as hopname ");
 		hqlBuffer.append("from t_ord_order t1  ");
 		hqlBuffer.append("left join t_ord_exestate t2 on t1.exestate_id=t2.exestate_id  ");
@@ -534,14 +535,15 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("t1.ord_id as orderid, ");
 		hqlBuffer.append("t1.orderitm_id as orderitmid, ");
 		hqlBuffer.append("t1.inc_id as hopincid, ");
-		hqlBuffer.append("t3.VEN_INC_NAME as incname, ");
-		hqlBuffer.append("t3.VEN_INC_CODE as inccode, ");
+		hqlBuffer.append("t3.VEN_INC_NAME as venincname, ");
+		hqlBuffer.append("t3.VEN_INC_CODE as veninccode, ");
 		hqlBuffer.append("t1.reqqty as hisqty , ");
 		hqlBuffer.append("t1.rp as hisrp, ");
 		hqlBuffer.append("t6.VEN_INC_FAC as fac, ");
 		hqlBuffer.append("t3.VEN_INC_UOMNAME as venuom, ");
-		hqlBuffer.append("t1.rp*t6.VEN_INC_FAC as venrp, ");
-		hqlBuffer.append("t1.reqqty*t6.VEN_INC_FAC as venqty, ");
+		hqlBuffer.append("t1.rp/t6.VEN_INC_FAC as venrp, ");
+		hqlBuffer.append("t1.reqqty/t6.VEN_INC_FAC as venqty, ");
+		hqlBuffer.append("t2.INC_NAME as hopincname, ");
 		hqlBuffer.append("t1.uom as hisuom ");
 		hqlBuffer.append("from t_ord_orderitm t1 ");
 		hqlBuffer.append("left join t_hop_inc t2 on t2.inc_id=t1.inc_id ");

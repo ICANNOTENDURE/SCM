@@ -21,18 +21,44 @@ public class ExportOrderVo implements java.io.Serializable{
 	
 	private String venincname;
 	
-	private Long qty;
+	private float qty;
 	
 	private String uom;
 	
-	private Long rp;
+	private float rp;
 	
 	private String hopincname;
 	
 	private Long hopincid;
 	
+	private String veninccode;
+	
+	private Long orderitmid;
+	
+	private String venuom;
+	
+	private float venqty;
+	
+	private float venrp;
+	
+	private float fac;
 	
 	
+	
+	/**
+	 * @return the fac
+	 */
+	public float getFac() {
+		return fac;
+	}
+
+	/**
+	 * @param fac the fac to set
+	 */
+	public void setFac(float fac) {
+		this.fac = fac;
+	}
+
 	/**
 	 * @return the hopincname
 	 */
@@ -133,19 +159,7 @@ public class ExportOrderVo implements java.io.Serializable{
 		this.venincname = venincname;
 	}
 
-	/**
-	 * @return the qty
-	 */
-	public Long getQty() {
-		return qty;
-	}
 
-	/**
-	 * @param qty the qty to set
-	 */
-	public void setQty(Long qty) {
-		this.qty = qty;
-	}
 
 	/**
 	 * @return the uom
@@ -162,19 +176,105 @@ public class ExportOrderVo implements java.io.Serializable{
 	}
 
 	/**
+	 * @return the qty
+	 */
+	public float getQty() {
+		return qty;
+	}
+
+	/**
+	 * @param qty the qty to set
+	 */
+	public void setQty(float qty) {
+		this.qty = qty;
+	}
+
+	/**
 	 * @return the rp
 	 */
-	public Long getRp() {
+	public float getRp() {
 		return rp;
 	}
 
 	/**
 	 * @param rp the rp to set
 	 */
-	public void setRp(Long rp) {
+	public void setRp(float rp) {
 		this.rp = rp;
 	}
 
+	/**
+	 * @return the veninccode
+	 */
+	public String getVeninccode() {
+		return veninccode;
+	}
+
+	/**
+	 * @param veninccode the veninccode to set
+	 */
+	public void setVeninccode(String veninccode) {
+		this.veninccode = veninccode;
+	}
+
+	/**
+	 * @return the orderitmid
+	 */
+	public Long getOrderitmid() {
+		return orderitmid;
+	}
+
+	/**
+	 * @param orderitmid the orderitmid to set
+	 */
+	public void setOrderitmid(Long orderitmid) {
+		this.orderitmid = orderitmid;
+	}
+
+	/**
+	 * @return the venuom
+	 */
+	public String getVenuom() {
+		return venuom;
+	}
+
+	/**
+	 * @param venuom the venuom to set
+	 */
+	public void setVenuom(String venuom) {
+		this.venuom = venuom;
+	}
+
+	/**
+	 * @return the venqty
+	 */
+	public float getVenqty() {
+		return venqty;
+	}
+
+	/**
+	 * @param venqty the venqty to set
+	 */
+	public void setVenqty(float venqty) {
+		this.venqty = venqty;
+	}
+
+	/**
+	 * @return the venrp
+	 */
+	public float getVenrp() {
+		return venrp;
+	}
+
+	/**
+	 * @param venrp the venrp to set
+	 */
+	public void setVenrp(float venrp) {
+		this.venrp = venrp;
+	}
+
+	
+	
 	
 	
 	
