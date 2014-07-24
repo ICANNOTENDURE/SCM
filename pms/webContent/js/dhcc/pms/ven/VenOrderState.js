@@ -47,7 +47,7 @@ $(function (){
 			{field:'operate',title:'操作',width:160,formatter: function(value,row,index){
 				str='<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain"  data-options="iconCls:"icon-save" href="downLoadOrderCtrl!downLoadOrder.htm?orderId='+row.orderid+'"><span class="l-btn-left"><span class="l-btn-text icon-save l-btn-icon-left">下载订单</span></span></a>';
 				if (row.statedesc=="新建"){
-					return str+'<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:accpOrder('+row.orderid+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-add l-btn-icon-left">接收</span></span></a>';
+					return str; //+'<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:accpOrder('+row.orderid+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-add l-btn-icon-left">接收</span></span></a>';
 					
 				} else {
 					return str;

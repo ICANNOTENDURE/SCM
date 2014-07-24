@@ -22,6 +22,7 @@ import com.dhcc.framework.util.JsonUtils;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderStateDto;
+import com.dhcc.pms.dto.ven.VenDeliverDto;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.userManage.NormalAccount;
@@ -269,6 +270,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	* @author zhouxin  
 	* @date 2014年7月9日 上午9:36:29
 	* @version V1.0
+	 * @throws IOException 
 	 */
 	/*
 	@BlhParameters(dtoCls=OrderStateDto.class,parameter={
@@ -277,7 +279,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	@Descript("供应商确认收到订单")
 	@OutPut(ognlExpress="dto.operateResult")
 	*/
-	public void deliver(BusinessRequest res){
+	public void deliver(BusinessRequest res) throws IOException{
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
 		if(dto.getDeliveritms()==null){
 			dto.getOperateResult().setResultCode("-1");
@@ -317,9 +319,19 @@ public class OrderStateBlh extends AbstractBaseBlh {
 			}
 		}
 		
-		venDeliverService.deliver(DelMap);
-		dto.getOperateResult().setResultCode("0");
-		dto.getOperateResult().setResultContent("success");
+		VenDeliverDto vendto =new VenDeliverDto();
+		vendto.setOrderMap(DelMap);
+		vendto.setOperateType("webservice 导入");
+		try{
+			//venDeliverService.deliver(DelMap);
+			venDeliverService.impByOrderItm(vendto);
+			dto.getOperateResult().setResultCode("0");
+			dto.getOperateResult().setResultContent("success");
+		}catch(Exception e){
+			dto.getOperateResult().setResultCode("-2");
+			dto.getOperateResult().setResultContent(vendto.getMsg());
+		}
+		
 		
 	}
 	
@@ -332,7 +344,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	 * @description 获取当前状态的订单以及其之前所有已经操作的状态订单信息
 	 */
 	public void OrderDetailAndroid(BusinessRequest res) throws IOException{
-		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
+//		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
 		//List<OrderStateAndroidVo> androidVos=ordertateService.listOrderStateAndroid(dto);
 		//调用对应的service方法
 		//ordertateService.listOrderState(dto);

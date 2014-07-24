@@ -42,9 +42,24 @@ public class DeliverItmVo implements java.io.Serializable{
 	
 	private String manf;
 	
+	private Long orderitmid;
 	
 	
 	
+	/**
+	 * @return the orderitmid
+	 */
+	public Long getOrderitmid() {
+		return orderitmid;
+	}
+
+	/**
+	 * @param orderitmid the orderitmid to set
+	 */
+	public void setOrderitmid(Long orderitmid) {
+		this.orderitmid = orderitmid;
+	}
+
 	/**
 	 * @return the hopincid
 	 */

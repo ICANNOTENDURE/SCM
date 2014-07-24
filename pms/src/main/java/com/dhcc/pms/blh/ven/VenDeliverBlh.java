@@ -560,7 +560,7 @@ public void upload(BusinessRequest res) throws IOException{
 	/**
 	 * 
 	* @Title: VenDeliverBlh.java
-	* @Description: TODO(导入发票)
+	* @Description: TODO(导入发票,excel,按着订单明细ID)
 	* @param res
 	* @return:void 
 	* @author zhouxin  
@@ -740,23 +740,48 @@ public void upload(BusinessRequest res) throws IOException{
 			
 			
 			workbook=null;
+			if(!dto.getOpFlg().equals("1")){
+				WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
+				return;
+			}
+			dto.setOperateType("Excel 导入");
+	        venDeliverService.impByOrderItm(dto);
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
 		} catch (Exception e) {
 			dto.setOpFlg("-2");
-			dto.setMsg(e.getMessage());
+			dto.setMsg(dto.getMsg()+"<BR>"+e.getLocalizedMessage());
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
-			e.printStackTrace();
-			throw new DataBaseException(e.getMessage(), e);
+			//e.printStackTrace();
+			//throw new DataBaseException(e.getMessage(), e);
 			
 		}finally{
 			//删除upload文件夹下的所有文件
 			FileUtils.forceDelete(dstFile);
 		}
-        if(!dto.getOpFlg().equals("1")){
-			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
-			return;
-		}
-        venDeliverService.impByOrderItm(dto);
-		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
+        
 
 	}
+	
+	
+	
+	/**
+	 * 
+	* @Title: VenDeliverBlh.java
+	* @Description: TODO(检查发货单状态更具发货主表ID)
+	* @param res
+	* @throws IOException
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月23日 下午2:21:58
+	* @version V1.0
+	 */
+	public void checkDelState(BusinessRequest res) throws IOException{
+		VenDeliverDto dto = super.getDto(VenDeliverDto.class, res);
+		VenDeliver venDeliver=commonService.get(VenDeliver.class, dto.getVenDeliver().getDeliverId());
+		ExeState ExeState=commonService.get(ExeState.class, venDeliver.getDeliverExestateid());
+		WebContextHolder.getContext().getResponse().getWriter().write(ExeState.getStateId().toString());
+		//WebContextHolder.getContext().getResponse().getWriter().write("4");
+	}
+	
+
 }

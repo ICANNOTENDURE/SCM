@@ -33,12 +33,28 @@ public class VenDeliverDto extends BaseDto {
 	private Long state;
 	private File upload;
 	private Map<String,List<VenDeliveritm>> orderMap=new HashMap<String, List<VenDeliveritm>>();
-	
+	private String operateType;
 
 	
 	
 	
 
+
+
+	/**
+	 * @return the operateType
+	 */
+	public String getOperateType() {
+		return operateType;
+	}
+
+
+	/**
+	 * @param operateType the operateType to set
+	 */
+	public void setOperateType(String operateType) {
+		this.operateType = operateType;
+	}
 
 
 	/**

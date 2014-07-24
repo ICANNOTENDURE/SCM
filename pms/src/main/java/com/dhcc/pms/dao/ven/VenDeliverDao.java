@@ -34,9 +34,9 @@ import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.ven.VenDeliver;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
 import com.dhcc.pms.entity.ven.VenHopInc;
+import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.vo.ven.DeliverItmVo;
 import com.dhcc.pms.entity.vo.ven.DeliverVo;
-import com.dhcc.pms.entity.vo.ws.OrderItmWebVo;
 
 @Repository
 public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
@@ -67,7 +67,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	@SuppressWarnings("unchecked")
 	public void AccectOrder(VenDeliverDto dto){
 		StringBuilder hqlStr = new StringBuilder();
-		
+		Long vendorId=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
 		Order order=super.get(Order.class, dto.getVenDeliver().getDeliverOrderid());
 		VenDeliver venDeliver=new VenDeliver();
 		venDeliver.setDeliverHopid(order.getHopId());
@@ -85,7 +85,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		ExeState exeState=new ExeState();
 		exeState.setDeliverId(venDeliver.getDeliverId());
 		exeState.setExedate(new java.sql.Timestamp(new Date().getTime()));
-		exeState.setStateId(Long.valueOf(2));
+		exeState.setStateId(Long.valueOf(3));
 		exeState.setUserid(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
 		super.saveOrUpdate(exeState);
 		//保存订单执行表t_ord_exestate
@@ -104,17 +104,40 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 				venDeliveritm.setDeliveritmHopincid(tmpOrderItm.getIncId());
 				venDeliveritm.setDeliveritmOrderitmid(tmpOrderItm.getOrderitmId());
 				venDeliveritm.setDeliveritmParentid(venDeliver.getDeliverId());
-				if(tmpOrderItm.getDeliverqty()==null){
-					venDeliveritm.setDeliveritmQty(tmpOrderItm.getReqqty());
-				}else{
-					venDeliveritm.setDeliveritmQty(tmpOrderItm.getReqqty().floatValue()-tmpOrderItm.getDeliverqty().floatValue());
-				}
+				
 				venDeliveritm.setDeliveritmUom(tmpOrderItm.getUom());
 				venDeliveritm.setDeliveritmRp(tmpOrderItm.getRp());
-				venDeliveritm.setDeliveritmVenincid(hopIncDao.getVenIncByHopInc(tmpOrderItm.getIncId()));
+				//venDeliveritm.setDeliveritmVenincid(hopIncDao.getVenIncByHopInc(tmpOrderItm.getIncId()));
+				
+				DetachedCriteria criteria = DetachedCriteria.forClass(VenHopInc.class);
+				criteria.add(Restrictions.eq("hopIncId", tmpOrderItm.getIncId()));
+				List<VenHopInc> venHopIncs=super.findByCriteria(criteria);
+				for(VenHopInc venHopInc:venHopIncs){
+					VenInc venInc=super.get(VenInc.class, venHopInc.getVenIncId());
+					if(venInc.getVenIncVenid().toString().equals(vendorId.toString())){
+						venDeliveritm.setDeliveritmVenincid(venInc.getVenIncId());
+						venDeliveritm.setDeliveritmFac(venHopInc.getVenIncFac());
+
+						venDeliveritm.setDeliveritmHisRp(venDeliveritm.getDeliveritmRp().floatValue()*venHopInc.getVenIncFac().floatValue());
+						if(tmpOrderItm.getDeliverqty()==null){
+							venDeliveritm.setDeliveritmHisQty(tmpOrderItm.getReqqty()/venHopInc.getVenIncFac().floatValue());
+						}else{
+							//venDeliveritm.setDeliveritmQty(tmpOrderItm.getReqqty().floatValue()-tmpOrderItm.getDeliverqty().floatValue());
+							venDeliveritm.setDeliveritmHisQty(tmpOrderItm.getReqqty().floatValue()-tmpOrderItm.getDeliverqty().floatValue());
+						}
+						venDeliveritm.setDeliveritmQty(venDeliveritm.getDeliveritmHisQty().floatValue()/venHopInc.getVenIncFac().floatValue());
+						break;
+					}
+				}
+				
+				tmpOrderItm.setDeliverqty(tmpOrderItm.getReqqty());
+				tmpOrderItm.setFlag(2l);
+				super.saveOrUpdate(tmpOrderItm);
 				super.saveOrUpdate(venDeliveritm);
 			}
 		}
+		order.setOrdFlag(2l);
+		super.saveOrUpdate(order);
 		//保存发货明细表
 	}
 	
@@ -223,6 +246,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	* @date 2014年6月19日 下午3:59:03
 	* @version V1.0
 	 */
+	@SuppressWarnings("unchecked")
 	public void listDeliverItm(VenDeliverDto dto){
 		
 		
@@ -242,6 +266,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		hqlBuffer.append("t1.DELIVERITM_EXPDATE as expdate,  ");
 		hqlBuffer.append("t1.DELIVERITM_RP as rp,  ");
 		hqlBuffer.append("t1.DELIVERITM_RPAMT as rpamt,  ");
+		hqlBuffer.append("t1.DELIVERITM_ORDERITMID as orderitmid,  ");
 		hqlBuffer.append("t4.NAME as manf  ");
 		hqlBuffer.append("from t_ven_deliveritm t1 ");
 		
@@ -280,6 +305,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			}
 			dto.getPageModel().getPageData().removeAll(dto.getPageModel().getPageData());
 			dto.getPageModel().setPageData(deliverItmVos);
+			dto.getPageModel().setPageSize(deliverItmVos.size());
 		}
 	}
 	
@@ -294,14 +320,38 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	* @version V1.0
 	 */
 	public void saveDeliverItm(VenDeliverDto dto){
+		Long vendorId=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
 		VenDeliveritm venDeliveritm=new VenDeliveritm();
 		if(dto.getVenDeliveritm().getDeliveritmId()!=null){
 			venDeliveritm=super.get(VenDeliveritm.class, dto.getVenDeliveritm().getDeliveritmId());
 		}else{
 			venDeliveritm.setDeliveritmParentid(dto.getVenDeliveritm().getDeliveritmParentid());
 			venDeliveritm.setDeliveritmHopincid(dto.getVenDeliveritm().getDeliveritmHopincid());
-			venDeliveritm.setDeliveritmVenincid(hopIncDao.getVenIncByHopInc(dto.getVenDeliveritm().getDeliveritmHopincid()));
+			//venDeliveritm.setDeliveritmVenincid(hopIncDao.getVenIncByHopInc(dto.getVenDeliveritm().getDeliveritmHopincid()));
+		    
+			
 		}
+		if(dto.getVenDeliveritm().getDeliveritmQty()==null){
+			dto.getVenDeliveritm().setDeliveritmQty(0f);
+		}
+		if(dto.getVenDeliveritm().getDeliveritmRp()==null){
+			dto.getVenDeliveritm().setDeliveritmRp(0f);
+		}
+		DetachedCriteria criteria = DetachedCriteria.forClass(VenHopInc.class);
+		criteria.add(Restrictions.eq("hopIncId", dto.getVenDeliveritm().getDeliveritmHopincid()));
+		@SuppressWarnings("unchecked")
+		List<VenHopInc> venHopIncs=super.findByCriteria(criteria);
+		for(VenHopInc venHopInc:venHopIncs){
+			VenInc venInc=super.get(VenInc.class, venHopInc.getVenIncId());
+			if(venInc.getVenIncVenid().toString().equals(vendorId.toString())){
+				venDeliveritm.setDeliveritmVenincid(venInc.getVenIncId());
+				venDeliveritm.setDeliveritmFac(venHopInc.getVenIncFac());
+				venDeliveritm.setDeliveritmHisQty(dto.getVenDeliveritm().getDeliveritmQty().floatValue()*venHopInc.getVenIncFac().floatValue());
+				venDeliveritm.setDeliveritmHisRp(dto.getVenDeliveritm().getDeliveritmRp().floatValue()*venHopInc.getVenIncFac().floatValue());
+				break;
+			}
+		}
+		
 		venDeliveritm.setDeliveritmQty(dto.getVenDeliveritm().getDeliveritmQty());
 		venDeliveritm.setDeliveritmBatno(dto.getVenDeliveritm().getDeliveritmBatno());
 		venDeliveritm.setDeliveritmExpdate(dto.getVenDeliveritm().getDeliveritmExpdate());
@@ -580,7 +630,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		//VenDeliver venDeliver=super.get(VenDeliver.class, dto.getVenDeliver().getDeliverId(),LockMode.WRITE); //(VenDeliver.class, dto.getVenDeliver().getDeliverId());;
 		//以收货
 		VenDeliver venDeliver=super.get(VenDeliver.class, dto.getVenDeliver().getDeliverId());
-		if(super.get(ExeState.class, venDeliver.getDeliverExestateid()).getStateId().toString().equals("6")){
+		if(super.get(ExeState.class, venDeliver.getDeliverExestateid()).getStateId().toString().equals("4")){
 			
 			dto.setOpFlg("2");
 			return;
@@ -609,6 +659,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		
 	
 		order.setExeStateId(exeState.getExestateId());
+		order.setOrdFlag(1l);
 		super.saveOrUpdate(order);
 		
 		
@@ -622,9 +673,9 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			if(tmpVenDeliveritm.getDeliveritmQty()==null){
 				tmpVenDeliveritm.setDeliveritmQty(0f);
 			}
-			Float deliverqty=orderItm.getDeliverqty().floatValue()-tmpVenDeliveritm.getDeliveritmQty().floatValue();
+			Float deliverqty=orderItm.getDeliverqty().floatValue()-tmpVenDeliveritm.getDeliveritmHisQty().floatValue();
 			orderItm.setDeliverqty(deliverqty);
-			orderItm.setFlag(Long.valueOf("1"));
+			orderItm.setFlag(1l);
 			super.saveOrUpdate(orderItm);
 		}
 	}
@@ -698,13 +749,14 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	/**
 	 * 
 	* @Title: VenDeliverDao.java
-	* @Description: TODO(根据供应商发货生成发货单)
+	* @Description: TODO(根据供应商发货生成发货单webservice 导入)
 	* @param dto
 	* @return:void 
 	* @author zhouxin  
 	* @date 2014年7月9日 下午2:49:36
 	* @version V1.0
 	 */
+	@SuppressWarnings("unchecked")
 	public void Deliver(Map<String, List<VenDeliveritm>> map){
 		String no=UUID.randomUUID().toString();
 		Iterator<String> it = map.keySet().iterator();
@@ -728,7 +780,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			ExeState exeState=new ExeState();
 			exeState.setDeliverId(venDeliver.getDeliverId());
 			exeState.setExedate(new java.sql.Timestamp(new Date().getTime()));
-			exeState.setStateId(2l);
+			exeState.setStateId(3l);  //导入
 			exeState.setRemark("平台 webservice 导入");
 			super.saveOrUpdate(exeState);
 			//更新发货表执行表ID
@@ -738,87 +790,8 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			ExeState exeState1=new ExeState();
 			exeState1.setOrdId(order.getOrderId());
 			exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
-			exeState1.setStateId(2l);
+			exeState1.setStateId(3l);  //导入
 			exeState1.setRemark("平台 webservice 导入");
-			super.saveOrUpdate(exeState1);
-			//更新订单表执行状态
-			order.setExeStateId(exeState1.getExestateId());
-			super.saveOrUpdate(order);
-			
-			
-			
-			//保存发货明细表
-			List<VenDeliveritm> deliveritms=map.get(key);
-			for(VenDeliveritm tmpVenDeliveritm:deliveritms){
-				tmpVenDeliveritm.setDeliveritmParentid(venDeliver.getDeliverId());
-				super.saveOrUpdate(tmpVenDeliveritm);
-				
-				
-				/********************************暂时在这里处理 ******************************************/
-				//更新订单表里发货数量
-				OrderItm orderItm=super.get(OrderItm.class, tmpVenDeliveritm.getDeliveritmOrderitmid());
-				if(orderItm.getDeliverqty()==null){
-					orderItm.setDeliverqty(0f);
-				}
-				Float deliverqty=orderItm.getDeliverqty().floatValue()+tmpVenDeliveritm.getDeliveritmQty().floatValue();
-				orderItm.setDeliverqty(deliverqty);
-				orderItm.setFlag(Long.valueOf("1"));
-				if((orderItm.getDeliverqty().floatValue()-orderItm.getReqqty().floatValue())>=0){
-					orderItm.setFlag(Long.valueOf("2"));
-				}
-				super.saveOrUpdate(orderItm);
-			}
-		}	
-	}
-	
-	
-	/**
-	 * 
-	* @Title: VenDeliverDao.java
-	* @Description: TODO(根据订单明细导入发票)
-	* @param dto
-	* @return:void 
-	* @author zhouxin  
-	* @date 2014年7月22日 下午3:14:54
-	* @version V1.0
-	 */
-	public void impByOrderItm(VenDeliverDto dto){
-		String no=UUID.randomUUID().toString();
-		Map<String,List<VenDeliveritm>> map=dto.getOrderMap();
-		Iterator<String> it = map.keySet().iterator();
-		while(it.hasNext()){
-			String key = (String) it.next();
-			Order order=super.get(Order.class, Long.valueOf(key));
-			//保存发货主表
-			VenDeliver venDeliver=new VenDeliver();
-			venDeliver.setDeliverHopid(order.getHopId());
-			venDeliver.setDeliverOrderid(order.getOrderId());
-			venDeliver.setDeliverPurloc(order.getPurLoc());
-			venDeliver.setDeliverRecloc(order.getRecLoc());
-			venDeliver.setHopVendorId(order.getVendorId()); //医院供应商
-			venDeliver.setDeliverVendorid(super.get(HopVendor.class, order.getVendorId()).getHopVenId()); //供应商
-			venDeliver.setDeliverDestinationid(order.getRecDestination());
-			venDeliver.setDeliverDate(new java.sql.Timestamp(new Date().getTime()));
-			venDeliver.setDeliverAccpecctDate(new java.sql.Timestamp(new Date().getTime()));
-			venDeliver.setDeliverWpsId(map.get(key).get(0).getDeliveritmWpsId());
-			venDeliver.setDeliverNo(no);
-			super.saveOrUpdate(venDeliver);
-			//执行表(发货表)
-			ExeState exeState=new ExeState();
-			exeState.setDeliverId(venDeliver.getDeliverId());
-			exeState.setExedate(new java.sql.Timestamp(new Date().getTime()));
-			exeState.setStateId(2l);
-			exeState.setRemark("Excel 导入");
-			super.saveOrUpdate(exeState);
-			//更新发货表执行表ID
-			venDeliver.setDeliverExestateid(exeState.getExestateId());
-			super.saveOrUpdate(venDeliver);
-			//执行表(订单表)
-			ExeState exeState1=new ExeState();
-			exeState1.setOrdId(order.getOrderId());
-			exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
-			exeState1.setStateId(2l);
-			exeState1.setRemark("供应商Excel 导入");
 			super.saveOrUpdate(exeState1);
 			//更新订单表执行状态
 			order.setExeStateId(exeState1.getExestateId());
@@ -842,16 +815,155 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 				Float deliverqty=orderItm.getDeliverqty().floatValue()+tmpVenDeliveritm.getDeliveritmHisQty().floatValue();
 				orderItm.setDeliverqty(deliverqty);
 				orderItm.setFlag(Long.valueOf("1"));
-				if((orderItm.getDeliverqty().floatValue()-orderItm.getReqqty().floatValue())==0){
+				if((orderItm.getDeliverqty().floatValue()-orderItm.getReqqty().floatValue())>=0){
 					orderItm.setFlag(Long.valueOf("2"));
-					
-				}
-				if((orderItm.getDeliverqty().floatValue()-orderItm.getReqqty().floatValue())>0){
-					dto.setOpFlg("-1");
-					dto.setMsg(dto.getMsg()+","+"发票号:"+tmpVenDeliveritm.getDeliveritmInvnoe()+"发货数量大于订单数量");
 				}
 				super.saveOrUpdate(orderItm);
 			}
+			
+			
+			
+			//更新订单表
+			DetachedCriteria criteria = DetachedCriteria.forClass(OrderItm.class);
+			criteria.add(Restrictions.eq("orderitmId",Long.valueOf(key)));
+			List<OrderItm> orderItms=super.findByCriteria(criteria);
+			int orderFlag=0;
+			for(OrderItm tmpOrderItm:orderItms){
+				if(tmpOrderItm.getFlag()!=null){
+					if(!tmpOrderItm.getFlag().toString().equals("2")){
+						orderFlag=1;
+					}
+				}else{
+					orderFlag=1;
+				}
+			}
+			//1是部分上传，2是全部上传
+			order.setOrdFlag(1l);
+			if(orderFlag==0){
+				order.setOrdFlag(2l);
+			}
+			super.saveOrUpdate(order);
+		}	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 
+	* @Title: VenDeliverDao.java
+	* @Description: TODO(根据订单明细导入发票，excel 导入)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月22日 下午3:14:54
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public void impByOrderItm(VenDeliverDto dto){
+		String no=UUID.randomUUID().toString();
+		Map<String,List<VenDeliveritm>> map=dto.getOrderMap();
+		Iterator<String> it = map.keySet().iterator();
+		dto.setMsg("<br>");
+		while(it.hasNext()){
+			String key = (String) it.next();
+			Order order=super.get(Order.class, Long.valueOf(key));
+			//保存发货主表
+			VenDeliver venDeliver=new VenDeliver();
+			venDeliver.setDeliverHopid(order.getHopId());
+			venDeliver.setDeliverOrderid(order.getOrderId());
+			venDeliver.setDeliverPurloc(order.getPurLoc());
+			venDeliver.setDeliverRecloc(order.getRecLoc());
+			venDeliver.setHopVendorId(order.getVendorId()); //医院供应商
+			venDeliver.setDeliverVendorid(super.get(HopVendor.class, order.getVendorId()).getHopVenId()); //供应商
+			venDeliver.setDeliverDestinationid(order.getRecDestination());
+			venDeliver.setDeliverDate(new java.sql.Timestamp(new Date().getTime()));
+			venDeliver.setDeliverAccpecctDate(new java.sql.Timestamp(new Date().getTime()));
+			venDeliver.setDeliverWpsId(map.get(key).get(0).getDeliveritmWpsId());
+			venDeliver.setDeliverNo(no);
+			super.saveOrUpdate(venDeliver);
+			//执行表(发货表)
+			ExeState exeState=new ExeState();
+			exeState.setDeliverId(venDeliver.getDeliverId());
+			exeState.setExedate(new java.sql.Timestamp(new Date().getTime()));
+			exeState.setStateId(3l);
+			exeState.setRemark(dto.getOperateType());
+			super.saveOrUpdate(exeState);
+			//更新发货表执行表ID
+			venDeliver.setDeliverExestateid(exeState.getExestateId());
+			super.saveOrUpdate(venDeliver);
+			//执行表(订单表)
+			ExeState exeState1=new ExeState();
+			exeState1.setOrdId(order.getOrderId());
+			exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
+			exeState1.setStateId(3l);
+			exeState1.setRemark(dto.getOperateType());
+			super.saveOrUpdate(exeState1);
+			//更新订单表执行状态
+			order.setExeStateId(exeState1.getExestateId());
+			super.saveOrUpdate(order);
+			
+			
+			Map<String, Float> delQtyMap=new HashMap<String,Float>();
+			//保存发货明细表
+			List<VenDeliveritm> deliveritms=map.get(key);
+			for(VenDeliveritm tmpVenDeliveritm:deliveritms){
+				tmpVenDeliveritm.setDeliveritmParentid(venDeliver.getDeliverId());
+				super.saveOrUpdate(tmpVenDeliveritm);
+				if(delQtyMap.containsKey(tmpVenDeliveritm.getDeliveritmOrderitmid().toString())){
+					Float delQty=delQtyMap.get(tmpVenDeliveritm.getDeliveritmOrderitmid().toString());
+					delQtyMap.put(tmpVenDeliveritm.getDeliveritmOrderitmid().toString(),delQty+tmpVenDeliveritm.getDeliveritmHisQty().floatValue());
+					
+				}else{
+					delQtyMap.put(tmpVenDeliveritm.getDeliveritmOrderitmid().toString(),tmpVenDeliveritm.getDeliveritmHisQty().floatValue());
+				}
+			}
+			
+			
+			//更新订单表
+			DetachedCriteria criteria = DetachedCriteria.forClass(OrderItm.class);
+			criteria.add(Restrictions.eq("orderitmId",Long.valueOf(key)));
+			List<OrderItm> orderItms=super.findByCriteria(criteria);
+			order.setOrdFlag(2l);
+			for(OrderItm tmpOrderItm:orderItms){
+				
+				if(delQtyMap.containsKey(tmpOrderItm.getOrderitmId().toString())){
+					if(tmpOrderItm.getDeliverqty()==null){tmpOrderItm.setDeliverqty(0f);}
+					Float deliverqty=tmpOrderItm.getDeliverqty().floatValue()+delQtyMap.get(tmpOrderItm.getOrderitmId().toString()).floatValue();
+					tmpOrderItm.setDeliverqty(deliverqty);
+					tmpOrderItm.setFlag(1l);
+					if((tmpOrderItm.getDeliverqty().floatValue()-tmpOrderItm.getReqqty().floatValue())==0){
+						tmpOrderItm.setFlag(2l);
+						
+					}
+					if((tmpOrderItm.getDeliverqty().floatValue()-tmpOrderItm.getReqqty().floatValue())>0){
+						dto.setOpFlg("-1");
+						dto.setMsg(dto.getMsg()+"订单明细ID:"+tmpOrderItm.getOrderitmId()+"发货数量大于订单数量<br>");
+					}
+					if((tmpOrderItm.getDeliverqty().floatValue()-tmpOrderItm.getReqqty().floatValue())<0){
+						order.setOrdFlag(1l);
+					}
+					super.saveOrUpdate(tmpOrderItm);
+				}
+			}
+			//1是部分上传，2是全部上传
+			super.saveOrUpdate(order);
+			delQtyMap=null;
+			
 		}
 		if(!dto.getOpFlg().equals("1")){
 			throw new RuntimeException();

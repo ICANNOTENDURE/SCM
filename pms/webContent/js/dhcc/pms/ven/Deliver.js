@@ -1,6 +1,6 @@
 // zxx 2014-04-19
 $(function (){
-
+	/*
 	$("#upload").uploadify({
         'swf': $WEB_ROOT_PATH + '/images/uploadify.swf',
         'uploader': $WEB_ROOT_PATH + '/ven/venDeliverCtrl!upload.htm',
@@ -51,7 +51,7 @@ $(function (){
         }
     });
 
-
+	*/
 	$("#search").on('click', function() {
 		 $("#searchDeliverTable").datagrid('load', {
 			 "dto.stDate":$("#acpStDate").datebox('getValue'),
@@ -90,7 +90,7 @@ $(function (){
 		valueField:'stateSeq',							
 		textField:'stateName'	
 	});
-	$('#delFlag').combobox('setValue',2);
+	$('#delFlag').combobox('setValue',3);
 	
 	
 	$('#searchOrderBTN').on('click',function(){
@@ -151,7 +151,7 @@ $(function (){
 	   			 			$CommonUI.getDataGrid('#datagrid').datagrid('load',{
 	   			 				'dto.venDeliver.deliverId':data.dto.venDeliver.deliverId
 	   			 			});
-	   			 			$("#deliveryState").val("接收");
+	   			 			$("#deliveryState").val("回传发票");
 	   			 			$('#searchOrder').dialog('close');
 	   			 		}
 	    			},
@@ -191,9 +191,14 @@ function endEditing(){
     }
 }
 function onClickRow(index){
-	if($("#deliveryState").val()!="接收"){
-		return;
-	}
+//	if($("#deliveryState").val()!="接收"){
+//		return;
+//	}
+	if(checkDelState()==4){
+		$CommonUI.alert("改订单医院以收货，不能修改!");
+		return
+	};
+	
     if (editIndex != index){
         if (endEditing()){
             $('#datagrid').datagrid('selectRow', index).datagrid('beginEdit', index);
@@ -205,7 +210,10 @@ function onClickRow(index){
 }
 
 
-
+function checkDelState(){
+	htmlobj=$.ajax({url:$WEB_ROOT_PATH+"/ven/venDeliverCtrl!checkDelState.htm?dto.venDeliver.deliverId="+$("#deliveryId").val(),async:false});
+	return htmlobj.responseText;
+}
 
 
 //导入订单
@@ -238,7 +246,7 @@ function searchDeliver(){
 	    fitColumns:true,
 	    rownumbers:true,
 	    queryParams:{
-	    	'dto.state':2
+	    	'dto.state':3
 	    },
 	    onDblClickRow:function(rowIndex, rowData){
 	    	$("#searchDeliver").dialog('close');
@@ -275,9 +283,13 @@ function searchDeliver(){
 
 //编辑完就保存
 function onAfterEdit(rowIndex, rowData, changes){
-	if($("#deliveryState").val()!="接收"){
-		return;
-	}
+//	if($("#deliveryState").val()!="接收"){
+//		return;
+//	}
+	if(checkDelState()==4){
+		$CommonUI.alert("改订单医院以收货，不能修改!");
+		return
+	};
 	 var changes=$CommonUI.getDataGrid('#datagrid').datagrid('getChanges');
 	 
 	 if(changes.length==0){
@@ -299,6 +311,7 @@ function onAfterEdit(rowIndex, rowData, changes){
 	          	 "dto.venDeliveritm.deliveritmQty":rowData.deliverqty,
 	          	 "dto.venDeliveritm.deliveritmHopincid":rowData.hopincid,
 	          	 "dto.venDeliveritm.deliveritmParentid":$("#deliveryId").val(),
+	          	 "dto.venDeliveritm.deliveritmOrderitmid":rowData.orderitmid,
 			 },
 			 function(data){
 				 
@@ -315,7 +328,7 @@ function onAfterEdit(rowIndex, rowData, changes){
 
 function deleteR(value,row,index){
 	str="";
-	if($("#deliveryState").val()=="接收"){
+	if($("#deliveryState").val()=="回传发票"){
 		str='<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:deleterow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-cancel l-btn-icon-left">删除</span></span></a>';
 		str=str+'<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:addrow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-add l-btn-icon-left">增加批次</span></span></a>';
 	    
@@ -323,11 +336,14 @@ function deleteR(value,row,index){
 	return str;
 }
 function deleterow(index){
-	if($("#deliveryState").val()!="接收"){
-		$CommonUI.alert("该发货单已经发货");
-		return;
-	}
-	
+//	if($("#deliveryState").val()!="接收"){
+//		$CommonUI.alert("该发货单已经发货");
+//		return;
+//	}
+	if(checkDelState()==4){
+		$CommonUI.alert("改订单医院以收货，不能删除!");
+		return
+	};
 	deliveritmid=$('#datagrid').datagrid('getRows')[index]['deliveritmid'];
 	if(deliveritmid==undefined){
 		$('#datagrid').datagrid('deleteRow',index);
@@ -363,10 +379,14 @@ function saveMain(){
 		return;
 	}
 	
-	if($("#deliveryState").val()!="接收"){
-		$CommonUI.alert("该发货单已经发货");
-		return;
-	}
+//	if($("#deliveryState").val()!="接收"){
+//		$CommonUI.alert("该发货单已经发货");
+//		return;
+//	}
+	if(checkDelState()==4){
+		$CommonUI.alert("改订单医院以收货，不能修改!");
+		return
+	};
 	
 	var isValid = $CommonUI.getForm('#saveOrUpdate').form('validate');
 	if(!isValid){
@@ -399,10 +419,15 @@ function deleteOrder(){
 		return;
 	}
 	
-	if($("#deliveryState").val()!="接收"){
-		$CommonUI.alert("该发货单已经发货");
-		return;
-	}
+//	if($("#deliveryState").val()!="接收"){
+//		$CommonUI.alert("该发货单已经发货");
+//		return;
+//	}
+	
+	if(checkDelState()==4){
+		$CommonUI.alert("改订单医院以收货，不能删除!");
+		return
+	};
 	$CommonUI.loadUIM('messager');
 	$.messager.confirm('确认对话框', '确认要删除吗？', function(r){
 		if (r){
@@ -519,10 +544,14 @@ function GetNameStyle(value,row,index){
 }
 
 function addrow(index){
-	if($("#deliveryState").val()!="接收"){
-		$CommonUI.alert("该发货单已经发货");
-		return;
-	}
+//	if($("#deliveryState").val()!="接收"){
+//		$CommonUI.alert("该发货单已经发货");
+//		return;
+//	}
+	if(checkDelState()==4){
+		$CommonUI.alert("改订单医院以收货，不能修改!");
+		return
+	};
 	if (endEditing()) {
 		hopincid=$('#datagrid').datagrid('getRows')[index]['hopincid'];
 		orderqty=$('#datagrid').datagrid('getRows')[index]['orderqty'];
@@ -532,7 +561,7 @@ function addrow(index){
 		venincncode=$('#datagrid').datagrid('getRows')[index]['venincncode'];
 		venincname=$('#datagrid').datagrid('getRows')[index]['venincname'];
 		hopincname=$('#datagrid').datagrid('getRows')[index]['hopincname'];
-		
+		orderitmid=$('#datagrid').datagrid('getRows')[index]['orderitmid'];
 		if(venincname==null){
 			venincname="(医院)"+hopincname;
 		}
@@ -542,6 +571,7 @@ function addrow(index){
 				 {
 		          	 "dto.venDeliveritm.deliveritmHopincid":$('#datagrid').datagrid('getRows')[index]['hopincid'],
 		          	 "dto.venDeliveritm.deliveritmParentid":$("#deliveryId").val(),
+		          	 "dto.venDeliveritm.deliveritmOrderitmid":$('#datagrid').datagrid('getRows')[index]['orderitmid'],
 				 },
 				 function(data){
 					 
@@ -555,7 +585,8 @@ function addrow(index){
 								'rp':rp,
 								'venincncode':venincncode,
 								'venincname':venincname,
-								'deliveritmId':data.dto.venDeliveritm.deliveritmId
+								'deliveritmId':data.dto.venDeliveritm.deliveritmId,
+								'orderitmid':orderitmid,
 						 });
 						 $CommonUI.getDataGrid('#datagrid').datagrid('acceptChanges');
 					     editIndex = $('#datagrid').datagrid('getRows').length - 1;

@@ -633,7 +633,7 @@
 	</dependencyManagement>
 	<!-- 发布构建管理 如是不是西安研发中心把下面的注掉，然后把己注解的打开 -->
 
-	<!-- 发布构建管理 -->
+	<!-- 发布构建管理
 
 	<distributionManagement>
 		<repository>
@@ -647,5 +647,5 @@
 			<url>http://222.90.66.14:8081/nexus/content/repositories/dhcc_snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-
+   -->
 </project>  

@@ -19,20 +19,25 @@
 	<div id="toolbar" class="toolbar">
 	 	<div  style="margin-bottom:5px;margin-top:5px">
 			
-			<a  class="linkbutton" onclick="javascript:importInv()"
-				data-options="iconCls:'icon-add',plain:true">导入发票(按订单)</a>
+			
 			<a  class="linkbutton" onclick="javascript:saveMain()"
 				data-options="iconCls:'icon-save',plain:true">保存</a>	
 			<a  class="linkbutton" onclick="javascript:searchDeliver()"
 				data-options="iconCls:'icon-search',plain:true">查询发货单</a>
 			<a  class="linkbutton" 
 				data-options="iconCls:'icon-search',plain:true" id="searchOrderBTN">查询订单</a>		
-			<a  class="linkbutton" onclick="javascript:send()"
-				data-options="iconCls:'icon-save',plain:true" id="send">发货</a>
+			
 			<a  class="linkbutton" onclick="javascript:deleteOrder()"
 				data-options="iconCls:'icon-remove',plain:true">删除</a>
+			
+			<!--  	
+			<a  class="linkbutton" onclick="javascript:send()"
+				data-options="iconCls:'icon-save',plain:true" id="send">发货</a>	
 			<a  class="linkbutton" onclick="javascript:canclecomplete()"
-				data-options="iconCls:'icon-remove',plain:true">取消完成状态</a>							
+				data-options="iconCls:'icon-remove',plain:true">取消完成状态</a>
+			<a  class="linkbutton" onclick="javascript:importInv()"
+				data-options="iconCls:'icon-add',plain:true">导入发票(按订单)</a>								
+		 	-->
 		 </div>
 		 <div  style="margin-bottom:5px;margin-top:5px">
 		 	<form id="saveOrUpdate">
@@ -97,6 +102,7 @@
 				">价格</th>
 				
 				<th data-options="field:'manf',width:150">产地</th>
+				<th data-options="field:'orderitmid',hidden:true">orderitmid</th>
 				<th data-options="field:'delte',width:140,formatter:deleteR">编辑</th>
 			</tr>
 		</thead>
