@@ -357,6 +357,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		venDeliveritm.setDeliveritmExpdate(dto.getVenDeliveritm().getDeliveritmExpdate());
 		venDeliveritm.setDeliveritmInvnoe(dto.getVenDeliveritm().getDeliveritmInvnoe());
 		venDeliveritm.setDeliveritmRp(dto.getVenDeliveritm().getDeliveritmRp());
+		venDeliveritm.setDeliveritmOrderitmid(dto.getVenDeliveritm().getDeliveritmOrderitmid());
 		super.saveOrUpdate(venDeliveritm);
 		dto.setVenDeliveritm(venDeliveritm);
 	}
@@ -626,6 +627,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	* @date 2014年6月24日 下午4:14:11
 	* @version V1.0
 	 */
+	@SuppressWarnings("unchecked")
 	public void delete(VenDeliverDto dto){
 		//VenDeliver venDeliver=super.get(VenDeliver.class, dto.getVenDeliver().getDeliverId(),LockMode.WRITE); //(VenDeliver.class, dto.getVenDeliver().getDeliverId());;
 		//以收货
@@ -638,10 +640,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		Order order=super.get(Order.class, venDeliver.getDeliverOrderid());
 		super.delete(venDeliver);
 		StringBuilder hqlBuffer = new StringBuilder();
-		hqlBuffer.delete(0, hqlBuffer.length());
-		hqlBuffer.append(" delete from VenDeliveritm t ");
-		hqlBuffer.append(" where t.deliveritmParentid = ?");
-		this.updateByHqlWithFreeParam(hqlBuffer.toString(),dto.getVenDeliver().getDeliverId());
+	
 		
 		hqlBuffer.delete(0, hqlBuffer.length());
 		hqlBuffer.append(" delete from ExeState t ");
@@ -664,7 +663,11 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		
 		
 		
-		List<VenDeliveritm> venDeliveritms =this.getDeliveritms(dto.getVenDeliver().getDeliverId());
+		//List<VenDeliveritm> venDeliveritms =this.getDeliveritms(dto.getVenDeliver().getDeliverId());
+		DetachedCriteria criteria =null;
+		criteria = DetachedCriteria.forClass(VenDeliveritm.class);
+		criteria.add(Restrictions.eq("deliveritmParentid",dto.getVenDeliver().getDeliverId()));
+		List<VenDeliveritm> venDeliveritms=super.findByCriteria(criteria);
 		for(VenDeliveritm tmpVenDeliveritm:venDeliveritms){
 			OrderItm orderItm=super.get(OrderItm.class, tmpVenDeliveritm.getDeliveritmOrderitmid());
 			if(orderItm.getDeliverqty()==null){
@@ -678,6 +681,11 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			orderItm.setFlag(1l);
 			super.saveOrUpdate(orderItm);
 		}
+		
+		hqlBuffer.delete(0, hqlBuffer.length());
+		hqlBuffer.append(" delete from VenDeliveritm t ");
+		hqlBuffer.append(" where t.deliveritmParentid = ?");
+		this.updateByHqlWithFreeParam(hqlBuffer.toString(),dto.getVenDeliver().getDeliverId());
 	}
 	
 	
@@ -935,8 +943,9 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			
 			
 			//更新订单表
-			DetachedCriteria criteria = DetachedCriteria.forClass(OrderItm.class);
-			criteria.add(Restrictions.eq("orderitmId",Long.valueOf(key)));
+			DetachedCriteria criteria=null;
+			criteria = DetachedCriteria.forClass(OrderItm.class);
+			criteria.add(Restrictions.eq("ordId",Long.valueOf(key)));
 			List<OrderItm> orderItms=super.findByCriteria(criteria);
 			order.setOrdFlag(2l);
 			for(OrderItm tmpOrderItm:orderItms){
@@ -947,8 +956,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 					tmpOrderItm.setDeliverqty(deliverqty);
 					tmpOrderItm.setFlag(1l);
 					if((tmpOrderItm.getDeliverqty().floatValue()-tmpOrderItm.getReqqty().floatValue())==0){
-						tmpOrderItm.setFlag(2l);
-						
+						tmpOrderItm.setFlag(2l);	
 					}
 					if((tmpOrderItm.getDeliverqty().floatValue()-tmpOrderItm.getReqqty().floatValue())>0){
 						dto.setOpFlg("-1");

@@ -190,7 +190,7 @@ function endEditing(){
         return false;
     }
 }
-function onClickRow(index){
+function onClickRow(index, field, value){
 //	if($("#deliveryState").val()!="接收"){
 //		return;
 //	}
@@ -198,7 +198,9 @@ function onClickRow(index){
 		$CommonUI.alert("改订单医院以收货，不能修改!");
 		return
 	};
-	
+	if(field=="delte"){
+		return;
+	}
     if (editIndex != index){
         if (endEditing()){
             $('#datagrid').datagrid('selectRow', index).datagrid('beginEdit', index);
@@ -574,7 +576,7 @@ function addrow(index){
 		          	 "dto.venDeliveritm.deliveritmOrderitmid":$('#datagrid').datagrid('getRows')[index]['orderitmid'],
 				 },
 				 function(data){
-					 
+					 alert("orderitmid="+orderitmid);
 					 if(data.dto.opFlg=="1"){
 						 
 						 $('#datagrid').datagrid('appendRow', {

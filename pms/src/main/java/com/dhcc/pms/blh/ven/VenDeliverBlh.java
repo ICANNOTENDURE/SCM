@@ -132,10 +132,18 @@ public class VenDeliverBlh extends AbstractBaseBlh {
 		
 		VenDeliveritm venDeliveritm=commonService.get(VenDeliveritm.class, dto.getVenDeliveritm().getDeliveritmId());
 		VenDeliver venDeliver=commonService.get(VenDeliver.class, venDeliveritm.getDeliveritmParentid());
-		if(commonService.get(ExeState.class,venDeliver.getDeliverExestateid()).getStateId().toString().equals("6")){
+		if(commonService.get(ExeState.class,venDeliver.getDeliverExestateid()).getStateId().toString().equals("4")){
 			dto.setOpFlg("2");
 			return;
 		}
+		OrderItm orderItm=commonService.get(OrderItm.class, venDeliveritm.getDeliveritmOrderitmid());
+		Float delQty=orderItm.getDeliverqty().floatValue()-venDeliveritm.getDeliveritmHisQty().floatValue();
+		orderItm.setDeliverqty(delQty);
+		orderItm.setFlag(1l);
+		commonService.saveOrUpdate(orderItm);
+		Order order=commonService.get(Order.class, orderItm.getOrdId());
+		order.setOrdFlag(1l);
+		commonService.saveOrUpdate(order);
 		commonService.delete(venDeliveritm);
 	}
 	

@@ -75,7 +75,7 @@
 					 pagination:true,
 	    			 method:'post',
 	    			 rownumbers:true,
-	    			 onClickRow: onClickRow,
+	    			 onDblClickCell:onClickRow,
 	    			 onAfterEdit:onAfterEdit,
 	    			 striped:true,
 	    			 url:'<%=request.getContextPath()%>/ven/venDeliverCtrl!listDeliverItm.htm'
