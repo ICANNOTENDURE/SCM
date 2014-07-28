@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="HisInfoServiceService" targetNamespace="http://his.ws.pms.dhcc.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://his.ws.pms.dhcc.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+<xs:schema xmlns:tns="http://his.ws.pms.dhcc.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://his.ws.pms.dhcc.com/" version="1.0">
+
+  <xs:complexType name="hisIncWeb">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="incItmWebs" nillable="true" type="tns:hisIncItmWeb"/>
+      <xs:element minOccurs="0" name="passWord" type="xs:string"/>
+      <xs:element minOccurs="0" name="userName" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="hisIncItmWeb">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="venIncCat" type="xs:string"/>
+      <xs:element minOccurs="0" name="venIncCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="venIncManf" type="xs:string"/>
+      <xs:element minOccurs="0" name="venIncName" type="xs:string"/>
+      <xs:element minOccurs="0" name="venIncPrice" type="xs:float"/>
+      <xs:element minOccurs="0" name="venIncSp" type="xs:float"/>
+      <xs:element minOccurs="0" name="venIncSpec" type="xs:string"/>
+      <xs:element minOccurs="0" name="venIncUom" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="operateResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="resultCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="resultContent" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="hisOrderWebVo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="deliverdate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="desction" type="xs:string"/>
+      <xs:element minOccurs="0" name="emflag" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="hisOrderItmWebVos" nillable="true" type="tns:hisOrderItmWebVo"/>
+      <xs:element minOccurs="0" name="hopname" type="xs:string"/>
+      <xs:element minOccurs="0" name="orderno" type="xs:string"/>
+      <xs:element minOccurs="0" name="planDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="purloc" type="xs:string"/>
+      <xs:element minOccurs="0" name="recloc" type="xs:string"/>
+      <xs:element minOccurs="0" name="remark" type="xs:string"/>
+      <xs:element minOccurs="0" name="vendorname" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="hisOrderItmWebVo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="hopIncCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="qty" type="xs:float"/>
+      <xs:element minOccurs="0" name="rp" type="xs:float"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getHopIncResponse">
+    <wsdl:part name="operateResult" type="tns:operateResult">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getHisOrderInfoResponse">
+    <wsdl:part name="operateResult" type="tns:operateResult">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getHisOrderInfo">
+    <wsdl:part name="mainStr" type="xsd:string">
+    </wsdl:part>
+    <wsdl:part name="subStr" type="xsd:string">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getHopInc">
+    <wsdl:part name="hisIncWeb" type="tns:hisIncWeb">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getHisOrder">
+    <wsdl:part name="hisOrderWebVo" type="tns:hisOrderWebVo">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getHisOrderResponse">
+    <wsdl:part name="operateResult" type="tns:operateResult">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="HisInfoServiceInterface">
+    <wsdl:operation name="getHopInc">
+      <wsdl:input name="getHopInc" message="tns:getHopInc">
+    </wsdl:input>
+      <wsdl:output name="getHopIncResponse" message="tns:getHopIncResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getHisOrderInfo">
+      <wsdl:input name="getHisOrderInfo" message="tns:getHisOrderInfo">
+    </wsdl:input>
+      <wsdl:output name="getHisOrderInfoResponse" message="tns:getHisOrderInfoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getHisOrder">
+      <wsdl:input name="getHisOrder" message="tns:getHisOrder">
+    </wsdl:input>
+      <wsdl:output name="getHisOrderResponse" message="tns:getHisOrderResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HisInfoServiceServiceSoapBinding" type="tns:HisInfoServiceInterface">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getHisOrderInfo">
+      <soap:operation soapAction="" style="rpc"/>
+      <wsdl:input name="getHisOrderInfo">
+        <soap:body use="literal" namespace="http://his.ws.pms.dhcc.com/"/>
+      </wsdl:input>
+      <wsdl:output name="getHisOrderInfoResponse">
+        <soap:body use="literal" namespace="http://his.ws.pms.dhcc.com/"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getHopInc">
+      <soap:operation soapAction="" style="rpc"/>
+      <wsdl:input name="getHopInc">
+        <soap:body use="literal" namespace="http://his.ws.pms.dhcc.com/"/>
+      </wsdl:input>
+      <wsdl:output name="getHopIncResponse">
+        <soap:body use="literal" namespace="http://his.ws.pms.dhcc.com/"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getHisOrder">
+      <soap:operation soapAction="" style="rpc"/>
+      <wsdl:input name="getHisOrder">
+        <soap:body use="literal" namespace="http://his.ws.pms.dhcc.com/"/>
+      </wsdl:input>
+      <wsdl:output name="getHisOrderResponse">
+        <soap:body use="literal" namespace="http://his.ws.pms.dhcc.com/"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HisInfoServiceService">
+    <wsdl:port name="HisInfoServiceServiceHttpSoap12Endpoint" binding="tns:HisInfoServiceServiceSoapBinding">
+      <soap:address location="http://10.160.23.62:9090/HisInfoServiceServiceHttpSoap12Endpoint"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

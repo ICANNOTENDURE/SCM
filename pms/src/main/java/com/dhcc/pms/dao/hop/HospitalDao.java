@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.dhcc.framework.common.PagerModel;
@@ -100,5 +102,29 @@ public class HospitalDao extends HibernatePersistentObjectDAO<Hospital> {
 		
 		return (List<Hospital>)this.findByHql(hqlBuffer.toString());
 		
+		
 	} 
+	
+	
+	/**
+	 * 
+	* @Title: HospitalDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param name
+	* @return
+	* @return:Hospital 
+	* @author zhouxin  
+	* @date 2014年7月28日 下午5:50:07
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public Hospital getHospitalByName(String name){
+		DetachedCriteria criteria = DetachedCriteria.forClass(Hospital.class);
+		criteria.add(Restrictions.eq("hospitalName", name));
+		List<Hospital> hospitals=super.findByDetachedCriteria(criteria);
+		if(hospitals.size()==0){
+			return null;
+		}
+		return hospitals.get(0);
+	}
 }

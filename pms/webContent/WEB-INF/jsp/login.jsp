@@ -20,11 +20,11 @@
 					<div class="log">
 						<div class="name">
 							<label>用户名</label><input type="text" class="text"
-								id="mp_userName" placeholder="用户名" name="userName" tabindex="1" value="system">
+								id="mp_userName" placeholder="用户名" name="userName" tabindex="1" value="">
 						</div>
 						<div class="pwd">
 							<label>密 码</label><input type="password" class="text"
-								id="mp_password" placeholder="密码" name="password" tabindex="2" value="1">
+								id="mp_password" placeholder="密码" name="password" tabindex="2" value="">
 							<input type="button" class="submit" tabindex="3" value="登录"
 								onclick="javascript: SendAuthen();">
 							<div class="check"></div>

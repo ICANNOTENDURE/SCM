@@ -9,6 +9,7 @@ import java.util.List;
 import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.vo.ord.ExportOrderVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartPicVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartVo;
@@ -175,4 +176,18 @@ public interface OrderService {
 	 * @version V1.0
 	  */
 	 public List<ExportOrderVo> ExportOrder(Long dto);
-}
+	 
+	 
+	 /**
+	  * 
+	 * @Title: OrderService.java
+	 * @Description: TODO(用一句话描述该文件做什么)
+	 * @param order
+	 * @param itms
+	 * @return:void 
+	 * @author zhouxin  
+	 * @date 2014年7月28日 下午5:17:31
+	 * @version V1.0
+	  */
+	 public void ImportOrderByWS(Order order,List<OrderItm> itms);
+}	

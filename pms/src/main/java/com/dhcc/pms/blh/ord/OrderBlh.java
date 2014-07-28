@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,14 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
@@ -31,11 +35,17 @@ import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.dto.sys.SysImpModelDto;
+import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.hop.HopInc;
+import com.dhcc.pms.entity.hop.HopVendor;
+import com.dhcc.pms.entity.hop.Hospital;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.ImpModel;
+import com.dhcc.pms.entity.vo.ws.HisOrderItmWebVo;
+import com.dhcc.pms.entity.vo.ws.HisOrderWebVo;
+import com.dhcc.pms.entity.vo.ws.OperateResult;
 import com.dhcc.pms.service.hop.HopCtlocService;
 import com.dhcc.pms.service.hop.HopIncService;
 import com.dhcc.pms.service.hop.HopVendorService;
@@ -229,8 +239,9 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @author zhouxin  
 	* @date 2014年5月31日 下午3:27:12
 	* @version V1.0
+	 * @throws IOException 
 	 */
-	public void upload(BusinessRequest res){
+	public void upload(BusinessRequest res) throws IOException{
 		
 		OrderDto dto = super.getDto(OrderDto.class, res);
 
@@ -404,15 +415,7 @@ public class OrderBlh extends AbstractBaseBlh {
 			orderService.impOrder(dto);
 			
 			
-			//删除upload文件夹下的所有文件
-			if(dstFile.isFile() || dstFile.list().length ==0)  {  
-				dstFile.delete();       
-			}else{      
-				File[] tempFiles = dstFile.listFiles();  
-				for (int i = 0; i < tempFiles.length; i++) {  
-					tempFiles[i].delete();      
-				}
-			}
+
 			dto.setOrderItms(null);
 			WebContextHolder
 			.getContext()
@@ -424,8 +427,9 @@ public class OrderBlh extends AbstractBaseBlh {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DataBaseException(e.getMessage(), e);
+		}finally{
+			FileUtils.forceDelete(dstFile);
 		}
-
 	}
 	
 	/**
@@ -512,5 +516,155 @@ public class OrderBlh extends AbstractBaseBlh {
 		OrderDto dto = super.getDto(OrderDto.class, res);
 		orderService.exeOrder(dto);
 		dto.setOpFlg("1");
+	}
+	
+	
+	/**
+	 * 
+	* @Title: OrderBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月28日 下午5:52:24
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public void importOrderByWS(HisOrderWebVo hisOrderWebVo,OperateResult operateResult){
+
+		if(hisOrderWebVo.getHisOrderItmWebVos().size()==0){
+			operateResult.setResultCode("-1");
+			operateResult.setResultContent("订单明细不能为空");
+			return ;
+		}
+		Order order=new Order();
+		
+		if(StringUtils.isNullOrEmpty(hisOrderWebVo.getHopname())){
+			operateResult.setResultCode("-2");
+			operateResult.setResultContent("医院名称不能为空");
+			return ;
+		}else{
+			DetachedCriteria criteria = DetachedCriteria.forClass(Hospital.class);
+			criteria.add(Restrictions.eq("hospitalName", hisOrderWebVo.getHopname()));
+			List<Hospital> hospitals=commonService.findByDetachedCriteria(criteria);
+			if(hospitals.size()==0){
+				operateResult.setResultCode("-6");
+				operateResult.setResultContent("医院名称错误");
+				return ;
+			}
+			order.setHopId(hospitals.get(0).getHospitalId());
+		}
+		
+		if(StringUtils.isNullOrEmpty(hisOrderWebVo.getVendorname())){
+			operateResult.setResultCode("-3");
+			operateResult.setResultContent("供应商名称名称不能为空");
+			return ;
+		}else{
+			DetachedCriteria criteriaVendor = DetachedCriteria.forClass(HopVendor.class);
+			criteriaVendor.add(Restrictions.eq("hopName", hisOrderWebVo.getVendorname()));
+			criteriaVendor.add(Restrictions.eq("hopHopId", order.getHopId()));
+			List<HopVendor> hopVendors=commonService.findByDetachedCriteria(criteriaVendor);
+			if(hopVendors.size()==0){
+				operateResult.setResultCode("-7");
+				operateResult.setResultContent("供应商名称错误");
+				return ;
+			}
+			order.setVendorId(hopVendors.get(0).getHopVendorId());
+		}
+		
+		if(StringUtils.isNullOrEmpty(hisOrderWebVo.getOrderno())){
+			operateResult.setResultCode("-4");
+			operateResult.setResultContent("医院订单号不能为空");
+			return ;
+		}else{
+			DetachedCriteria criteriaOrderNo = DetachedCriteria.forClass(Order.class);
+			criteriaOrderNo.add(Restrictions.eq("orderNo", hisOrderWebVo.getOrderno()));
+			criteriaOrderNo.add(Restrictions.eq("hopId", order.getHopId()));
+			List<Order> orders=commonService.findByDetachedCriteria(criteriaOrderNo);
+			if(orders.size()>0){
+				operateResult.setResultCode("-10");
+				operateResult.setResultContent("该单号已经上传");
+				return ;
+			}
+			order.setOrderNo(hisOrderWebVo.getOrderno());
+		}
+		
+		
+		if(StringUtils.isNullOrEmpty(hisOrderWebVo.getPurloc())){
+			operateResult.setResultCode("-5");
+			operateResult.setResultContent("入库科室不能不能为空");
+			return ;
+		}else{
+			DetachedCriteria criteriaPurLoc = DetachedCriteria.forClass(HopCtloc.class);
+			criteriaPurLoc.add(Restrictions.eq("name", hisOrderWebVo.getPurloc()));
+			criteriaPurLoc.add(Restrictions.eq("hospid", order.getHopId()));
+			List<HopCtloc> hopCtlocs=commonService.findByDetachedCriteria(criteriaPurLoc);
+			if(hopCtlocs.size()==0){
+				operateResult.setResultCode("-8");
+				operateResult.setResultContent("采购科室名称错误");
+				return ;
+			}
+			order.setPurLoc(hopCtlocs.get(0).getHopCtlocId());
+		}
+		
+
+		if(hisOrderWebVo.getRemark()!=null){
+			order.setRemark(hisOrderWebVo.getRemark());
+		}
+		if(!StringUtils.isNullOrEmpty(hisOrderWebVo.getPlanDate().toString())){
+			order.setPlanDate(hisOrderWebVo.getPlanDate());
+		}else{
+			order.setPlanDate(new Date());
+		}
+		order.setDeliveryDate(new Date());
+
+		if(hisOrderWebVo.getRecloc()!=null){
+			DetachedCriteria criteriaRecLoc = DetachedCriteria.forClass(HopCtloc.class);
+			criteriaRecLoc.add(Restrictions.eq("name", hisOrderWebVo.getRecloc()));
+			criteriaRecLoc.add(Restrictions.eq("hospid", order.getHopId()));
+			List<HopCtloc> hopCtlocs2=commonService.findByDetachedCriteria(criteriaRecLoc);
+			if(hopCtlocs2.size()==0){
+				operateResult.setResultCode("-9");
+				operateResult.setResultContent("收货室名称错误");
+				return ;
+			}
+			order.setRecLoc(hopCtlocs2.get(0).getHopCtlocId());
+		}
+		
+		
+		List<OrderItm> orderItms=new ArrayList<OrderItm>();
+		for(HisOrderItmWebVo hisOrderItmWebVo:hisOrderWebVo.getHisOrderItmWebVos()){
+			if(StringUtils.isNullOrEmpty(hisOrderItmWebVo.getHopIncCode())){
+				operateResult.setResultCode("-1");
+				operateResult.setResultContent(operateResult.getResultContent()+";药品代码为空");
+				continue;
+			}
+			
+			DetachedCriteria criteriaInc=null;
+			criteriaInc= DetachedCriteria.forClass(HopInc.class);
+			criteriaInc.add(Restrictions.eq("incCode", hisOrderItmWebVo.getHopIncCode()));
+			criteriaInc.add(Restrictions.eq("incHospid", order.getHopId()));
+			List<HopInc> hopIncs=null;
+			hopIncs=commonService.findByDetachedCriteria(criteriaInc);
+			if(hopIncs.size()==0){
+				operateResult.setResultCode("-1");
+				operateResult.setResultContent(operateResult.getResultContent()+";药品代码:"+hisOrderItmWebVo.getHopIncCode()+"平台没有,请同步药品基础数据");
+				continue;
+			}
+			OrderItm orderItm=new OrderItm();
+			orderItm.setIncId(hopIncs.get(0).getIncId());
+			orderItm.setReqqty(hisOrderItmWebVo.getQty());
+			orderItm.setRp(hisOrderItmWebVo.getRp());
+			orderItm.setUom(hopIncs.get(0).getIncUomname());
+			
+			orderItms.add(orderItm);
+		}
+		
+		if(orderItms.size()!=hisOrderWebVo.getHisOrderItmWebVos().size()){
+			return ;
+		}
+
+		orderService.ImportOrderByWS(order, orderItms);
+		operateResult.setResultCode("0");
+		operateResult.setResultContent("success");
 	}
 }

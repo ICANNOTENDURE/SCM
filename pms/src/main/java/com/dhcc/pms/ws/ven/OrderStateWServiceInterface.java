@@ -8,7 +8,7 @@ import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 
-import com.dhcc.pms.entity.ven.VenDeliveritm;
+import com.dhcc.pms.entity.vo.ws.DeliverWeb;
 import com.dhcc.pms.entity.vo.ws.OperateResult;
 import com.dhcc.pms.entity.vo.ws.OrderWebVo;
 import com.dhcc.pms.entity.vo.ws.VenIncWeb;
@@ -44,7 +44,7 @@ public interface OrderStateWServiceInterface {
     */
     @WebMethod
     @WebResult(name="operateResult")
-    public OperateResult deliver(@WebParam(name="deliveritms")List<VenDeliveritm> deliveritms) ;
+    public OperateResult deliver(@WebParam(name="deliverWeb")DeliverWeb deliverWeb) ;
 
 
    /**

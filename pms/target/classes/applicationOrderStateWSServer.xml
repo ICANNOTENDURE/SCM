@@ -14,4 +14,7 @@
 <bean id="orderStateWService" class="com.dhcc.pms.ws.ven.OrderStateWService" />
 <jaxws:endpoint id="orderStateWServiceWS" address="/orderStateWService" wsdlLocation="/wsdl/OrderStateWService.wsdl" implementor="#orderStateWService">
 </jaxws:endpoint>
+<bean id="hisInfoService" class="com.dhcc.pms.ws.his.HisInfoService" />
+<jaxws:endpoint id="hisInfoServiceWS" address="/hisInfoService" wsdlLocation="/wsdl/HisInfoService.wsdl" implementor="#hisInfoService">
+</jaxws:endpoint>
 </beans>

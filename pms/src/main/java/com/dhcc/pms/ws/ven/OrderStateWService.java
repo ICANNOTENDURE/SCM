@@ -19,7 +19,7 @@ import com.dhcc.pms.blh.ord.OrderStateBlh;
 import com.dhcc.pms.blh.ven.VenIncBlh;
 import com.dhcc.pms.dto.ord.OrderStateDto;
 import com.dhcc.pms.dto.ven.VenIncDto;
-import com.dhcc.pms.entity.ven.VenDeliveritm;
+import com.dhcc.pms.entity.vo.ws.DeliverWeb;
 import com.dhcc.pms.entity.vo.ws.OperateResult;
 import com.dhcc.pms.entity.vo.ws.OrderWebVo;
 import com.dhcc.pms.entity.vo.ws.VenIncWeb;
@@ -83,15 +83,20 @@ public class OrderStateWService implements OrderStateWServiceInterface{
     */
     @Override
     @WebMethod
-    public OperateResult deliver(@WebParam(name="deliveritms")List<VenDeliveritm> deliveritms) {
+    public OperateResult deliver(@WebParam(name="deliverWeb")DeliverWeb deliverWeb) {
 
         OrderStateDto dto = new OrderStateDto();
+        dto.setDeliveritms(deliverWeb.getDeliveritms());
         BusinessRequest request = new BusinessRequest();
         request.setDto(dto);
-
+        OperateResult operateResult=new OperateResult();
+        operateResult.setResultCode("-1");
+        dto.setOperateResult(operateResult);
         try {
             blh.deliver(request);
         } catch(Exception e) {
+        	dto.getOperateResult().setResultCode("-111");
+        	dto.getOperateResult().setResultContent(e.getLocalizedMessage());
             logger.error(e.getMessage(), e);
         }
         

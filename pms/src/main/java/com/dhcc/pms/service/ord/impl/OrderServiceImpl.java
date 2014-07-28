@@ -21,6 +21,7 @@ import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.dto.ven.VenDeliverDto;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.ord.Order;
+import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.ven.VenDeliver;
 import com.dhcc.pms.entity.vo.ord.ExportOrderVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartPicVo;
@@ -212,6 +213,15 @@ public class OrderServiceImpl implements OrderService {
 
 		map=null;
 		return exportOrderVos;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ord.OrderService#ExportOrderByWS(com.dhcc.pms.entity.ord.Order, java.util.List)
+	 */
+	@Override
+	public void ImportOrderByWS(Order order, List<OrderItm> itms) {
+		// TODO Auto-generated method stub
+		orderDao.importOrderByWS(order,itms);
 	}
 
 }

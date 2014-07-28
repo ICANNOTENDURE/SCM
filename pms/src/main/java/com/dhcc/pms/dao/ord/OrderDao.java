@@ -537,4 +537,36 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
 
 		return (List<ExportOrderVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ExportOrderVo.class, hqlParamMap);
    }
+   
+   
+   /**
+    * 
+   * @Title: OrderDao.java
+   * @Description: TODO(用一句话描述该文件做什么)
+   * @param order
+   * @param itms
+   * @return:void 
+   * @author zhouxin  
+   * @date 2014年7月28日 下午4:50:22
+   * @version V1.0
+    */
+   public void importOrderByWS(Order order,List<OrderItm> itms){
+		 
+	   super.saveOrUpdate(order);
+	   for(OrderItm orderItm:itms){
+		   orderItm.setOrdId(order.getOrderId());
+		   super.saveOrUpdate(orderItm);
+	   }
+	   ExeState exeState1=new ExeState();
+
+	   exeState1.setStateId(1l);
+	   exeState1.setRemark("webservice 上传订单");
+	   exeState1.setOrdId(order.getOrderId());
+	   exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
+	   super.save(exeState1);
+
+	   order.setExeStateId(exeState1.getExestateId());
+	   super.saveOrUpdate(order);
+	   
+   }
 }

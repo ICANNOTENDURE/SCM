@@ -302,6 +302,11 @@ public class OrderStateBlh extends AbstractBaseBlh {
 			}
 			
 			OrderItm orderItm=commonService.get(OrderItm.class, tmpVenDeliveritm.getDeliveritmOrderitmid());
+			if(orderItm==null){
+				dto.getOperateResult().setResultCode("-3");
+				dto.getOperateResult().setResultContent(tmpVenDeliveritm.getDeliveritmInvnoe()+",订单明细ID错误");
+				break;
+			}
 			if(orderItm.getOrdId()==null){
 				dto.getOperateResult().setResultCode("-3");
 				dto.getOperateResult().setResultContent(tmpVenDeliveritm.getDeliveritmInvnoe()+",订单明细ID错误");
