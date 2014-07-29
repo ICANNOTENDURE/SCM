@@ -52,10 +52,34 @@
 	font-family:simsun;
 }
 </style>
+<script type="text/javascript"> 
+function qq(value,name){
+	incname=null;
+	incalias=null;
+	if(name=="incname"){
+		incname=value;
+	}
+	if(name=="incalias"){
+		incalias=value;
+	}
+	$('#datagrid').datagrid( 
+		'load', {    
+		    'dto.venIncContranstDto.flag': 1,
+		    'dto.venIncContranstDto.incName':incname,
+		    'dto.venInc.venIncAlias': incalias,
+		}
+	);
+} 
+</script> 
 <body>
 	<div id="toolbar" class="toolbar">
-		<a class="linkbutton" data-options="iconCls:'icon-search',plain:true"
-			onclick="javascript:selectClick()">查询</a>
+	     <div  style="margin-bottom:5px;margin-top:5px">
+			<input class="searchbox"  style="width:500px;height:30px" data-options="searcher:qq,prompt:'请输入关键字..........',menu:'#mm'" ></input>	
+		 </div>
+		 <div id="mm" style="width:120px"> 
+				<div data-options="name:'incname',iconCls:'icon-ok'">名称</div> 
+				<div data-options="name:'incalias'">别名</div> 
+		 </div> 
 		<div id="plug_24_mytable_page">
 			<div class="table_box">
 				<div class="shopping_titlebar" dataid="order_1">

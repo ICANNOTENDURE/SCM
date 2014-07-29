@@ -275,7 +275,10 @@ $(function(){
 	$("#editinfo").click(function(){
 		$("#mainPanel iframe").attr("src","./normalAccount/normalAccountCtrl!editInfo.htm");
 	});
-	
+	//修改个人信息
+	$("#editpassword").click(function(){
+		$("#mainPanel iframe").attr("src","./normalAccount/normalAccountCtrl!editPassword.htm");
+	});
 	//退出登录 
 	$("#logout").click(function(){
 		$.post(
@@ -325,7 +328,7 @@ $(document).ready(function () {
 				<div class="admin-meta">
 					<ul>
 						<li class="admin-username">请登录,亲</li>
-						<li id="editinfo"><a href="#" >修改个人资料</a></li>
+						<li ><a href="#" id="editinfo">修改个人资料	</a> <a href="#" id="editpassword"><i class="icon-file-alt"></i> 修改密码</a></li>
 						<li><a href="#" id="logout"><i class="icon-lock"></i> 退出登录</a></li>
 					</ul>
 				</div>

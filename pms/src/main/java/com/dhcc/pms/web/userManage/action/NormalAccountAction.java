@@ -27,7 +27,8 @@ import com.dhcc.pms.dto.userManage.NormalAccountDto;
 		@Result(name="normalAccountMain",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
 		@Result(name="editInfo",location="/WEB-INF/jsp/userManage/editAccount.jsp"),
 		@Result(name="normalAccountList",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
-		@Result(name="deleteNormalAccount",location="/WEB-INF/jsp/userManage/normalAccount.jsp")
+		@Result(name="deleteNormalAccount",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
+		@Result(name="editPassword",location="/WEB-INF/jsp/userManage/password.jsp")
 })
 @JsonResult4Pojo("saveInfo:normalAccountDto;getUserInfo:normalAccountDto;getNormalAccountRole:normalAccountDto.roles;saveOrUpdateNormalAccount,saveNormalAccountRole:normalAccountDto;getNormalAccountFunc:normalAccountDto.funcs;updatePassword:normalAccountDto")
 public class NormalAccountAction extends BaseAction{
@@ -75,7 +76,9 @@ public class NormalAccountAction extends BaseAction{
 		if ("editInfo".equals(super.getBusinessFlow())) {
 			return "editInfo";
 		}
-		
+		if ("editPassword".equals(super.getBusinessFlow())) {
+			return "editPassword";
+		}
 		return null;
 	}
 	

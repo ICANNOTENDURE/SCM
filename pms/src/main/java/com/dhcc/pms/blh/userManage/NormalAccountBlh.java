@@ -367,7 +367,7 @@ public class NormalAccountBlh extends AbstractBaseBlh{
 			NormalAccount normalAccount = this.normalAccountService.findNormalAccount(normalAccountDto);
 			if(normalAccount==null){
 				normalAccountDto.setMessage("用户名或密码错误");
-				normalAccountDto.setSuccess(true);
+				normalAccountDto.setSuccess(false);
 			}else {
 				normalAccount.setPassword(normalAccountDto.getNewPassword());
 				this.normalAccountService.updatePassword(normalAccount);
@@ -376,7 +376,7 @@ public class NormalAccountBlh extends AbstractBaseBlh{
 			}
 		} catch (Exception e) {
 			normalAccountDto.setMessage("系统异常");
-			normalAccountDto.setSuccess(true);
+			normalAccountDto.setSuccess(false);
 			e.printStackTrace();
 			throw new DataBaseException(e.getMessage(), e);
 		}

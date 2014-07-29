@@ -187,7 +187,7 @@ public class OrderDao extends HibernatePersistentObjectDAO<Order> {
 		
 		StringBuffer hqlBuffer = new StringBuffer();
 		hqlBuffer.append(" select ");
-		hqlBuffer.append("  t1.shop_id as shop,t1.shop_incid as inc,t1.shop_qty as qty,t2.inc_name as name,t2.inc_rp as rp,t2.inc_uomname as uom,t3.inc_pic_path path ");
+		hqlBuffer.append("  t1.shop_id as shop,t1.shop_incid as inc,t1.shop_qty as qty,t2.inc_name as name,t2.inc_rp as rp,t2.inc_uomname as uom,t3.inc_pic_path as path ");
 		hqlBuffer.append("  from t_ord_shopping t1 left join t_hop_inc t2 on t2.inc_id=t1.shop_incid left join t_hop_inc_pic t3 on t3.inc_pic_incid=t2.inc_id and t3.inc_pic_seq=1");
 		hqlBuffer.append("  where 1=1 ");
 		Long userIdLong=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId());
@@ -267,6 +267,7 @@ public void saveOrUpdate(OrderDto dto){
 	   
 	   //保存 order
 	   dto.getOrder().setCreateUser(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
+	   dto.getOrder().setHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
 	   dto.getOrder().setPlanDate(new Date());
 	   super.saveOrUpdate(dto.getOrder());
 	   

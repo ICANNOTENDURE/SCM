@@ -27,7 +27,10 @@ function doValidate(tipSelector, dom){
 	.add(":password[class*='[required]']", domObj)
 	.add("textarea[class*='[required]']", domObj)
 	.add("select[class*='[required]']", domObj);
+	
+	alert(requiredElements.size())
 	requiredElements.each(function(){
+
 		var tag = this;
 		var tagName = tag.tagName.toUpperCase();
 		var value;
@@ -35,6 +38,7 @@ function doValidate(tipSelector, dom){
 			var tagType = tag.type.toUpperCase();
 			if("TEXT" == tagType || "PASSWORD" == tagType){
 				value = jQuery.trim(tag.value);
+				
 				if(!value){//未输入文本
 					message = tag.title;
 					result = false;

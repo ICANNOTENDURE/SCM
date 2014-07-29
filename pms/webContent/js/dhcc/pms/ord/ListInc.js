@@ -34,13 +34,13 @@ $(function (){
 			
 						cc.push('<p><span class="c-label">代码: '+ rowData.hopinccode + '</span></p>');
 						cc.push('<p><span class="c-label">名称: '+ rowData.hopincname + '</span></p>');
-						cc.push('<p><span class="c-label">单位: '+ rowData.uom + '</span></p>');
+						cc.push('<p><span class="c-label">价格/单位: '+rowData.rp +"(元)/"+ rowData.uom+'</span></p>');
 					
 						cc.push('</div>');
 						cc.push('<div style="float:left;margin-left:20px;">');
 						
 						cc.push('<p><span class="c-label">产地: '+ rowData.manf + '</span></p>');
-						cc.push('<p><span class="c-label">价格: '+ rowData.rp + '</span></p>');
+						cc.push('<p><span class="c-label">供应商: '+ rowData.venname + '</span></p>');
 						cc.push('<p><span class="c-label">规格: '+ rowData.spec + '</span></p>');
 					
 						cc.push('</div>');

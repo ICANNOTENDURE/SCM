@@ -127,14 +127,14 @@
 									idField:'incId',
 									textField:'incName',
 									mode:'remote',
-									url:'<%=request.getContextPath()%>/hop/hopIncCtrl!listInfo.htm',
+									url:'<%=request.getContextPath()%>/ven/venIncCtrl!listContrantInc.htm',
 									columns:[[
-										{field:'incid',title:'代码',hidden:true},
-										{field:'inccode',title:'代码',width:60},
-										{field:'incname',title:'名称',width:140},
-										{field:'incuomname',title:'单位',width:90},
-										{field:'incrp',title:'价格',width:90},
-										{field:'manfname',title:'产地',width:113}
+										{field:'hopincid',title:'代码',hidden:true},
+										{field:'hopinccode',title:'代码',width:60},
+										{field:'hopincname',title:'名称',width:140},
+										{field:'uom',title:'单位',width:90},
+										{field:'rp',title:'价格',width:90},
+										{field:'manf',title:'产地',width:113}
 									]],
 									onSelect:function(rowIndex, rowData) {
                        					 fillValue(rowIndex, rowData);

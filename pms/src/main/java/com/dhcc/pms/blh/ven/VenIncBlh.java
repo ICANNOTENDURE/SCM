@@ -193,6 +193,14 @@ public class VenIncBlh extends AbstractBaseBlh {
 	 */
 	public void listContrantInc(BusinessRequest res){
 		VenIncDto dto = super.getDto(VenIncDto.class, res);
+		if(!StringUtils.isNullOrEmpty(dto.getComgridparam())){
+			if(dto.getVenInc()!=null){
+				dto.getVenInc().setVenIncAlias(dto.getComgridparam());
+			}else{
+				dto.setVenInc(new VenInc());
+				dto.getVenInc().setVenIncAlias(dto.getComgridparam());
+			}
+		}
 		venIncService.listContrantInc(dto);
 	}
 	

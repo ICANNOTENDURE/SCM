@@ -56,9 +56,13 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 		hqlStr.append(" from HopVendor where 1=1 ");
 		
 		if(hopVendor!=null){
-			if(StringUtils.isNullOrEmpty(hopVendor.getHopType())){
+			if(!StringUtils.isNullOrEmpty(hopVendor.getHopType())){
 				hqlStr.append("and hopType=:type ");
 				hqlParamMap.put("type", hopVendor.getHopType());
+			}
+			if(!StringUtils.isNullOrEmpty(hopVendor.getHopName())){
+				hqlStr.append("and hopName like :name ");
+				hqlParamMap.put("name", "%"+hopVendor.getHopName()+"%");
 			}
 		}
 		

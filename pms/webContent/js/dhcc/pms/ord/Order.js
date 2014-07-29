@@ -369,9 +369,9 @@ function fillValue(rowIndex, rowData){
 	orderitmid=$('#datagrid').datagrid('getRows')[editIndex]['orderitmid'];
 	ordid=$('#datagrid').datagrid('getRows')[editIndex]['orderid'];
 	qty=$('#datagrid').datagrid('getRows')[editIndex]['qty'];
-	hopincid=rowData.incid;
-	incuomname=rowData.incuomname;
-	incrp=rowData.incrp;
+	hopincid=rowData.hopincid;
+	incuomname=rowData.uom;
+	incrp=rowData.rp;
 	 $.post(
 		 $WEB_ROOT_PATH+'/ord/orderCtrl!saveOrditm.htm',
 		 {
@@ -388,12 +388,12 @@ function fillValue(rowIndex, rowData){
 				 $('#datagrid').datagrid('updateRow', { 
 					 	index: editIndex, 
 						row: {
-							inccode: rowData.inccode, 
-					 	    incname: rowData.incname,
-					 		uom:rowData.incuomname,
-					 		rp:rowData.incrp,
-					 		manf:rowData.manfname,
-					 		hopincid:rowData.incid,
+							inccode: rowData.hopinccode, 
+					 	    incname: rowData.hopincname,
+					 		uom:rowData.uom,
+					 		rp:rowData.rp,
+					 		manf:rowData.manf,
+					 		hopincid:rowData.hopincid,
 						}
 				 });
 				 

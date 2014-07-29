@@ -36,7 +36,7 @@
 			<tr dataid="${shopCartPicVoList.inc}" dataname="${shopCartPicVoList.shop}">
 				<td class="tb2_td1"><input type="checkbox" value="1" name="newslist" id="newslist-1" checked="checked"/></td>
 				
-				<td class="tb2_td2"><a href="#"><img src="../uploads/${shopCartPicVoList.path}"/></a></td>
+				<td class="tb2_td2"><a href="#"><img src="../uploadPic/${shopCartPicVoList.path}"/></a></td>
 				<td class="tb2_td3"><a href="#">${shopCartPicVoList.name}</a></td>
 				<td class="tb1_td4">${shopCartPicVoList.uom}</td>
 				<td class="tb1_td5">

@@ -253,4 +253,22 @@ public class AuthenTicketBlh extends AbstractBaseBlh {
 		WebContextHolder.getContext().getResponse().getWriter().write(userName);
 		WebContextHolder.getContext().getResponse().getWriter().flush();
 	}
+	
+	
+	/**
+	 * 
+	* @Title: AuthenTicketBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @throws IOException
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月29日 上午11:41:24
+	* @version V1.0
+	 */
+	public void getUserName(BusinessRequest res) throws IOException{
+		
+		WebContextHolder.getContext().getResponse().setContentType("text/html;charset=UTF-8");
+		WebContextHolder.getContext().getResponse().getWriter().write(WebContextHolder.getContext().getVisit().getUserInfo().getName());
+		WebContextHolder.getContext().getResponse().getWriter().flush();
+	}
 }

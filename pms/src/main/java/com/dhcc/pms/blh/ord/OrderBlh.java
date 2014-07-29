@@ -207,6 +207,7 @@ public class OrderBlh extends AbstractBaseBlh {
 	 */
 	public void saveOrdInfo(BusinessRequest res) {
 		OrderDto dto = super.getDto(OrderDto.class, res);
+		
 		orderService.saveOrdInfo(dto);
 		dto.setOpFlg("1");
 		
@@ -507,6 +508,9 @@ public class OrderBlh extends AbstractBaseBlh {
 	public void saveMain(BusinessRequest res) {
 	
 		OrderDto dto = super.getDto(OrderDto.class, res);
+		if(dto.getOrder().getHopId()==null){
+			dto.getOrder().setHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+		}
 		commonService.saveOrUpdate(dto.getOrder());
 		dto.setOpFlg("1");
 	}
