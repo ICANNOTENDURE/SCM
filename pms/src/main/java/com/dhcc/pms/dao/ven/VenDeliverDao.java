@@ -37,6 +37,7 @@ import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.vo.ven.DeliverItmVo;
 import com.dhcc.pms.entity.vo.ven.DeliverVo;
+import com.dhcc.pms.entity.vo.ws.HisInvInfoItmWeb;
 
 @Repository
 public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
@@ -49,6 +50,9 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	
 	@Resource
 	private OrderStateDao orderStateDao;
+	
+	@Resource
+	private VenIncDao venIncDao;
 	
 	public void buildPagerModelQuery(PagerModel pagerModel,BaseDto dto) {
 
@@ -931,6 +935,10 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			List<VenDeliveritm> deliveritms=map.get(key);
 			for(VenDeliveritm tmpVenDeliveritm:deliveritms){
 				tmpVenDeliveritm.setDeliveritmParentid(venDeliver.getDeliverId());
+//				float fac=venIncDao.getFacByhopInc(tmpVenDeliveritm.getDeliveritmHopincid(), venDeliver.getDeliverVendorid());
+//				tmpVenDeliveritm.setDeliveritmHisQty(tmpVenDeliveritm.getDeliveritmQty().floatValue()*fac);	
+//				tmpVenDeliveritm.setDeliveritmHisRp(tmpVenDeliveritm.getDeliveritmRp().floatValue()*fac);
+//				tmpVenDeliveritm.setDeliveritmFac(fac);
 				super.saveOrUpdate(tmpVenDeliveritm);
 				if(delQtyMap.containsKey(tmpVenDeliveritm.getDeliveritmOrderitmid().toString())){
 					Float delQty=delQtyMap.get(tmpVenDeliveritm.getDeliveritmOrderitmid().toString());
@@ -1009,8 +1017,53 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		@SuppressWarnings("unchecked")
 		List<VenHopInc> venHopIncs=super.findByCriteria(criteria);
 		if(venHopIncs.size()==0){
-			return null;
+			return 1f;
 		}
-		return venHopIncs.get(0).getVenIncFac();
+		return venHopIncs.get(0).getVenFac()/venHopIncs.get(0).getHopFac();
 	}
+	
+	
+	
+	/**
+	 * 
+	* @Title: VenDeliverDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param hopId
+	* @param vendorId
+	* @param inv
+	* @return
+	* @return:HisInvInfoWeb 
+	* @author zhouxin  
+	* @date 2014年7月30日 上午11:43:01
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public List<HisInvInfoItmWeb> getRecItmByInv(Long hopId,Long vendorId,String inv){
+		StringBuffer hqlBuffer = new StringBuffer();
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+		hqlBuffer.append("select ");
+		
+		hqlBuffer.append("t1.INC_CODE as hopinccode, ");
+		hqlBuffer.append("t.DELIVERITM_HISRP as rp, ");
+		hqlBuffer.append("t.DELIVERITM_HISQTY as qty, ");
+		hqlBuffer.append("t.DELIVERITM_RPAMT as rpamt, ");
+		hqlBuffer.append("t.DELIVERITM_EXPDATE as expdate, ");
+		hqlBuffer.append("t.DELIVERITM_BATNO as batno ");
+		
+		hqlBuffer.append("from t_ven_deliveritm t  left join t_ven_deliver t2  ");
+		hqlBuffer.append("on t.deliveritm_parentid=t2.deliver_rowid  ");
+		hqlBuffer.append("left join t_hop_inc t1  on t.DELIVERITM_HOPINCID=t1.INC_ID ");
+		hqlBuffer.append(" where 1=1 ");
+		hqlBuffer.append("and t.deliveritm_invnoe=:invNo ");
+		//hqlBuffer.append("and t.DELIVERITM_RECFLAG!=1 ");
+		hqlBuffer.append("and t2.deliver_hopid=:hopId ");
+		hqlBuffer.append("and t2.deliver_vendorid=:vendorId ");
+		hqlParamMap.put("invNo", inv);
+		hqlParamMap.put("hopId", hopId);
+		hqlParamMap.put("vendorId", vendorId);
+		
+		List<HisInvInfoItmWeb> hisInvInfoWebs=jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), HisInvInfoItmWeb.class, hqlParamMap);
+		return hisInvInfoWebs;
+	}
+	
 }

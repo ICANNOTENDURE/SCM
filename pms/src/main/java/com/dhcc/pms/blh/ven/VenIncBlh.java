@@ -27,7 +27,6 @@ import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.common.PagerModel;
-import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
 import com.dhcc.framework.util.PingYinUtil;
@@ -43,6 +42,7 @@ import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.ven.VenIncPic;
 import com.dhcc.pms.entity.vo.ws.VenIncItmWeb;
+import com.dhcc.pms.service.hop.HopIncService;
 import com.dhcc.pms.service.manf.HopManfService;
 import com.dhcc.pms.service.sys.SysImpModelService;
 import com.dhcc.pms.service.userManage.NormalAccountService;
@@ -71,6 +71,10 @@ public class VenIncBlh extends AbstractBaseBlh {
 
 	@Resource
 	private NormalAccountService normalAccountService;
+	
+	@Resource
+	private HopIncService hopIncService;
+
 	
 	public VenIncBlh() {
 		
@@ -101,17 +105,12 @@ public class VenIncBlh extends AbstractBaseBlh {
 		if(StringUtils.isNullOrEmpty(dto.getVenInc().getVenIncAlias())){
 			dto.getVenInc().setVenIncAlias(PingYinUtil.getFirstSpell(dto.getVenInc().getVenIncName()));
 		}
-		
-		if(dto.getVenInc().getVenIncId()==null||(dto.getVenInc().getVenIncId()).equals("")){
-			dto.getVenInc().setVenIncId(null);
+		if((dto.getVenInc().getVenIncVenid()==null)||(dto.getVenInc().getVenIncVenid().toString().trim().equals(""))){
 			dto.getVenInc().setVenIncVenid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
-			venIncService.save(dto);		
-		}else {
-			//if(StringUtils.isNullOrEmpty(dto.getVenInc().getVenIncVenid().toString())){{}
-				dto.getVenInc().setVenIncVenid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
-			//}	
-			venIncService.update(dto);
-		}	
+		}
+		commonService.saveOrUpdate(dto.getVenInc());
+		dto.setOpFlg("1");
+		dto.setMsg("success");
 		
 	}
 	
@@ -285,6 +284,8 @@ public class VenIncBlh extends AbstractBaseBlh {
 		VenIncDto dto = super.getDto(VenIncDto.class, res);
 		VenHopInc venHopInc=commonService.get(VenHopInc.class, dto.getVenHopInc().getVenHopIncId());
 		venHopInc.setVenIncFac(dto.getVenHopInc().getVenIncFac());
+		venHopInc.setVenFac(dto.getVenHopInc().getVenFac());
+		venHopInc.setHopFac(dto.getVenHopInc().getHopFac());
 		commonService.saveOrUpdate(venHopInc);
 		dto.setOpFlg("1");
 	}
@@ -304,7 +305,10 @@ public class VenIncBlh extends AbstractBaseBlh {
 	public void upload(BusinessRequest res) throws IOException{
 		
 		VenIncDto dto = super.getDto(VenIncDto.class, res);
+		dto.setMsg("<br>");
 		Long vendorId=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
+		int flag=1;
+		int successNum=0;
 		//生成随机文件名
 		String newFileName =UUID.randomUUID().toString();
 		//获取文件存储路径
@@ -352,7 +356,7 @@ public class VenIncBlh extends AbstractBaseBlh {
 					String colNameString=modelMap.get(numCells);
 					if(StringUtils.isNullOrEmpty(colNameString)) {colNameString=" ";};
 					switch (colNameString) {
-						case "产品ID":
+						case "药品代码":
 							if(cell!=null){
 								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 								venInc.setVenIncCode(cell.toString());
@@ -372,7 +376,7 @@ public class VenIncBlh extends AbstractBaseBlh {
 							break;
 						case "进价":
 							if(cell!=null){
-								cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+								//cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
 								venInc.setVenIncPrice((float)cell.getNumericCellValue());
 							}
 							break;
@@ -410,27 +414,44 @@ public class VenIncBlh extends AbstractBaseBlh {
 						
 					}	
 				}
-				if(venIncService.getVenIncByCode(venInc.getVenIncCode(),vendorId)==null){
-					venInc.setVenIncVenid(vendorId);
-					venIncs.add(venInc);
-				};
+				if(!StringUtils.isNullOrEmpty(venInc.getVenIncCode())){
+					if(venIncService.getVenIncByCode(venInc.getVenIncCode(),vendorId)==null){
+						venInc.setVenIncVenid(vendorId);
+						venIncs.add(venInc);
+						
+						successNum=successNum+1;
+					}else{
+						flag=0;
+						dto.setOpFlg("-2");
+						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"药品代和系统重复");
+					};
+				}else{
+					flag=0;
+					dto.setOpFlg("-2");
+					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"药品代码不能为空");
+				}
 				
 				
 			}
-			
-			dto.setVenIncs(venIncs);
-			venIncService.exportVenInc(dto);
-			
 			workbook=null;
-			
-			
-			dto.setVenIncs(null);
-			dto.setOpFlg("1");
 			manfMap=null;
+			if(flag==0){
+				WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
+				return;
+			}
+			if(venIncs.size()>0){
+				dto.setVenIncs(venIncs);
+				venIncService.exportVenInc(dto);
+				dto.setMsg(dto.getMsg()+"<br>成功导入"+successNum+"条。");
+			}
+			dto.setVenIncs(null);
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new DataBaseException(e.getMessage(), e);
+			//throw new DataBaseException(e.getMessage(), e);
+			dto.setOpFlg("-1");
+			dto.setMsg(dto.getMsg()+"<br>程序异常"+e.getMessage());
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		}finally{
 			FileUtils.forceDelete(dstFile);
 		}
@@ -517,6 +538,190 @@ public class VenIncBlh extends AbstractBaseBlh {
 	}
 	
 	
+	/**
+	 * 
+	* @Title: VenIncBlh.java
+	* @Description: TODO(上传医院药品和供应商药品对照关系)
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月29日 下午7:48:09
+	* @version V1.0
+	 * @throws IOException 
+	 */
+	public void uploadConAndroid(BusinessRequest res) throws IOException{
+		
+		VenIncDto dto = super.getDto(VenIncDto.class, res);
+		dto.setOpFlg("0");
+		Long hopId=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+		dto.setMsg("<br>");
+		
+		//生成随机文件名
+		String newFileName =UUID.randomUUID().toString();
+		//获取文件存储路径
+		String storageFileName = ServletActionContext.getServletContext().getRealPath("/uploadtmps");
+		//判断文件存储路径是否存在，若不存在则自动新建
+		File document = new File(storageFileName);
+		if (!document.exists()) {
+			document.mkdir();
+		}
+
+		File dstFile = new File(storageFileName,newFileName); 
+        com.dhcc.framework.util.FileUtils.copyFile(dto.getUpload(), dstFile,BaseConstants.BUFFER_SIZE);
+        
+    
+        //读取excel
+        try {
+			List<VenHopInc> venHopIncs = new ArrayList<VenHopInc>();
+			//读取Excel文件
+			HSSFWorkbook workbook = null;
+			HSSFSheet sheet = null;
+			HSSFRow row = null;
+			HSSFCell cell = null;
+			
+			workbook = new HSSFWorkbook(new FileInputStream(storageFileName + File.separator + newFileName));
+			sheet = workbook.getSheetAt(0);
+			
+			//明细
+			a:
+			for (int numRows = 1; numRows <= sheet.getLastRowNum(); numRows++) {
+				
+				row = sheet.getRow(numRows);
+				VenHopInc venHopInc = new VenHopInc();
+				String hopCode="";
+				String venCode="";
+				String venName="";
+				float venFac=0l;
+				float hopFac=0l;
+				Long vendorId=null;
+				
+				for (int numCells = 0; numCells <= row.getLastCellNum(); numCells++) {
+					cell = row.getCell(numCells);
+					switch (numCells) {
+					case 0:
+						if(cell!=null){
+							cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+							hopCode=cell.getStringCellValue();
+						}
+						break;
+					case 1:
+						if(cell!=null){
+							cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+							venCode=cell.getStringCellValue();
+						}
+						break;
+					case 2:
+						if(cell!=null){
+							if(cell.getCellType()==HSSFCell.CELL_TYPE_STRING){
+								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+								venName=cell.getStringCellValue();
+							}else{
+								dto.setOpFlg("-1");
+								dto.setMsg(dto.getMsg()+"<BR>供应商名称列应该是字符类型,类型错误");
+								break a;
+							}
+						}
+						break;
+					case 3:
+						if(cell!=null){
+							if(cell.getCellType()==HSSFCell.CELL_TYPE_NUMERIC){
+								venFac=(float)cell.getNumericCellValue();
+							}else{
+								dto.setOpFlg("-1");
+								dto.setMsg(dto.getMsg()+"<BR>分子列应该是数字类型,类型错误");
+								break a;
+							}
+						}
+						break;
+					case 4:
+						if(cell!=null){
+							if(cell.getCellType()==HSSFCell.CELL_TYPE_NUMERIC){
+								hopFac=(float)cell.getNumericCellValue();
+							}else{
+								dto.setOpFlg("-1");
+								dto.setMsg(dto.getMsg()+"<BR>分母列应该是数字类型,类型错误");
+								break a;
+							}
+						}
+						break;	
+					}
+					
+				}
+				
+				
+				if(StringUtils.isNullOrEmpty(hopCode)){
+					dto.setOpFlg("-2");
+					dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行医院代码为空.");
+					continue;
+				}else{
+					Long hopIncId=hopIncService.getHopIncByCode(hopCode, hopId);
+					if(hopIncId==null){
+						dto.setOpFlg("-2");
+						dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行医院代码:"+hopCode+"在平台中没有。");
+						continue;
+					}else{
+						venHopInc.setHopIncId(hopIncId);
+					}
+				}
+				
+				if(StringUtils.isNullOrEmpty(venName)){
+					dto.setOpFlg("-2");
+					dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行供应商名称为空.");
+					continue;
+				}else{
+					vendorId=vendorService.findVendorIdByName(venName);
+					if(vendorId==null){
+						dto.setOpFlg("-2");
+						dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行供应商:"+venName+"在平台中没有。");
+						continue;
+					}
+				}
+				//供应商药品代码
+				if(StringUtils.isNullOrEmpty(venCode)){
+					dto.setOpFlg("-2");
+					dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行供应商药品代码空.");
+					continue;
+				}else{
+					Long venIncId=venIncService.getVenIncByCode(venCode, vendorId);
+					if(venIncId==null){
+						dto.setOpFlg("-2");
+						dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行供应商药品代码:"+venCode+"在平台中没有。");
+						continue;
+					}else{
+						venHopInc.setVenIncId(venIncId);
+					}
+				}
+				
+				if(venFac==0f){
+					dto.setOpFlg("-2");
+					dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行分子不能为空");
+					continue;
+				}else{
+					venHopInc.setVenFac(venFac);
+				}
+				
+				if(hopFac==0f){
+					dto.setOpFlg("-2");
+					dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行分母不能为空");
+					continue;
+				}else{
+					venHopInc.setHopFac(hopFac);
+				}
+				venHopIncs.add(venHopInc);
+			}
+			if(dto.getOpFlg().equals("0")){
+				venIncService.saveVenHopIncList(venHopIncs);
+				dto.setMsg(dto.getMsg()+"<br>成功导入"+venHopIncs.size()+"条。");
+			}
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
+        }catch(Exception e){
+        	e.printStackTrace();
+        	dto.setOpFlg("-1");
+        	dto.setMsg(dto.getMsg()+"<br>"+e.getMessage());
+        	WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
+        }
+
+		
+	}
 	
 	
 }

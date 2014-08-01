@@ -61,7 +61,7 @@ public class HopInc implements Serializable {
 	@Column(name="INC_HOSPID")
 	private Long incHospid;
 
-	@Column(name="INC_RP", precision=22)
+	@Column(name="INC_RP")
 	private Long incRp;
 	
 	@Column(name="INC_SPEC")

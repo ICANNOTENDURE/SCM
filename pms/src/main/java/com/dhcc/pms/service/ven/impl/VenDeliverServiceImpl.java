@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.dhcc.pms.dao.ven.VenDeliverDao;
 import com.dhcc.pms.dto.ven.VenDeliverDto;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
+import com.dhcc.pms.entity.vo.ws.HisInvInfoItmWeb;
 import com.dhcc.pms.service.ven.VenDeliverService;
 
 @Service("venDeliverService")
@@ -146,6 +147,16 @@ public class VenDeliverServiceImpl implements VenDeliverService {
 	public void impByOrderItm(VenDeliverDto dto) {
 		// TODO Auto-generated method stub
 		venDeliverDao.impByOrderItm(dto);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenDeliverService#getRecItmByInv(java.lang.Long, java.lang.Long, java.lang.String)
+	 */
+	@Override
+	public List<HisInvInfoItmWeb> getRecItmByInv(Long hopId, Long vendorId,
+			String inv) {
+		// TODO Auto-generated method stub
+		return venDeliverDao.getRecItmByInv(hopId, vendorId, inv);
 	}
 	
 

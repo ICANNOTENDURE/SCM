@@ -36,6 +36,44 @@ public class VenHopInc implements Serializable {
 
 	@Column(name="VEN_INC_FAC")
 	private Float venIncFac;
+	
+	@Column(name="VEN_FAC")
+	private Float venFac;
+	
+	@Column(name="HOP_FAC")
+	private Float hopFac;
+	
+	
+	
+	
+	/**
+	 * @return the venFac
+	 */
+	public Float getVenFac() {
+		return venFac;
+	}
+
+	/**
+	 * @param venFac the venFac to set
+	 */
+	public void setVenFac(Float venFac) {
+		this.venFac = venFac;
+	}
+
+	/**
+	 * @return the hopFac
+	 */
+	public Float getHopFac() {
+		
+		return hopFac;
+	}
+
+	/**
+	 * @param hopFac the hopFac to set
+	 */
+	public void setHopFac(Float hopFac) {
+		this.hopFac = hopFac;
+	}
 
 	/**
 	 * @return the venHopIncId
@@ -83,6 +121,7 @@ public class VenHopInc implements Serializable {
 	 * @return the venIncFac
 	 */
 	public Float getVenIncFac() {
+		this.venIncFac=this.venFac/this.hopFac;
 		return venIncFac;
 	}
 

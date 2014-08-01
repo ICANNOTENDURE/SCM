@@ -34,9 +34,40 @@ public class VenIncContranstVo {
 	
 	private String picpath;
 	
+	private float venfac;
+	
+	private float hopfac;
 	
 	
 	
+	/**
+	 * @return the hopfac
+	 */
+	public float getHopfac() {
+		return hopfac;
+	}
+
+	/**
+	 * @param hopfac the hopfac to set
+	 */
+	public void setHopfac(float hopfac) {
+		this.hopfac = hopfac;
+	}
+
+	/**
+	 * @return the venfac
+	 */
+	public float getVenfac() {
+		return venfac;
+	}
+
+	/**
+	 * @param venfac the venfac to set
+	 */
+	public void setVenfac(float venfac) {
+		this.venfac = venfac;
+	}
+
 	/**
 	 * @return the rp
 	 */

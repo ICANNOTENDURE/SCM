@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.dhcc.pms.dto.ven.VenDeliverDto;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
+import com.dhcc.pms.entity.vo.ws.HisInvInfoItmWeb;
 
 
 public interface VenDeliverService {
@@ -185,4 +186,19 @@ public interface VenDeliverService {
 	* @version V1.0
 	 */
 	public void impByOrderItm(VenDeliverDto dto);
+	
+	/**
+	 * 
+	* @Title: VenDeliverService.java
+	* @Description: TODO(发票号查找发货信息)
+	* @param hopId
+	* @param vendorId
+	* @param inv
+	* @return
+	* @return:List<HisInvInfoWeb> 
+	* @author zhouxin  
+	* @date 2014年7月30日 下午2:31:35
+	* @version V1.0
+	 */
+	public List<HisInvInfoItmWeb> getRecItmByInv(Long hopId,Long vendorId,String inv);
 }

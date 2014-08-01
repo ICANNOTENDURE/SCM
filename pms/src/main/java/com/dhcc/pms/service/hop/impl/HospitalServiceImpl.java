@@ -61,4 +61,13 @@ public class HospitalServiceImpl implements HospitalService {
 		return hospitalDao.getHospInfo(dto.getHospital());		
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HospitalService#getHospitalByName(java.lang.String)
+	 */
+	@Override
+	public Hospital getHospitalByName(String name) {
+		// TODO Auto-generated method stub
+		return hospitalDao.getHospitalByName(name);
+	}
+
 }

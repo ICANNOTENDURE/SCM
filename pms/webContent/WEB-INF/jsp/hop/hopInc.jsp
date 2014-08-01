@@ -36,7 +36,7 @@
 	</table>
 	
 	<div id="drugInfoWin" class="dialog" title="新增药品信息"
-		data-options="modal:true,width:750,height:500,closed:true,buttons:'#btnDiv0'"
+		data-options="modal:true,width:750,height:200,closed:true,buttons:'#btnDiv0'"
 		style="vertical-align: middle;">
 		<form id="incdetail" method="post">
 			<table style="width: 100%;" >
@@ -63,11 +63,11 @@
 						class="validatebox" type="text" name="dto.hopInc.incUomname"
 						data-options="required:true" id="incUomname"/></td>
 				</tr>
-				<tr>
+				<tr style="display: none;">
 					<td class="textLabel">小单位代码:</td>
 					<td class="textParent"><input style="width: 250px;"
-						class="validatebox" type="text" name="dto.hopInc.incBuomcode"
-						data-options="required:true" id="incBuomcode" /></td>
+						 type="text" name="dto.hopInc.incBuomcode"
+						 id="incBuomcode" /></td>
 					<td class="textLabel">小单位名称:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.hopInc.incBuomname"
@@ -81,12 +81,12 @@
 					<td class="textLabel">医院ID:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="combobox" type="text" name="dto.hopInc.incHospid"
-						data-options="required:true" id="incHospid"/></td>
+						data-options="required:true" id="incHospid" readonly="readonly"/></td>
 				</tr>
 				<tr>
-					<td class="textLabel">转换系数:</td>
+					<td class="textLabel">规格:</td>
 					<td class="textParent"><input style="width: 250px;"
-						class="validatebox" type="text" name="dto.hopInc.incFac"
+						class="validatebox" type="text" name="dto.hopInc.incSpec"
 						data-options="required:true" id="incFac" /></td>
 					<td class="textLabel">进价:</td>
 					<td class="textParent"><input style="width: 250px;"
@@ -94,27 +94,15 @@
 						data-options="required:true" id="incRp" /></td>
 				</tr>
 				<tr>
-					<td class="textLabel">His药品ID:</td>
+					<td class="textLabel">分类:</td>
 					<td class="textParent"><input style="width: 250px;"
-						class="validatebox" type="text" name="dto.hopInc.incHissysid"
-						data-options="required:true" id="incHissysid" /></td>
-				</tr>
-				<tr>
-					<td class="textLabel">图片顺序:</td>
+						class="validatebox" type="text" name="dto.hopInc.incCat"
+						data-options="required:true" /></td>
+					<td class="textLabel">售价:</td>
 					<td class="textParent"><input style="width: 250px;"
-						class="validatebox" type="text" name="xxxx"
-						data-options="required:true" id="xxxx" /></td>
-					<td class="textLabel">(以^作为分隔)</td>
-				</tr>
-				<tr>					
-					<td class="textLabel">图片路径:</td>
-					<td class="textParent"><input style="width: 250px;"
-					   	id="file_upload" type="file" name="upload" multiple="true"
-						data-options="required:true" id="xxx" /><input type="button" 
-						name="uploadPics" value="上传图片" id="uploadPic"/>
-					<div id="queues" name="queue"></div></td>
-					
-				</tr>											
+						 type="text" name="dto.hopInc.incSp"
+						 /></td>
+				</tr>										
 			</table>			
 					
 			<div id="btnDiv0" align="center">
@@ -133,7 +121,7 @@
 	<div id="searchIncWin" class="dialog" title="查询药品信息"
 		data-options="modal:true,width:400,height:250,closed:true,buttons:'#searchBtnDiv0'"
 		style="vertical-align: middle;">
-		<table style="width: 100%;" cellspacing="10">				
+		<table style="width: 100%;" >				
 			<tr>
 				<td class="textLabel">药品代码:</td>
 				<td class="textParent"><input style="width: 250px;"

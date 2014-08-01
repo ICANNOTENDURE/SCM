@@ -23,5 +23,16 @@ public interface HospitalService {
 	
 	public List<Hospital> getHospInfo(HospitalDto dto);
 	
-
+	/**
+	 * 
+	* @Title: HospitalService.java
+	* @Description: TODO(查找医院)
+	* @param name
+	* @return
+	* @return:Hospital 
+	* @author zhouxin  
+	* @date 2014年7月30日 上午11:10:15
+	* @version V1.0
+	 */
+	public Hospital getHospitalByName(String name);
 }

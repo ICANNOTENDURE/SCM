@@ -40,7 +40,9 @@ public class VenContranstIncVo {
 	
 	private Long fac;
 	
+	private float venfac;
 	
+	private float hopfac;
 	
 	
 	
@@ -52,6 +54,34 @@ public class VenContranstIncVo {
 	
 
 	
+
+	/**
+	 * @return the venfac
+	 */
+	public float getVenfac() {
+		return venfac;
+	}
+
+	/**
+	 * @param venfac the venfac to set
+	 */
+	public void setVenfac(float venfac) {
+		this.venfac = venfac;
+	}
+
+	/**
+	 * @return the hopfac
+	 */
+	public float getHopfac() {
+		return hopfac;
+	}
+
+	/**
+	 * @param hopfac the hopfac to set
+	 */
+	public void setHopfac(float hopfac) {
+		this.hopfac = hopfac;
+	}
 
 	/**
 	 * @return the facid

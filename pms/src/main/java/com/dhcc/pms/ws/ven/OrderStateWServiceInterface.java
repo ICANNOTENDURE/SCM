@@ -34,7 +34,7 @@ public interface OrderStateWServiceInterface {
 
    /**
     * 方法名:                deliver
-    * 方法功能描述：                                          供应商确认收到订单
+    * 方法功能描述：                                          回传发票
     * @param  deliveritms 订单明细
     * @return com.dhcc.pms.entity.vo.ws.OperateResult   术语类型是{@linkplain java.util.List<com.dhcc.pms.entity.ven.VenDeliveritm>}  值域类型是{@linkplain java.util.List<com.dhcc.pms.entity.ven.VenDeliveritm>}
     * @see java.util.List<com.dhcc.pms.entity.ven.VenDeliveritm>

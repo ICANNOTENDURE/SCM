@@ -49,6 +49,8 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	@Resource
 	private VenDeliverService venDeliverService;
 	
+
+	
 	public OrderStateBlh() {
 		
 	}
@@ -315,6 +317,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 			String orderId=orderItm.getOrdId().toString();
 			
 			tmpVenDeliveritm.setDeliveritmHopincid(orderItm.getIncId());
+			
 			if(DelMap.containsKey(orderId)){
 				DelMap.get(orderId).add(tmpVenDeliveritm);
 			}else{

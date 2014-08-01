@@ -100,12 +100,13 @@ public class DownLoadOrderAction extends ActionSupport {
 	* @author zhouxin  
 	* @date 2014年6月18日 上午10:54:41
 	* @version V1.0
+	 * @throws IOException 
 	 */
-	public String downLoadOrder(){
+	public String downLoadOrder() {
 		
 		downloadFileName=UUID.randomUUID().toString()+".xls";
 		String outputFile = ServletActionContext.getServletContext().getRealPath("/downloads")+File.separator+downloadFileName;
-
+		
        
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet();  
@@ -218,15 +219,15 @@ public class DownLoadOrderAction extends ActionSupport {
 			fOut.flush();
 			// 操作结束，关闭文件
 			fOut.close();
-			
-			inputStream = new FileInputStream(new File(outputFile));
+			File tmpFlieFile=new File(outputFile);
+			inputStream = new FileInputStream(tmpFlieFile);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally{
-			FileUtils.deleteFile(outputFile);
+			//org.apache.commons.io.FileUtils.forceDelete(new File(outputFile));
 		}
 		return "downLoadOrder";
 	}

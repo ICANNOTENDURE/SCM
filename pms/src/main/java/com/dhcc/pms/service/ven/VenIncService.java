@@ -7,6 +7,7 @@ package com.dhcc.pms.service.ven;
 import java.util.List;
 
 import com.dhcc.pms.dto.ven.VenIncDto;
+import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
 
 public interface VenIncService {
@@ -102,4 +103,31 @@ public interface VenIncService {
 	* @version V1.0
 	 */
 	public Long getVenIncByCode(String code,Long venId);
+	
+	/**
+	 * 
+	* @Title: VenIncService.java
+	* @Description: TODO(批量保存吧对照关系)
+	* @param hopIncs
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月30日 上午9:44:44
+	* @version V1.0
+	 */
+	public void saveVenHopIncList(List<VenHopInc> hopIncs);
+	
+	
+	/**
+	 * 
+	* @Title: VenIncService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param hopInc
+	* @param vendorId
+	* @return
+	* @return:float 
+	* @author zhouxin  
+	* @date 2014年7月30日 下午4:30:53
+	* @version V1.0
+	 */
+	public float getFacByhopInc(long hopInc,Long vendorId);
 }

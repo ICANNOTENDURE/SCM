@@ -6,6 +6,7 @@ package com.dhcc.pms.blh.hop;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -28,7 +30,6 @@ import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.common.PagerModel;
-import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
 import com.dhcc.framework.util.StringUtils;
@@ -90,14 +91,16 @@ public class HopIncBlh extends AbstractBaseBlh {
 	public void save(BusinessRequest res) {
 	
 		HopIncDto dto = super.getDto(HopIncDto.class, res);
-		if(dto.getHopInc().getIncId()==null||
-				(dto.getHopInc().getIncId()).equals("")){
-			dto.getHopInc().setIncId(null);			
-			hopIncService.save(dto);		
-		}else {
-				
-			hopIncService.update(dto);
-		}	
+//		if(dto.getHopInc().getIncId()==null||
+//				(dto.getHopInc().getIncId()).equals("")){
+//			dto.getHopInc().setIncId(null);			
+//			hopIncService.save(dto);		
+//		}else {
+//				
+//			hopIncService.update(dto);
+//		}
+		dto.getHopInc().setIncHospid(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+		commonService.saveOrUpdate(dto.getHopInc());
 	}
 	
 	//删除
@@ -179,8 +182,9 @@ public class HopIncBlh extends AbstractBaseBlh {
 	* @author zhouxin  
 	* @date 2014年6月10日 下午2:37:46
 	* @version V1.0
+	 * @throws IOException 
 	 */
-	public void upload(BusinessRequest res){
+	public void upload(BusinessRequest res) throws IOException{
 		
 		HopIncDto dto = super.getDto(HopIncDto.class, res);
 
@@ -298,21 +302,12 @@ public class HopIncBlh extends AbstractBaseBlh {
 			dto.setHopIncs(hopIncs);
 			hopIncService.saveInc(dto);
 
-			
-			//删除upload文件夹下的所有文件
-			if(dstFile.isFile() || dstFile.list().length ==0)  {  
-				dstFile.delete();       
-			}else{      
-				File[] tempFiles = dstFile.listFiles();  
-				for (int i = 0; i < tempFiles.length; i++) {  
-					tempFiles[i].delete();      
-				}
-			}
-
 		
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new DataBaseException(e.getMessage(), e);
+			//throw new DataBaseException(e.getMessage(), e);
+		}finally{
+			FileUtils.forceDelete(dstFile);
 		}
 
 	}

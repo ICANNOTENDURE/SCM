@@ -3,8 +3,15 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title></title>
+<title>
+
+</title>
 <%@include file="/WEB-INF/jsp/common/scriptInc.jsp"%>
+<script type="text/javascript"
+	src="<%=request.getContextPath()%>/js/uploadify/jquery.uploadify.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/css/uploadify.css">	
+
  <script>
     $(function(){
     	 $.extend($.fn.datagrid.methods, {
@@ -109,14 +116,70 @@
     			$("#searchHopInc").click();
     		} 
     	});
+    	
+    	
+    	
+    	$("#importBTN").on('click', function() {
+    		$('#importDialog').dialog('open');
+    		$("#import").uploadify({
+    	        'swf': $WEB_ROOT_PATH + '/images/uploadify.swf',
+    	        'uploader': $WEB_ROOT_PATH + '/ven/venIncCtrl!uploadConAndroid.htm',
+    	        //在浏览窗口底部的文件类型下拉菜单中显示的文本
+    	        'buttonText':'Upload',
+    	        'fileTypeDesc': '支持的格式：',
+    	        'fileTypeExts': '*.xls',
+    	        'fileSizeLimit': '300MB',
+    	        'width': '60',
+    	        'height': '20',
+    	        'debug' : false,
+    	        'fileObjName':'dto.upload',
+    	        'auto': true,
+    	        'removeCompleted':true,
+    	        //上传成功
+    	        'onSelect': function(){  
+    	        	$("#gg").dialog("open");
+    	        	$("#err").html("");
+    	        }, 
+    	        'onUploadSuccess':function(file, data, response){
+    	        	$("#gg").dialog("close");
+    	        	var obj=eval('('+data+')');
+    	        	if(obj.opFlg=="1"){
+    	        		$CommonUI.alert("导入成功");
+    	        		$("#err").html(obj.msg);
+    	        	}else{
+    	        		$CommonUI.alert("导入失败");
+    	        		$("#err").html(obj.msg);
+    	        	};
+    	        },
+    	        //检测FLASH失败调用
+    	        'onFallback': function() {
+    	        	$("#gg").dialog("close");
+    	            alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+    	        },
+    	        //返回一个错误，选择文件的时候触发
+    	        'onSelectError': function(file, errorCode, errorMsg) {
+    	        	$("#gg").dialog("close");
+    	            switch (errorCode) {
+    	            case - 100 : alert("上传的文件数量已经超出系统限制的" + $('#file_upload').uploadify('settings', 'queueSizeLimit') + "个文件！");
+    	                break;
+    	            case - 110 : alert("文件 [" + file.name + "] 大小超出系统限制的" + $('#file_upload').uploadify('settings', 'fileSizeLimit') + "大小！");
+    	                break;
+    	            case - 120 : alert("文件 [" + file.name + "] 大小异常！");
+    	                break;
+    	            case - 130 : alert("文件 [" + file.name + "] 类型不正确！");
+    	                break;
+    	            }
+    	        }
+    	    });
+   		});
     });
     function ConT(value,row,index){
 		if(row.facid==null){
 			str='<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:ConTra('+row.venincid+','+row.fac+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-save l-btn-icon-left">对照</span></span></a>'
 			return str;
 		}else{
-			var str='<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:deleteTra('+index+')" data-options="iconCls:"icon-remove"><span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
-			str=str+'<a class="dhc-linkbutton l-btn l-btn-plain" data-options="iconCls:icon-edit" onclick="javascript:updateConTra('+index+')" ><span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">修改</span></span></a>';
+			var str='<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:deleteTra('+index+')" data-options="iconCls:"icon-remove" title="删除"><span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left"></span></span></a>';
+			str=str+'<a class="dhc-linkbutton l-btn l-btn-plain" data-options="iconCls:icon-edit" onclick="javascript:updateConTra('+index+')" title="保存"><span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left"></span></span></a>';
 			return str;
 			
 		}
@@ -133,13 +196,17 @@
 		var hopincid=row.hopincid;
 		
 		var row =$("#datagrid2").datagrid('getSelected');
-		var fac=row.fac;
+		//var fac=row.fac;
+		venfac=row.venfac;
+		hopfac=row.hopfac;
 		$.post(
 			$WEB_ROOT_PATH+'/ven/venIncCtrl!saveContranstInc.htm',
 			{
 				'dto.venHopInc.hopIncId': hopincid,
 				'dto.venHopInc.venIncId': venincid,
-				'dto.venHopInc.venIncFac': fac,
+				//'dto.venHopInc.venIncFac': fac,
+				'dto.venHopInc.venFac': venfac,
+				'dto.venHopInc.hopFac': hopfac,
 			},
 			function(data){
 				if(data.dto.opFlg=="1"){
@@ -156,12 +223,15 @@
 		
 		$('#datagrid2').datagrid('endEdit', row);
 		facid=$('#datagrid2').datagrid('getRows')[row]['facid'];
-		fac=$('#datagrid2').datagrid('getRows')[row]['fac'];
+		venfac=$('#datagrid2').datagrid('getRows')[row]['venfac'];
+		hopfac=$('#datagrid2').datagrid('getRows')[row]['hopfac'];
+		
 		$.post(
 			$WEB_ROOT_PATH+'/ven/venIncCtrl!updateContranstInc.htm',
 			{
 				'dto.venHopInc.venHopIncId': facid,
-				'dto.venHopInc.venIncFac': fac,
+				'dto.venHopInc.venFac': venfac,
+				'dto.venHopInc.hopFac': hopfac,
 			},
 			function(data){
 				if(data.dto.opFlg=="1"){
@@ -225,7 +295,7 @@
 				<option value="1">以对照</option>
 				<option value="2">未对照</option>
 			</select>
-			<a href="#" class="linkbutton" iconCls="icon-search" id="searchHopInc">查询</a>
+			<a href="#" class="linkbutton" iconCls="icon-search" id="searchHopInc" plain="true">查询</a>
 		 </div>
 	</div>	
     <div id="toolbar2" style="height: auto">
@@ -236,6 +306,7 @@
 			type="text" />
 			拼音码: <input id="incVenAlias" style="width: 200px;"
 			type="text" />
+			<a href="#" class="linkbutton" iconCls="icon-save" id="importBTN" >导入对照关系</a>
 			</div>
 			<div style="margin-bottom:5px;margin-top:5px">
 			对应状态:
@@ -247,7 +318,9 @@
 			供应商:<input style="width: 200px;"
 						class="combobox" type="text" 
 						 id="ven" />
-			<a href="#" class="linkbutton" iconCls="icon-search" id="searchVenInc">查询</a>
+			<a href="#" class="linkbutton" iconCls="icon-search" id="searchVenInc" plain="true">查询</a>
+			
+		    <span style="color: red;font-size: 20px">注意(比如供应商单位盒(7),医院单位支,那分子就是7，分母是1)</span>
 		 </div>
 	</div>
   <div class="layout" data-options="fit:'true',border:true">
@@ -274,19 +347,25 @@
 							<th data-options="field:'manf',width:100,sortable:true">产地</th>
 							<th data-options="field:'spec',width:100,sortable:true">规格</th>
 							<th data-options="field:'uom',width:50,sortable:true">单位</th>
-							<th data-options="field:'fac',width:40,sortable:true,editor : {
+							<th data-options="field:'venfac',width:40,sortable:true,editor : {
 								type : 'numberbox',
                             	options : {
                                 	required : true
                             	}
-                        	}">系数</th>
+                        	}">分子</th>
+                        	<th data-options="field:'hopfac',width:40,sortable:true,editor : {
+								type : 'numberbox',
+                            	options : {
+                                	required : true
+                            	}
+                        	}">分母</th>
 							<th data-options="field:'hopincuom',width:50,sortable:true">医院单位</th>
 							<th data-options="field:'hopincid',hidden:true">IncId ID</th>
 							<th data-options="field:'hopinccode',width:60,sortable:true,hidden:true">医院药品代码</th>
 							<th data-options="field:'hopincname',width:100,sortable:true">医院药品名称</th>
 							
 							<th data-options="field:'facid',width:40,hidden:true">对照表rowID</th>
-							<th data-options="field:'contranst',width:90,formatter:ConT">对照</th>
+							<th data-options="field:'contranst',width:50,formatter:ConT">对照</th>
 						</tr>
 					</thead>
 				</table>
@@ -308,15 +387,80 @@
 					<thead>
 						<tr>
 							<th data-options="field:'hopincid',hidden:true">IncId ID</th>
-							<th data-options="field:'hopinccode',width:100,sortable:true">药品代码(医院)</th>
+							<th data-options="field:'hopinccode',width:50,sortable:true">药品代码(医院)</th>
 							<th data-options="field:'hopincname',width:100,sortable:true">药品名称(医院)</th>
 							<th data-options="field:'manf',width:100,sortable:true">产地(医院)</th>
-							<th data-options="field:'spec',width:100,sortable:true">规格(医院)</th>
-							<th data-options="field:'uom',width:100,sortable:true">入库单位(医院)</th>
+							<th data-options="field:'spec',width:70,sortable:true">规格(医院)</th>
+							<th data-options="field:'uom',width:40,sortable:true">入库单位(医院)</th>
 						</tr>
 					</thead>
 				</table>
         </div>
     </div>
+    
+    
+    
+    
+    
+    
+    <!-- 导入对照关系 -->
+    <div id="importDialog" class="dialog" title="导入对照关系"
+		style="width: 600px; height: 400px; background-color: #F5FAFD;"
+		data-options="
+				modal:true,
+		        closed:true,
+				collapsible:false,
+				minimizable:false,
+				maximizable:false">
+			<table  style="width: 100%;">
+				<tr>
+					<td class="textLabel" style="text-align: right; width: 40%">导入Excel文件:</td>
+					<td class="textParent" style="text-align: left; width: 60%"><input
+						style="width: 250px;"  type="file"
+						id="import" ></input></td>
+				</tr>
+				<tr>
+					<td class="textLabel" style="text-align: right; width: 40%">下载模版:</td>
+					<td class="textParent" ><a href="../tmpl/impContrans.xls">下载</a></td>
+				</tr>
+			</table>
+			<table>
+	    		<tr id="impModel">
+	    			<td class="time">模版 </td>
+	    			<td class='drop'><div class='item'>医院药品代码</div></td>
+	    			<td class='drop'><div class='item'>供应商药品代码</div></td>
+	    			<td class='drop'><div class='item'>供应商名称</div></td>
+	    			<td class='drop'><div class='item'>分子(供应商)</div></td>
+	    			<td class='drop'><div class='item'>分母(医院)</div></td>
+	    		</tr>
+	    	</table>
+	    	<div id="err">
+	    	</div>
+	</div>
+	
+	
+	
+	<div id="gg" class="dialog" title="请等待"  style="width:600px;height:400px;padding:10px;"
+				data-options="
+				modal:true,
+				draggable:false,
+				closable:false,
+				closed:true,
+				collapsible:false,
+				minimizable:false,
+				maximizable:false">
+				
+        		<p1>正在处理上传数据，请等待</p1>
+    </div>
+    <style type="text/css">
+
+    .item{
+	    text-align:center;
+	    border:1px solid #499B33;
+	    background:#fafafa;
+	    color:#444;
+	    width:90px;
+    }
+    </style>	
 </body>
 </html>

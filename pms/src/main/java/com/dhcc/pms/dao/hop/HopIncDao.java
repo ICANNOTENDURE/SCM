@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.dhcc.framework.common.BaseConstants;
@@ -340,5 +342,32 @@ public class HopIncDao extends HibernatePersistentObjectDAO<HopInc> {
 			return venHopIncs.get(0).getHopIncId();
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * 
+	* @Title: HopIncDao.java
+	* @Description: TODO(根据医院ID和药品代码查找医院药品)
+	* @param code
+	* @param hopId
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年7月29日 下午7:59:54
+	* @version V1.0
+	 */
+	public Long getHopIncByCode(String code,Long hopId){
+		
+
+		DetachedCriteria criteria = DetachedCriteria.forClass(HopInc.class);
+		criteria.add(Restrictions.eq("incCode", code));
+		criteria.add(Restrictions.eq("incHospid", hopId));
+		@SuppressWarnings("unchecked")
+		List<HopInc> hopIncs=super.findByCriteria(criteria);
+		if(hopIncs.size()==0){
+			return null;
+		}
+		return hopIncs.get(0).getIncId();
 	}
 }

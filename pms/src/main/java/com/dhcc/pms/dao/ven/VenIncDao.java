@@ -19,6 +19,7 @@ import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ven.VenIncDto;
+import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.vo.ven.ShowVenIncVo;
 import com.dhcc.pms.entity.vo.ven.VenContranstIncVo;
@@ -347,6 +348,8 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 		hqlBuffer.append("t6.HOSPITAL_NAME as hopname, ");
 		
 		hqlBuffer.append("t2.VEN_HOP_INC_ID as facId, ");
+		hqlBuffer.append("t2.VEN_FAC as venfac, ");
+		hqlBuffer.append("t2.HOP_FAC as hopfac, ");
 		hqlBuffer.append("t2.VEN_INC_FAC as fac ");
 		
 		hqlBuffer.append(" from t_ven_inc t1 ");
@@ -366,7 +369,7 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 		if(dto.getVenIncContranstDto()!=null){
 
 			if(!StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncName())){
-				hqlBuffer.append(" AND t1.inc_name  like :venincname ");
+				hqlBuffer.append(" AND t1.VEN_INC_NAME  like :venincname ");
 				hqlParamMap.put("venincname","%"+dto.getVenIncContranstDto().getIncName()+"%");
 			}
 			if(!StringUtils.isNullOrEmpty(dto.getVenIncContranstDto().getIncCode())){
@@ -443,5 +446,49 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 			return venHopIncs.get(0).getVenIncId();
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * 
+	* @Title: VenIncDao.java
+	* @Description: TODO()
+	* @param hopIncs
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年7月30日 上午9:44:12
+	* @version V1.0
+	 */
+	public void saveVenHopIncList(List<VenHopInc> hopIncs){
+		super.batchSaveOrUpdate(hopIncs);
+	}
+	
+	/**
+	 * 
+	* @Title: VenIncDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param hopInc
+	* @param vendorId
+	* @return
+	* @return:float 
+	* @author zhouxin  
+	* @date 2014年7月30日 下午4:21:09
+	* @version V1.0
+	 */
+	public float getFacByhopInc(long hopInc,Long vendorId){
+		
+		List<VenHopInc> venHopIncs=super.findByProperty(VenHopInc.class, "hopIncId", hopInc);
+		float fac=0f;
+		if(venHopIncs.size()==0){
+			return 0f;
+		}
+		for(VenHopInc venHopInc:venHopIncs){
+			VenInc venInc=super.get(VenInc.class, venHopInc.getVenIncId());
+			if(venInc.getVenIncId().toString().equals(vendorId.toString())){
+				fac=venHopInc.getVenFac().floatValue()/venHopInc.getHopFac().floatValue();
+				break;
+			}
+		}
+		return fac;
 	}
 }

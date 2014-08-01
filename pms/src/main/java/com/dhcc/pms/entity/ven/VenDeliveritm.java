@@ -31,6 +31,7 @@ public class VenDeliveritm implements Serializable {
 	private Float deliveritmHisRp;
 	private Float deliveritmFac;
 	private String deliveritmWpsId;
+	private String deliveritmRecFlag;
 	
 	public VenDeliveritm() {
 	}
@@ -242,6 +243,23 @@ public class VenDeliveritm implements Serializable {
 	 */
 	public void setDeliveritmWpsId(String deliveritmWpsId) {
 		this.deliveritmWpsId = deliveritmWpsId;
+	}
+
+
+	/**
+	 * @return the deliveritmRecFlag
+	 */
+	@Column(name="DELIVERITM_RECFLAG")
+	public String getDeliveritmRecFlag() {
+		return deliveritmRecFlag;
+	}
+
+
+	/**
+	 * @param deliveritmRecFlag the deliveritmRecFlag to set
+	 */
+	public void setDeliveritmRecFlag(String deliveritmRecFlag) {
+		this.deliveritmRecFlag = deliveritmRecFlag;
 	}
     
 	

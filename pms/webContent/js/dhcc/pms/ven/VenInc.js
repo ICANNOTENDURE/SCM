@@ -304,17 +304,20 @@ function importClick(){
         'removeCompleted':true,
         //上传成功
         'onSelect': function(){  
-        	$("#gg").dialog("open");	
+        	$("#gg").dialog("open");
+        	$("#err").html("");
         }, 
         'onUploadSuccess':function(file, data, response){
         	$("#gg").dialog("close");
         	var obj=eval('('+data+')');
         	if(obj.opFlg=="1"){
         		$CommonUI.alert("导入成功");
-        		$("#importDialog").dialog('close');
+        		$("#err").html(obj.msg);
+        		//$("#importDialog").dialog('close');
         		$CommonUI.getDataGrid("#datagrid").datagrid('load');
         	}else{
-        		$CommonUI.alert(obj.msg);
+        		$CommonUI.alert("导入失败");
+        		$("#err").html(obj.msg);
         	};
         },
         //检测FLASH失败调用

@@ -518,10 +518,10 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
 		hqlBuffer.append("t1.reqqty as qty , ");
 		hqlBuffer.append("t1.rp as rp, ");
 		hqlBuffer.append("t1.ORDERITM_ID as orderitmid, ");
-		hqlBuffer.append("t6.VEN_INC_FAC as fac, ");
+		hqlBuffer.append("t6.VEN_FAC/t6.HOP_FAC as fac, ");
 		hqlBuffer.append("t7.VEN_INC_UOMNAME as venuom, ");
-		hqlBuffer.append("t1.rp/t6.VEN_INC_FAC as venrp, ");
-		hqlBuffer.append("t1.reqqty/t6.VEN_INC_FAC as venqty, ");
+		hqlBuffer.append("t1.rp/t6.VEN_FAC/t6.HOP_FAC as venrp, ");
+		hqlBuffer.append("t1.reqqty/t6.VEN_FAC/t6.HOP_FAC as venqty, ");
 		hqlBuffer.append("t1.uom as uom ");
 		hqlBuffer.append("from t_ord_orderitm t1 ");
 		hqlBuffer.append("left join t_ord_order t2 on t1.ord_id=t2.order_id  ");

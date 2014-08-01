@@ -51,4 +51,19 @@ public interface HopIncService {
 	 */
 	public HopInc getIncIdByName(String name);
 	
+	/**
+	 * 
+	* @Title: HopIncService.java
+	* @Description: TODO(根据医院ID和药品代码查找医院药品么)
+	* @param code
+	* @param hopId
+	* @return
+	* @return:Long 
+	* @author zhouxin  
+	* @date 2014年7月29日 下午8:00:46
+	* @version V1.0
+	 */
+	
+	public Long getHopIncByCode(String code,Long hopId);
+	
 }

@@ -15,6 +15,7 @@ import com.dhcc.framework.common.PagerModel;
 import com.dhcc.pms.dao.hop.HopIncDao;
 import com.dhcc.pms.dao.ven.VenIncDao;
 import com.dhcc.pms.dto.ven.VenIncDto;
+import com.dhcc.pms.entity.ven.VenHopInc;
 import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.service.ven.VenIncService;
 
@@ -126,6 +127,24 @@ public class VenIncServiceImpl implements VenIncService {
 	public Long getHopIncByVenIncCode(String code) {
 		// TODO Auto-generated method stub
 		return hopIncDao.getVenIncByCode(code);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenIncService#saveVenHopIncList(java.util.List)
+	 */
+	@Override
+	public void saveVenHopIncList(List<VenHopInc> hopIncs) {
+		// TODO Auto-generated method stub
+		venIncDao.saveVenHopIncList(hopIncs);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ven.VenIncService#getFacByhopInc(long, java.lang.Long)
+	 */
+	@Override
+	public float getFacByhopInc(long hopInc, Long vendorId) {
+		// TODO Auto-generated method stub
+		return venIncDao.getFacByhopInc(hopInc, vendorId);
 	}
 
 }

@@ -85,4 +85,13 @@ public class HopIncServiceImpl implements HopIncService {
 		return hopIncDao.getIncIdByName(name);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopIncService#getHopIncByCode(java.lang.String, java.lang.Long)
+	 */
+	@Override
+	public Long getHopIncByCode(String code, Long hopId) {
+		// TODO Auto-generated method stub
+		return hopIncDao.getHopIncByCode(code, hopId);
+	}
+
 }

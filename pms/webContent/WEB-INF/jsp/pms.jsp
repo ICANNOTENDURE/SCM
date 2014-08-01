@@ -47,7 +47,7 @@ ul {
 }
 
 #topPanel {
-	background: #00859d;
+	background: #1472CF; /**#00859d;*/
 	color: white;
 	width: 100%;
 	height: 50px;
@@ -76,7 +76,7 @@ ul {
 	width: 50px;
 	height: 725px;
 	float: left;
-	background: #00859d;
+	background: #1472CF; /**#00859d;*/
 }
 #leftPanel div#fatherMenu ul li  {
 	width: 50px;
@@ -226,7 +226,9 @@ $(function(){
       function(){
     	$("#fatherMenu ul li a").css("line-height","48px");
   		$("#fatherMenu ul li a").css("color","#ebf6fc");
-  		$("#fatherMenu ul li a").css("background","#00859d");
+  		//$("#fatherMenu ul li a").css("background","#00859d");
+  		
+  		$("#fatherMenu ul li a").css("background","#1472CF");
   		$("#fatherMenu ul li a").css("font-size","24px");
   		$("#childrenMenu div#functionInfo").text("");
   		$("#childrenMenu ul").hide();  

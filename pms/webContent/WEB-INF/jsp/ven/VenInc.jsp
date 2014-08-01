@@ -50,7 +50,6 @@
 			<table style="width: 100%;" id="tableDetail">
 				<tr style="display: none">
 					<input type="hidden" name="dto.venInc.venIncId" />
-					<input  type="hidden" name="dto.venInc.venIncVenid" id="venIncVenid"/>
 				</tr>
 				<tr>
 					<td class="textLabel">药品代码:</td>
