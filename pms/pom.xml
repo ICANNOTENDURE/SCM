@@ -3,9 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dhcc.pms</groupId>
-	<artifactId>pms</artifactId>
-	<version>1.0</version>
-	<name>pms</name>
+	<artifactId>scm</artifactId>
+	<name>scm</name>
 	<description>dhcc's baseArchetype by Zac</description>
 	<properties>
 		<package.environment>src/main/resources</package.environment>
@@ -152,7 +151,7 @@
             <version>1.6</version>
         </dependency> 
 	</dependencies>
-	<!-- 发布构建管理 -->
+	<!-- 发布构建管理 
 	<distributionManagement>
 		<repository>
 			<id>releases</id>
@@ -165,5 +164,6 @@
 			<url>http://222.90.66.14:8081/nexus/content/repositories/dhcc_snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
+	-->
 	<!-- 发布构建管理 -->
 </project>

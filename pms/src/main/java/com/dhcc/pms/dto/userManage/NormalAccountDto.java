@@ -7,6 +7,8 @@ import com.dhcc.pms.entity.userManage.Func;
 import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.userManage.NormalAccountRole;
 import com.dhcc.pms.entity.userManage.Role;
+import com.dhcc.pms.entity.ven.Vendor;
+import com.dhcc.pms.entity.vo.ven.VenQualifTypeVO;
 
 /**
  * 标题: NormalAccountDto.java
@@ -32,8 +34,39 @@ public class NormalAccountDto extends BaseDto{
 	private String locName;
 	private Long destinationId;
 	
+	private Vendor vendor;
+	private List<VenQualifTypeVO> venQualifTypeVOList;
 	
 	
+	
+	/**
+	 * @return the vendor
+	 */
+	public Vendor getVendor() {
+		return vendor;
+	}
+
+	/**
+	 * @param vendor the vendor to set
+	 */
+	public void setVendor(Vendor vendor) {
+		this.vendor = vendor;
+	}
+
+	/**
+	 * @return the venQualifTypeVOList
+	 */
+	public List<VenQualifTypeVO> getVenQualifTypeVOList() {
+		return venQualifTypeVOList;
+	}
+
+	/**
+	 * @param venQualifTypeVOList the venQualifTypeVOList to set
+	 */
+	public void setVenQualifTypeVOList(List<VenQualifTypeVO> venQualifTypeVOList) {
+		this.venQualifTypeVOList = venQualifTypeVOList;
+	}
+
 	/**
 	 * @return the vendorName
 	 */

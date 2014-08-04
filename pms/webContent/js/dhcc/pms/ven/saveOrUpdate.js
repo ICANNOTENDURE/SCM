@@ -3,13 +3,13 @@ $(function() {
 	$.ajaxSettings.async = false;
 	$(function(){  
 	    $('#parentId').combobox({
-	    	url:"vendorCtrl!getVenCombox.htm?dto.vendor.name=",
+	    	url:$WEB_ROOT_PATH +"/ven/vendorCtrl!getVenCombox.htm?dto.vendor.name=",
 	    	panelHeight:"auto",
 	        valueField:'vendorId',  
 	        textField:'name',  
 	        onChange:function (newValue, oldValue){
 	            if(newValue !=null){  
-	                var urlStr ="vendorCtrl!getVenCombox.htm?dto.vendor.name=" + encodeURIComponent(newValue);  
+	                var urlStr =$WEB_ROOT_PATH +"/ven/vendorCtrl!getVenCombox.htm?dto.vendor.name=" + encodeURIComponent(newValue);  
 	                $("#parentId").combobox("reload",urlStr);  
 	            }  
 	        },
@@ -103,7 +103,7 @@ $(function() {
                 }
             }));
         }
-        $.post("vendorCtrl!save.htm", {
+        $.post($WEB_ROOT_PATH + "/ven/vendorCtrl!save.htm", {
             "dto.vendor.vendorId": $("#detail input[name='dto.vendor.vendorId']").val(),
             "dto.vendor.code": $("#detail input[name='dto.vendor.code']").val(),
             "dto.vendor.name": $("#detail input[name='dto.vendor.name']").val(),

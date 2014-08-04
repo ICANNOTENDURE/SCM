@@ -45,6 +45,7 @@ import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.ImpModel;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.ws.HisCmpRecWeb;
 import com.dhcc.pms.entity.vo.ws.HisIncItmWeb;
 import com.dhcc.pms.entity.vo.ws.HisInvInfoItmWeb;
@@ -712,6 +713,7 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @date 2014年7月30日 上午10:36:09
 	* @version V1.0
 	 */
+	@SuppressWarnings("unchecked")
 	public void getRecItmByInvWS(String invNo, String hopName,String venName,HisInvInfoWeb hisInvInfoWeb){
 		
 		Long hopId=null;
@@ -740,12 +742,15 @@ public class OrderBlh extends AbstractBaseBlh {
 			hisInvInfoWeb.setResultContent("供应商名称为空");
 			return;
 		}else{
-			vendorId=vendorService.findVendorIdByName(venName);
-			if(vendorId==null){
+			DetachedCriteria criteriaVendor = DetachedCriteria.forClass(Vendor.class);
+			criteriaVendor.add(Restrictions.eq("code", venName));
+			List<Vendor> hopVendors=commonService.findByDetachedCriteria(criteriaVendor);
+			if(hopVendors.size()==0){
 				hisInvInfoWeb.setResultCode("1");
 				hisInvInfoWeb.setResultContent("供应商名称错误");
 				return;
 			}
+			vendorId=hopVendors.get(0).getVendorId();
 		}
 		
 		List<HisInvInfoItmWeb> hisInvInfoItmWebs=venDeliverService.getRecItmByInv(hopId, vendorId, invNo);
@@ -813,6 +818,7 @@ public class OrderBlh extends AbstractBaseBlh {
 		hopInc.setIncName(hisIncItmWeb.getVenIncName());
 		hopInc.setIncRp(hisIncItmWeb.getVenIncPrice());
 		hopInc.setIncSp(hisIncItmWeb.getVenIncSp());
+		hopInc.setIncSpec(hisIncItmWeb.getVenIncSpec());
 		if(!StringUtils.isNullOrEmpty(hisIncItmWeb.getVenIncManf())){
 				Long manfIdLong=hopManfService.getIdByName(hisIncItmWeb.getVenIncManf());
 			    if(manfIdLong==null){
@@ -842,6 +848,7 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @date 2014年8月1日 上午11:18:26
 	* @version V1.0
 	 */
+	@SuppressWarnings("unchecked")
 	public void cmpRecWS(OperateResult operateResult,HisCmpRecWeb hisCmpRecWeb){
 		
 		Long hopId=null;
@@ -870,12 +877,16 @@ public class OrderBlh extends AbstractBaseBlh {
 			operateResult.setResultContent("供应商名称为空");
 			return;
 		}else{
-			vendorId=vendorService.findVendorIdByName(hisCmpRecWeb.getVenname());
-			if(vendorId==null){
+			//vendorId=vendorService.findVendorIdByName(hisCmpRecWeb.getVenname());
+			DetachedCriteria criteriaVendor = DetachedCriteria.forClass(Vendor.class);
+			criteriaVendor.add(Restrictions.eq("code", hisCmpRecWeb.getVenname()));
+			List<Vendor> hopVendors=commonService.findByDetachedCriteria(criteriaVendor);
+			if(hopVendors.size()==0){
 				operateResult.setResultCode("1");
 				operateResult.setResultContent("供应商名称错误");
 				return;
 			}
+			vendorId=hopVendors.get(0).getVendorId();
 		}
 		
 		for(String inv:hisCmpRecWeb.getInvs()){

@@ -1,16 +1,23 @@
 package com.dhcc.pms.web.userManage.action;
 
+import javax.annotation.Resource;
+
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
 
 import com.dhcc.framework.annotation.JsonResult4Pojo;
+import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.exception.BaseException;
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.web.BaseAction;
+import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.userManage.NormalAccountDto;
+import com.dhcc.pms.dto.ven.VendorDto;
+import com.dhcc.pms.entity.ven.Vendor;
+import com.dhcc.pms.service.ven.VendorService;
 
 /**
  * 标题: NormalAccountAction.java
@@ -24,8 +31,9 @@ import com.dhcc.pms.dto.userManage.NormalAccountDto;
 @Namespace(value="/normalAccount")
 @Scope("prototype")
 @Action(value="normalAccountCtrl",results={
-		@Result(name="normalAccountMain",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
+		@Result(name="normalAccountMain",location="/WEB-INF/jsp/ven/update.jsp"),
 		@Result(name="editInfo",location="/WEB-INF/jsp/userManage/editAccount.jsp"),
+		@Result(name="editInfoVen",location="/WEB-INF/jsp/ven/update.jsp"),
 		@Result(name="normalAccountList",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
 		@Result(name="deleteNormalAccount",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
 		@Result(name="editPassword",location="/WEB-INF/jsp/userManage/password.jsp")
@@ -39,8 +47,32 @@ public class NormalAccountAction extends BaseAction{
 	*/
 	private static final long serialVersionUID = 1L;
 	
+	
+	@Resource
+	private CommonService commonService;
+	@Resource
+	private VendorService vendorService;
+	
 	private NormalAccountDto normalAccountDto = new NormalAccountDto();
 	
+	private VendorDto dto=new VendorDto();
+	
+	
+	
+	/**
+	 * @return the dto
+	 */
+	public VendorDto getDto() {
+		return dto;
+	}
+
+	/**
+	 * @param dto the dto to set
+	 */
+	public void setDto(VendorDto dto) {
+		this.dto = dto;
+	}
+
 	/**  
 	 * @return normalAccountDto 
 	 */
@@ -74,7 +106,21 @@ public class NormalAccountAction extends BaseAction{
 			return "normalAccountMain";
 		}
 		if ("editInfo".equals(super.getBusinessFlow())) {
-			return "editInfo";
+			Long type=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+			if(type.toString().equals("1")){
+				return "editInfo";
+			}
+			if(type.toString().equals("2")){
+				Long vendorLong=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
+
+				Vendor vendor=new Vendor();
+				vendor.setVendorId(vendorLong);
+				dto.setVendor(vendor);
+				dto.setVendor(commonService.get(Vendor.class, vendorLong));
+				dto.setVenQualifTypeVOList(vendorService.queryQualifyType(dto));
+				return "editInfoVen";
+			}
+			
 		}
 		if ("editPassword".equals(super.getBusinessFlow())) {
 			return "editPassword";

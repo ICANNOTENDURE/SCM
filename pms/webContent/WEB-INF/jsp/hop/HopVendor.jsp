@@ -40,6 +40,7 @@
 			<table id="saveOrUpdateTable" style="width: 100%;">
 			    <tr style="display: none">
 					<input type="hidden" name="dto.hopVendor.hopVendorId" />
+					<input type="hidden" name="dto.hopVendor.hopVenId" />
 				</tr>
 				<tr>
 					<td class="textLabel" style="text-align: right; width: 20%">代码:</td>
