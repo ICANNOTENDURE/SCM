@@ -64,6 +64,10 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 				hqlStr.append("and hopName like :name ");
 				hqlParamMap.put("name", "%"+hopVendor.getHopName()+"%");
 			}
+			if(!StringUtils.isNullOrEmpty(hopVendor.getHopCode())){
+				hqlStr.append("and hopCode like :code ");
+				hqlParamMap.put("code", "%"+hopVendor.getHopCode()+"%");
+			}
 		}
 		
 		//接下来拼接其他查询条件 如下示例代码所示

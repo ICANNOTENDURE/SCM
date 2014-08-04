@@ -1044,6 +1044,8 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		hqlBuffer.append("select ");
 		
 		hqlBuffer.append("t1.INC_CODE as hopinccode, ");
+		hqlBuffer.append("t3.ORDER_NO as orderno, ");
+		hqlBuffer.append("t.DELIVERITM_ID as deliveritmid, ");
 		hqlBuffer.append("t.DELIVERITM_HISRP as rp, ");
 		hqlBuffer.append("t.DELIVERITM_HISQTY as qty, ");
 		hqlBuffer.append("t.DELIVERITM_RPAMT as rpamt, ");
@@ -1053,9 +1055,10 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		hqlBuffer.append("from t_ven_deliveritm t  left join t_ven_deliver t2  ");
 		hqlBuffer.append("on t.deliveritm_parentid=t2.deliver_rowid  ");
 		hqlBuffer.append("left join t_hop_inc t1  on t.DELIVERITM_HOPINCID=t1.INC_ID ");
+		hqlBuffer.append("left join t_ord_order t3  on t2.DELIVER_ORDERID=t3.ORDER_ID ");
 		hqlBuffer.append(" where 1=1 ");
 		hqlBuffer.append("and t.deliveritm_invnoe=:invNo ");
-		//hqlBuffer.append("and t.DELIVERITM_RECFLAG!=1 ");
+		hqlBuffer.append("and t.DELIVERITM_RECFLAG is null ");
 		hqlBuffer.append("and t2.deliver_hopid=:hopId ");
 		hqlBuffer.append("and t2.deliver_vendorid=:vendorId ");
 		hqlParamMap.put("invNo", inv);

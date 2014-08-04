@@ -256,7 +256,7 @@ public class HopIncBlh extends AbstractBaseBlh {
 						case "进价":
 							if(cell!=null){
 								cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-								hopInc.setIncRp(Math.round(cell.getNumericCellValue()));
+								hopInc.setIncRp((float)(cell.getNumericCellValue()));
 							}
 							break;
 						case "产地":
@@ -291,7 +291,7 @@ public class HopIncBlh extends AbstractBaseBlh {
 						case "售价":
 							if(cell!=null){
 								cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-								hopInc.setIncSp(Math.round(cell.getNumericCellValue()));
+								hopInc.setIncSp((float)(cell.getNumericCellValue()));
 							}
 							break;	
 					}	

@@ -40,9 +40,13 @@ import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.hop.HopInc;
 import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.hop.Hospital;
+import com.dhcc.pms.entity.manf.HopManf;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.ImpModel;
+import com.dhcc.pms.entity.ven.VenDeliveritm;
+import com.dhcc.pms.entity.vo.ws.HisCmpRecWeb;
+import com.dhcc.pms.entity.vo.ws.HisIncItmWeb;
 import com.dhcc.pms.entity.vo.ws.HisInvInfoItmWeb;
 import com.dhcc.pms.entity.vo.ws.HisInvInfoWeb;
 import com.dhcc.pms.entity.vo.ws.HisOrderItmWebVo;
@@ -52,6 +56,7 @@ import com.dhcc.pms.service.hop.HopCtlocService;
 import com.dhcc.pms.service.hop.HopIncService;
 import com.dhcc.pms.service.hop.HopVendorService;
 import com.dhcc.pms.service.hop.HospitalService;
+import com.dhcc.pms.service.manf.HopManfService;
 import com.dhcc.pms.service.ord.OrderService;
 import com.dhcc.pms.service.sys.SysImpModelService;
 import com.dhcc.pms.service.ven.VenDeliverService;
@@ -88,6 +93,9 @@ public class OrderBlh extends AbstractBaseBlh {
 
 	@Resource
 	private VenDeliverService venDeliverService;
+	
+	@Resource
+	private HopManfService hopManfService;
 	
 	public OrderBlh() {
 		
@@ -582,7 +590,7 @@ public class OrderBlh extends AbstractBaseBlh {
 			return ;
 		}else{
 			DetachedCriteria criteriaVendor = DetachedCriteria.forClass(HopVendor.class);
-			criteriaVendor.add(Restrictions.eq("hopName", hisOrderWebVo.getVendorname()));
+			criteriaVendor.add(Restrictions.eq("hopCode", hisOrderWebVo.getVendorname()));
 			criteriaVendor.add(Restrictions.eq("hopHopId", order.getHopId()));
 			List<HopVendor> hopVendors=commonService.findByDetachedCriteria(criteriaVendor);
 			if(hopVendors.size()==0){
@@ -762,14 +770,14 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @date 2014年7月30日 下午5:36:32
 	* @version V1.0
 	 */
-	public void saveHisIncWS(HopInc hopInc,OperateResult operateResult,String hopName){
+	public void saveHisIncWS(HisIncItmWeb hisIncItmWeb,OperateResult operateResult,String hopName){
 		
-		if(hopInc==null){
+		if(hisIncItmWeb==null){
 			operateResult.setResultCode("1");
 			operateResult.setResultContent("入参为空");
 			return;
 		}
-		
+		HopInc hopInc=new HopInc();
 		if(StringUtils.isNullOrEmpty(hopName)){
 			operateResult.setResultCode("1");
 			operateResult.setResultContent("医院名称为空");
@@ -785,17 +793,102 @@ public class OrderBlh extends AbstractBaseBlh {
 			}
 			
 		}
+		if(StringUtils.isNullOrEmpty(hisIncItmWeb.getVenIncCode())){
+			operateResult.setResultCode("1");
+			operateResult.setResultContent("药品代码不能为空");
+			return;
+		}
 		
 		DetachedCriteria criteria = DetachedCriteria.forClass(HopInc.class);
-		criteria.add(Restrictions.eq("incCode", hopInc.getIncCode()));
+		criteria.add(Restrictions.eq("incCode", hisIncItmWeb.getVenIncCode()));
 		criteria.add(Restrictions.eq("incHospid", hopInc.getIncHospid()));
 		@SuppressWarnings("unchecked")
 		List<HopInc> hopIncs=commonService.findByDetachedCriteria(criteria);
 		if(hopIncs.size()>0){
 			hopInc.setIncId(hopIncs.get(0).getIncId());
 		}
+		hopInc.setIncUomname(hisIncItmWeb.getVenIncUom());
+		hopInc.setIncCode(hisIncItmWeb.getVenIncCode());
+		hopInc.setIncCat(hisIncItmWeb.getVenIncCat());
+		hopInc.setIncName(hisIncItmWeb.getVenIncName());
+		hopInc.setIncRp(hisIncItmWeb.getVenIncPrice());
+		hopInc.setIncSp(hisIncItmWeb.getVenIncSp());
+		if(!StringUtils.isNullOrEmpty(hisIncItmWeb.getVenIncManf())){
+				Long manfIdLong=hopManfService.getIdByName(hisIncItmWeb.getVenIncManf());
+			    if(manfIdLong==null){
+			    	 HopManf manf=new HopManf();
+			    	 manf.setManfName(hisIncItmWeb.getVenIncManf());
+			    	 commonService.saveOrUpdate(manf);
+			    	 hopInc.setIncManfid(manf.getHopManfId());
+			    }else{
+			    	hopInc.setIncManfid(manfIdLong);
+			    }
+		}
 		commonService.saveOrUpdate(hopInc);
 		operateResult.setResultCode("0");
 		operateResult.setResultContent("success");
+	}
+	
+	
+	/**
+	 * 
+	* @Title: OrderBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param invs
+	* @param operateResult
+	* @param hopname
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年8月1日 上午11:18:26
+	* @version V1.0
+	 */
+	public void cmpRecWS(OperateResult operateResult,HisCmpRecWeb hisCmpRecWeb){
+		
+		Long hopId=null;
+		Long vendorId=null;
+		if(hisCmpRecWeb.getInvs()==null||hisCmpRecWeb.getInvs().size()==0){
+			operateResult.setResultCode("1");
+			operateResult.setResultContent("发票号为空");
+			return;
+		}
+		if(StringUtils.isNullOrEmpty(hisCmpRecWeb.getHopname())){
+			operateResult.setResultCode("1");
+			operateResult.setResultContent("医院名称为空");
+			return;
+		}else{
+			Hospital hospital=hospitalService.getHospitalByName(hisCmpRecWeb.getHopname());
+			if(hospital==null){
+				operateResult.setResultCode("1");
+				operateResult.setResultContent("医院名称错误");
+				return;
+			}else{
+				hopId=hospital.getHospitalId();
+			}
+		}
+		if(StringUtils.isNullOrEmpty(hisCmpRecWeb.getVenname())){
+			operateResult.setResultCode("1");
+			operateResult.setResultContent("供应商名称为空");
+			return;
+		}else{
+			vendorId=vendorService.findVendorIdByName(hisCmpRecWeb.getVenname());
+			if(vendorId==null){
+				operateResult.setResultCode("1");
+				operateResult.setResultContent("供应商名称错误");
+				return;
+			}
+		}
+		
+		for(String inv:hisCmpRecWeb.getInvs()){
+			List<HisInvInfoItmWeb> hisInvInfoItmWebs=venDeliverService.getRecItmByInv(hopId, vendorId, inv);
+			if(hisInvInfoItmWebs.size()>0){
+				VenDeliveritm VenDeliveritm=commonService.get(VenDeliveritm.class, hisInvInfoItmWebs.get(0).getDeliveritmid());
+				VenDeliveritm.setDeliveritmRecFlag("1");
+				commonService.saveOrUpdate(VenDeliveritm);
+			}else{
+				operateResult.setResultCode("-1");
+				operateResult.setResultContent(operateResult.getResultContent()+","+inv+"发票号码错误,");
+			}
+		}
+		
 	}
 }

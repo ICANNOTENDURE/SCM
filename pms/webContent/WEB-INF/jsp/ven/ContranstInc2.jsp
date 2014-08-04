@@ -143,7 +143,7 @@
     	        'onUploadSuccess':function(file, data, response){
     	        	$("#gg").dialog("close");
     	        	var obj=eval('('+data+')');
-    	        	if(obj.opFlg=="1"){
+    	        	if(obj.opFlg=="0"){
     	        		$CommonUI.alert("导入成功");
     	        		$("#err").html(obj.msg);
     	        	}else{
@@ -295,7 +295,7 @@
 				<option value="1">以对照</option>
 				<option value="2">未对照</option>
 			</select>
-			<a href="#" class="linkbutton" iconCls="icon-search" id="searchHopInc" plain="true">查询</a>
+			<a href="#" class="linkbutton" iconCls="icon-search" id="searchHopInc" >查询</a>
 		 </div>
 	</div>	
     <div id="toolbar2" style="height: auto">
@@ -318,7 +318,7 @@
 			供应商:<input style="width: 200px;"
 						class="combobox" type="text" 
 						 id="ven" />
-			<a href="#" class="linkbutton" iconCls="icon-search" id="searchVenInc" plain="true">查询</a>
+			<a href="#" class="linkbutton" iconCls="icon-search" id="searchVenInc" >查询</a>
 			
 		    <span style="color: red;font-size: 20px">注意(比如供应商单位盒(7),医院单位支,那分子就是7，分母是1)</span>
 		 </div>

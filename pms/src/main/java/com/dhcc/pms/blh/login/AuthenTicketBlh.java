@@ -244,7 +244,7 @@ public class AuthenTicketBlh extends AbstractBaseBlh {
 		if(type==2){
 			Long vendorLong=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
 			Vendor Vendor=commonService.get(Vendor.class, vendorLong);
-			userName=userName+"(供应商"+Vendor.getName()+")";
+			userName=userName+"(供应商:"+Vendor.getName()+")";
 		}
 		if(type==0){
 			userName=userName+"		(系统管理员)";

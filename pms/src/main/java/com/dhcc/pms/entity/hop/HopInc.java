@@ -62,7 +62,7 @@ public class HopInc implements Serializable {
 	private Long incHospid;
 
 	@Column(name="INC_RP")
-	private Long incRp;
+	private Float incRp;
 	
 	@Column(name="INC_SPEC")
 	private String incSpec;
@@ -72,7 +72,7 @@ public class HopInc implements Serializable {
 	
 	
 	@Column(name="INC_SP")
-	private Long incSp;
+	private Float incSp;
 	
 	@Transient
 	private String incAliaS;
@@ -95,20 +95,6 @@ public class HopInc implements Serializable {
 	}
 
 
-	/**
-	 * @return the incSp
-	 */
-	public Long getIncSp() {
-		return incSp;
-	}
-
-
-	/**
-	 * @param incSp the incSp to set
-	 */
-	public void setIncSp(Long incSp) {
-		this.incSp = incSp;
-	}
 
 
 	/**
@@ -126,11 +112,13 @@ public class HopInc implements Serializable {
 		this.incSpec = incSpec;
 	}
 
+	
+	
 
 	/**
 	 * @return the incRp
 	 */
-	public Long getIncRp() {
+	public Float getIncRp() {
 		return incRp;
 	}
 
@@ -138,8 +126,24 @@ public class HopInc implements Serializable {
 	/**
 	 * @param incRp the incRp to set
 	 */
-	public void setIncRp(Long incRp) {
+	public void setIncRp(Float incRp) {
 		this.incRp = incRp;
+	}
+
+
+	/**
+	 * @return the incSp
+	 */
+	public Float getIncSp() {
+		return incSp;
+	}
+
+
+	/**
+	 * @param incSp the incSp to set
+	 */
+	public void setIncSp(Float incSp) {
+		this.incSp = incSp;
 	}
 
 

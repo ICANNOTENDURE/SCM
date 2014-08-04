@@ -611,36 +611,20 @@ public class VenIncBlh extends AbstractBaseBlh {
 						break;
 					case 2:
 						if(cell!=null){
-							if(cell.getCellType()==HSSFCell.CELL_TYPE_STRING){
 								cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 								venName=cell.getStringCellValue();
-							}else{
-								dto.setOpFlg("-1");
-								dto.setMsg(dto.getMsg()+"<BR>供应商名称列应该是字符类型,类型错误");
-								break a;
-							}
 						}
 						break;
 					case 3:
 						if(cell!=null){
-							if(cell.getCellType()==HSSFCell.CELL_TYPE_NUMERIC){
+								cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
 								venFac=(float)cell.getNumericCellValue();
-							}else{
-								dto.setOpFlg("-1");
-								dto.setMsg(dto.getMsg()+"<BR>分子列应该是数字类型,类型错误");
-								break a;
-							}
 						}
 						break;
 					case 4:
 						if(cell!=null){
-							if(cell.getCellType()==HSSFCell.CELL_TYPE_NUMERIC){
+							    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
 								hopFac=(float)cell.getNumericCellValue();
-							}else{
-								dto.setOpFlg("-1");
-								dto.setMsg(dto.getMsg()+"<BR>分母列应该是数字类型,类型错误");
-								break a;
-							}
 						}
 						break;	
 					}

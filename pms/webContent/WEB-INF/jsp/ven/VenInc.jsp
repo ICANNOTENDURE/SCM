@@ -91,21 +91,21 @@
 						 type="text" name="dto.venInc.venIncAlias"
 						 id="venIncAlias" /></td>	
 				</tr>
-				<tr>
+				<tr style="display: none;">
 					<td class="textLabel">转换系数:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.venInc.venIncFac"
 						 id="venIncFac" /></td>
-					<td class="textLabel">价格:</td>
-					<td class="textParent"><input style="width: 250px;"
-						class="validatebox" type="text" name="dto.venInc.venIncPrice"
-						 id="venIncPrice" /></td>
-				</tr>
-				<tr>
 					<td class="textLabel">供应商系统药品ID:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.venInc.venIncVensysid"
 						data-options="required:true" id="venIncVensysid" /></td>
+				</tr>
+				<tr>
+					<td class="textLabel">价格:</td>
+					<td class="textParent"><input style="width: 250px;"
+						class="validatebox" type="text" name="dto.venInc.venIncPrice"
+						 id="venIncPrice" /></td>	
 					<td class="textLabel">规格:</td>
 					<td class="textParent"><input style="width: 250px;"
 						 type="text" name="dto.venInc.venIncSpec"
