@@ -44,6 +44,7 @@ import com.dhcc.pms.entity.manf.HopManf;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.ImpModel;
+import com.dhcc.pms.entity.sys.SysLog;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
 import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.ws.HisCmpRecWeb;
@@ -564,7 +565,17 @@ public class OrderBlh extends AbstractBaseBlh {
 
 		
 		this.importOrderByWSSub(hisOrderWebVo,operateResult);
-
+		
+		SysLog log=new SysLog();
+		log.setOpArg(JsonUtils.toJson(hisOrderWebVo));
+		log.setOpName("webservice医院同步订单");
+		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
+		log.setOpDate(new Date());
+		log.setOpResult(JsonUtils.toJson(operateResult));
+		log.setOpType("webservice");
+		log.setOpUser(hisOrderWebVo.getHopname());
+		commonService.saveOrUpdate(log);
+		
 	}
 	@SuppressWarnings("unchecked")
 	public void importOrderByWSSub(HisOrderWebVo hisOrderWebVo,OperateResult operateResult){
@@ -719,9 +730,23 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @date 2014年7月30日 上午10:36:09
 	* @version V1.0
 	 */
-	@SuppressWarnings("unchecked")
 	public void getRecItmByInvWS(String invNo, String hopName,String venName,HisInvInfoWeb hisInvInfoWeb){
 		
+		this.getRecItmByInvWS(invNo, hopName, venName, hisInvInfoWeb);
+		
+		SysLog log=new SysLog();
+		log.setOpArg(JsonUtils.toJson(hisInvInfoWeb)+",invNo:"+invNo+",venName:"+venName);
+		log.setOpName("webservice医院入库查找发票");
+		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
+		log.setOpDate(new Date());
+		log.setOpResult(JsonUtils.toJson(hisInvInfoWeb.getResultContent()));
+		log.setOpType("webservice");
+		log.setOpUser(hopName);
+		commonService.saveOrUpdate(log);
+	}	
+	
+	@SuppressWarnings("unchecked")
+	public void getRecItmByInvWSSub(String invNo, String hopName,String venName,HisInvInfoWeb hisInvInfoWeb){
 		Long hopId=null;
 		Long vendorId=null;
 		if(StringUtils.isNullOrEmpty(invNo)){
@@ -769,8 +794,7 @@ public class OrderBlh extends AbstractBaseBlh {
 			hisInvInfoWeb.setResultCode("1");
 			hisInvInfoWeb.setResultContent("发票号码无效,错误");
 		}
-	}	
-	
+	}
 	
 	/**
 	 * 
@@ -782,6 +806,20 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @version V1.0
 	 */
 	public void saveHisIncWS(HisIncItmWeb hisIncItmWeb,OperateResult operateResult,String hopName){
+		
+		this.saveHisIncWSSub(hisIncItmWeb, operateResult, hopName);
+		SysLog log=new SysLog();
+		log.setOpArg(JsonUtils.toJson(hisIncItmWeb)+",hopName:"+hopName);
+		log.setOpName("webservice医院药品字典信息同步");
+		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
+		log.setOpDate(new Date());
+		log.setOpResult(JsonUtils.toJson(operateResult));
+		log.setOpType("webservice");
+		log.setOpUser(hopName);
+		commonService.saveOrUpdate(log);
+	}
+	
+    public void saveHisIncWSSub(HisIncItmWeb hisIncItmWeb,OperateResult operateResult,String hopName){
 		
 		if(hisIncItmWeb==null){
 			operateResult.setResultCode("1");
@@ -840,8 +878,6 @@ public class OrderBlh extends AbstractBaseBlh {
 		operateResult.setResultCode("0");
 		operateResult.setResultContent("success");
 	}
-	
-	
 	/**
 	 * 
 	* @Title: OrderBlh.java
@@ -854,8 +890,23 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @date 2014年8月1日 上午11:18:26
 	* @version V1.0
 	 */
-	@SuppressWarnings("unchecked")
+	
 	public void cmpRecWS(OperateResult operateResult,HisCmpRecWeb hisCmpRecWeb){
+		
+		this.cmpRecWSSub(operateResult, hisCmpRecWeb);
+		SysLog log=new SysLog();
+		log.setOpArg(JsonUtils.toJson(hisCmpRecWeb));
+		log.setOpName("webservice医院入库审核入库单");
+		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
+		log.setOpDate(new Date());
+		log.setOpResult(JsonUtils.toJson(operateResult));
+		log.setOpType("webservice");
+		log.setOpUser(hisCmpRecWeb.getHopname());
+		commonService.saveOrUpdate(log);
+		
+	}
+	@SuppressWarnings("unchecked")
+	public void cmpRecWSSub(OperateResult operateResult,HisCmpRecWeb hisCmpRecWeb){
 		
 		Long hopId=null;
 		Long vendorId=null;

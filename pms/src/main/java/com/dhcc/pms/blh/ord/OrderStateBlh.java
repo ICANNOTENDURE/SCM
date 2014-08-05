@@ -6,6 +6,7 @@ package com.dhcc.pms.blh.ord;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import com.dhcc.pms.dto.ord.OrderStateDto;
 import com.dhcc.pms.dto.ven.VenDeliverDto;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
+import com.dhcc.pms.entity.sys.SysLog;
 import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
 import com.dhcc.pms.entity.vo.ws.OperateResult;
@@ -192,7 +194,21 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	@OutPut(ognlExpress="dto.orderWSVos")
 	*/
 	public void listOrderWS(BusinessRequest res) {
-	
+		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
+		this.listOrderWSSub(res);
+		
+		SysLog log=new SysLog();
+		log.setOpArg(JsonUtils.toJson(dto));
+		log.setOpName("webservice供应商查询订单");
+		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
+		log.setOpDate(new Date());
+		log.setOpResult(JsonUtils.toJson(dto.getOperateResult()));
+		log.setOpType("webservice");
+		log.setOpUser(dto.getUserName());
+		commonService.saveOrUpdate(log);
+	}
+	public void listOrderWSSub(BusinessRequest res) {
+		
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
 		if(StringUtils.isNullOrEmpty(dto.getUserName())){
 			return;
@@ -217,7 +233,6 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	}
 	
 	
-	
 	/**
 	 * 
 	* @Title: OrderStateBlh.java
@@ -236,6 +251,21 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	@OutPut(ognlExpress="dto.operateResult")
 	*/
 	public void recievedMsg(BusinessRequest res){
+		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
+       
+		this.recievedMsgSub(res);
+		
+		SysLog log=new SysLog();
+		log.setOpArg("orderIdStr:"+dto.getOrderIdStr());
+		log.setOpName("webservice供应商确认收到订单");
+		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
+		log.setOpDate(new Date());
+		log.setOpResult(JsonUtils.toJson(dto.getOperateResult()));
+		log.setOpType("webservice");
+		log.setOpUser(dto.getUserName());
+		commonService.saveOrUpdate(log);
+	}
+	public void recievedMsgSub(BusinessRequest res){
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
         OperateResult operateResult=new OperateResult();
         operateResult.setResultCode("-1");
@@ -262,7 +292,6 @@ public class OrderStateBlh extends AbstractBaseBlh {
 		dto.getOperateResult().setResultContent("success");
 	}
 	
-	
 	/**
 	 * 
 	* @Title: OrderStateBlh.java
@@ -282,6 +311,20 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	@OutPut(ognlExpress="dto.operateResult")
 	*/
 	public void deliver(BusinessRequest res) throws IOException{
+		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
+		this.deliverSub(res);
+		
+		SysLog log=new SysLog();
+		log.setOpArg(JsonUtils.toJson(dto));
+		log.setOpName("webservice供应商长传发票");
+		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
+		log.setOpDate(new Date());
+		log.setOpResult(JsonUtils.toJson(dto.getOperateResult()));
+		log.setOpType("webservice");
+		commonService.saveOrUpdate(log);
+		
+	}
+	public void deliverSub(BusinessRequest res) throws IOException{
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
 		if(dto.getDeliveritms()==null){
 			dto.getOperateResult().setResultCode("-1");
@@ -342,7 +385,6 @@ public class OrderStateBlh extends AbstractBaseBlh {
 		
 		
 	}
-	
 
 	/**
 	 * 

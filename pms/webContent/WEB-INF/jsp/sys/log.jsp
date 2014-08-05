@@ -61,12 +61,13 @@
 			 															   ">
 			 		<thead>
 					<tr>
-						<th data-options="field:'opDate',width:90,sortable:true">时间</th>
+						<th data-options="field:'opDate',width:70,sortable:true">时间</th>
 						<th data-options="field:'opUser',width:50,sortable:true">操作人</th>
 						<th data-options="field:'opName',width:90,sortable:true">业务名称</th>
-						<th data-options="field:'opIp',width:50,sortable:true">ip</th>
+						<th data-options="field:'opIp',width:40,sortable:true">ip</th>
+						<th data-options="field:'opType',width:40,sortable:true">类型</th>
 						<th data-options="field:'opArg',width:190,sortable:true">参数</th>
-						<th data-options="field:'opResult',width:90,sortable:true">操作结果</th>
+						<th data-options="field:'opResult',width:150,sortable:true">操作结果</th>
 			 	    </tr>
 			 	    </thead>
 			 	
