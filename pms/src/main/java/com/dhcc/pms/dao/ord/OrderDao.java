@@ -570,4 +570,36 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
 	   super.saveOrUpdate(order);
 	   
    }
+   
+   
+   /**
+    * 
+   * @Title: OrderDao.java
+   * @Description: TODO(excel导入订单)
+   * @param dto
+   * @return:void 
+   * @author zhouxin  
+   * @date 2014年8月5日 下午8:07:13
+   * @version V1.0
+    */
+   public void importOrderByExcel(Map<String, Order> map){
+	   for(Map.Entry<String, Order> entry: map.entrySet()) {
+		   Order order=entry.getValue();
+		   List<OrderItm> itms=order.getItms();
+		   super.saveOrUpdate(order);
+		   for(OrderItm orderItm:itms){
+			   orderItm.setOrdId(order.getOrderId());
+			   super.saveOrUpdate(orderItm);
+		   }
+		   ExeState exeState1=new ExeState();
+
+		   exeState1.setStateId(1l);
+		   exeState1.setRemark("Excel 上传订单");
+		   exeState1.setOrdId(order.getOrderId());
+		   exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
+		   super.save(exeState1);
+		   order.setExeStateId(exeState1.getExestateId());
+		   super.saveOrUpdate(order);
+		}
+   }
 }

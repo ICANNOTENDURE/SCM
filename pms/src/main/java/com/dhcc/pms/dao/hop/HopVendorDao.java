@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.dhcc.framework.common.BaseConstants;
@@ -276,4 +278,33 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 		}
 		return null;
 	}
+	
+	
+	/**
+	 * 
+	* @Title: HopVendorDao.java
+	* @Description: TODO(查找医院供应商)
+	* @param code
+	* @param hopId
+	* @return
+	* @return:HopVendor 
+	* @author zhouxin  
+	* @date 2014年8月5日 下午7:05:43
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public HopVendor findVendorByCode(String code,Long hopId){
+		
+		DetachedCriteria criteria = DetachedCriteria.forClass(HopVendor.class);
+		criteria.add(Restrictions.eq("hopCode", code));
+		criteria.add(Restrictions.eq("hopHopId", hopId));
+		
+		List<HopVendor> hopVendors=super.findByCriteria(criteria);
+		if(hopVendors.size()==0){
+			return null;
+		}
+		return hopVendors.get(0);
+	}
+	
+	
 }

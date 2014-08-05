@@ -224,4 +224,13 @@ public class OrderServiceImpl implements OrderService {
 		orderDao.importOrderByWS(order,itms);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.ord.OrderService#importOrderByExcel(java.util.Map)
+	 */
+	@Override
+	public void importOrderByExcel(Map<String, Order> map) {
+		// TODO Auto-generated method stub
+		orderDao.importOrderByExcel(map);
+	}
+
 }

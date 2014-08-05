@@ -100,7 +100,8 @@ $(function (){
         'removeCompleted':true,
         'checkExisting':false,
         'onSelect': function(){  
-	        	$("#gg").dialog("open");	
+	        	$("#gg").dialog("open");
+	        	$("#err").html("");	
         }, 
         //上传成功
         'onUploadSuccess':function(file, data, response){
@@ -134,7 +135,8 @@ $(function (){
     	    	}
     	    	$("#remark").val(obj.order.remark);
         	}else{
-        		$CommonUI.alert(obj.msg);
+        		$CommonUI.alert("失败");
+        		$("#err").html(obj.msg);
         	};
         },
         //检测FLASH失败调用

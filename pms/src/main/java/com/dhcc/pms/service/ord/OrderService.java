@@ -5,6 +5,7 @@
 package com.dhcc.pms.service.ord;
 
 import java.util.List;
+import java.util.Map;
 
 import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
@@ -190,4 +191,16 @@ public interface OrderService {
 	 * @version V1.0
 	  */
 	 public void ImportOrderByWS(Order order,List<OrderItm> itms);
+	 
+	 /**
+	  * 
+	 * @Title: OrderService.java
+	 * @Description: TODO(用一句话描述该文件做什么)
+	 * @param map
+	 * @return:void 
+	 * @author zhouxin  
+	 * @date 2014年8月5日 下午8:13:23
+	 * @version V1.0
+	  */
+	 public void importOrderByExcel(Map<String, Order> map);
 }	

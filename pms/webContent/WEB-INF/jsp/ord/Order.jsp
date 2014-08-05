@@ -163,7 +163,7 @@
 		        closed:true,
 				collapsible:false,
 				minimizable:false,
-				maximizable:false">
+				maximizable:true">
 			<table id="addFuncsTable" style="width: 100%;">
 				<tr>
 					<td class="textLabel" style="text-align: right; width: 40%">导入Excel文件:</td>
@@ -177,6 +177,8 @@
 	    		<td class="time">模版 </td>
 	    	</tr>
 	    </table>
+	    <div id="err">
+	    </div>
 	</div>
     <style type="text/css">
 

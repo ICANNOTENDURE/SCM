@@ -92,4 +92,13 @@ public class HopVendorServiceImpl implements HopVendorService {
 		return hopVendorDao.findHopVenComboxVos(input);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopVendorService#findVendorByCode(java.lang.String, java.lang.Long)
+	 */
+	@Override
+	public HopVendor findVendorByCode(String code, Long hopId) {
+		// TODO Auto-generated method stub
+		return hopVendorDao.findVendorByCode(code, hopId);
+	}
+
 }

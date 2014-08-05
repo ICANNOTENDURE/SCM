@@ -73,4 +73,18 @@ public interface HopVendorService {
 	 */
 	public List<ComboxVo> findHopVenComboxVos(String input);
 	
+	/**
+	 * 
+	* @Title: HopVendorService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param code
+	* @param hopId
+	* @return
+	* @return:HopVendor 
+	* @author zhouxin  
+	* @date 2014年8月5日 下午7:06:34
+	* @version V1.0
+	 */
+	public HopVendor findVendorByCode(String code,Long hopId);
+	
 }

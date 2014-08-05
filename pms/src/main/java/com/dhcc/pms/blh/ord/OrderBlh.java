@@ -98,6 +98,7 @@ public class OrderBlh extends AbstractBaseBlh {
 	
 	@Resource
 	private HopManfService hopManfService;
+
 	
 	public OrderBlh() {
 		
@@ -266,7 +267,8 @@ public class OrderBlh extends AbstractBaseBlh {
 	public void upload(BusinessRequest res) throws IOException{
 		
 		OrderDto dto = super.getDto(OrderDto.class, res);
-
+		
+		dto.setMsg("<BR>");
 		//生成随机文件名
 		String newFileName =UUID.randomUUID().toString();
 		//获取文件存储路径
@@ -289,11 +291,13 @@ public class OrderBlh extends AbstractBaseBlh {
         for(int i=0;i<listImpModels.size();i++){
         	modelMap.put(Integer.valueOf(listImpModels.get(i).getSeq().toString()), listImpModels.get(i).getName());
         }
+        
+        Map<String, Order> orderMap=new HashMap<String,Order>();
         //读取excel
         try {
 
-        	Order order=new Order();
-			List<OrderItm> orderItms = new ArrayList<OrderItm>();
+        	Long hopID=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+        	Long userID=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId());
 			//读取Excel文件
 			HSSFWorkbook workbook = null;
 			HSSFSheet sheet = null;
@@ -303,159 +307,202 @@ public class OrderBlh extends AbstractBaseBlh {
 			workbook = new HSSFWorkbook(new FileInputStream(storageFileName + File.separator + newFileName));
 			sheet = workbook.getSheetAt(0);
 			
-			row = sheet.getRow(1);
 			dto.setOpFlg("1");
-			for (int h = 0; h <= row.getLastCellNum(); h++) {
-				cell = row.getCell(h);
-				String mainColNameString=modelMap.get(h);
-				if(StringUtils.isNullOrEmpty(mainColNameString)) {mainColNameString=" ";};
-				switch (mainColNameString) {
-					case "订单号":
-						if(cell!=null){
-							order.setOrderNo(cell.toString());
-						}
-						break;
-//					case "医院ID":
-//						if(cell!=null){
-//							order.setHopId(Math.round(cell.getNumericCellValue()));;
-//						}
-//						break;	
-					case "请求科室ID":
-						if(cell!=null){
-							order.setRecLoc(hopCtlocService.getLocIdByName(cell.getStringCellValue()));
-						}
-						break;
-					case "入库科室ID":
-						if(cell!=null){
-							order.setPurLoc(hopCtlocService.getLocIdByName(cell.getStringCellValue()));
-						}
-						break;	
-					case "是否加急":
-						if(cell!=null){
-							order.setEmFlag(cell.toString());
-						}
-						break;
-					case "收货地址":
-						if(cell!=null){
-							//order.set
-						}
-						break;
-					case "要求送货时间":
-						if(cell!=null){
-							order.setDeliveryDate(cell.getDateCellValue());
-						}
-						break;
-					case "供应商ID":
-						if(cell!=null){
-							Long vendorIdLong=hopVendorService.findVendorIdByName(cell.getStringCellValue());
-							if(vendorIdLong==null){
-								 dto.setOpFlg("6");
-							     dto.setMsg(cell.getStringCellValue()+":供应商在平台没有维护");
-							}else{
-								order.setVendorId(hopVendorService.findVendorIdByName(cell.getStringCellValue()));
-							}	
-						}
-						break;	
-					}
-			}
-			
-			if(!dto.getOpFlg().equals("1")){
-				return;
-			}
-			order.setHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
-			if(WebContextHolder.getContext().getVisit().getUserInfo().getHopId()==null){
-				dto.setOpFlg("-2");
-				dto.setMsg("登录超时,请重新登录");
-				return;
-			}
-			dto.setOrder(order);
-			//明细
 			for (int numRows = 1; numRows <= sheet.getLastRowNum(); numRows++) {
 				
 				row = sheet.getRow(numRows);
-				
-				OrderItm orderItm = new OrderItm();
-				
-				HopInc hopInc=new HopInc();
-				String undefineName="";
+				String orderNo="";
+				String purLoc="";
+				String recLoc="";
+				String emflag="";
+				String destion="";
+				Date requireDate=null;
+				String venCode="";
+				float rp=0f;
+				float qty=0f;
+				String incCode="";
 				for (int numCells = 0; numCells <= row.getLastCellNum(); numCells++) {
 					cell = row.getCell(numCells);
 					String colNameString=modelMap.get(numCells);
 					if(StringUtils.isNullOrEmpty(colNameString)) {colNameString=" ";};
-					if (colNameString.equals("HIS药品标示")) {
-							hopInc=hopIncService.getIncIdByName(cell.getStringCellValue());
-							undefineName=cell.getStringCellValue();
-					}
+
+					switch (colNameString) {
+							case "订单号":
+								if(cell!=null){
+									orderNo=cell.getStringCellValue();
+								}
+								break;
+							case "收货科室":
+								if(cell!=null){
+									purLoc=cell.getStringCellValue();
+								}
+								break;
+							case "入库科室":
+								if(cell!=null){
+									recLoc=cell.getStringCellValue();	
+								}
+								break;	
+							case "是否加急":
+								if(cell!=null){
+									emflag=cell.getStringCellValue();
+								}
+								break;
+							case "收货地址":
+								if(cell!=null){
+									destion=cell.getStringCellValue();
+								}
+								break;
+							case "要求送货时间":
+								if(cell!=null){
+									requireDate=cell.getDateCellValue();
+								}
+								break;
+							case "供应商代码":
+								if(cell!=null){
+									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+									venCode=cell.getStringCellValue();
+								}
+								break;
+							case "HIS药品代码":
+								if(cell!=null){
+									incCode=cell.getStringCellValue();
+								}
+								break;	
+							case "数量":
+								if(cell!=null){
+									qty=(float)cell.getNumericCellValue();
+								}
+								break;	
+							case "进价":
+								if(cell!=null){
+									rp=(float)cell.getNumericCellValue();
+								}
+								break;		
+						}
 				}
-				if(hopInc==null){
-					 if(StringUtils.isNullOrEmpty(dto.getMsg())){
-						   dto.setMsg(undefineName+":在平台里有没");
-					   }else{
-						   dto.setMsg(dto.getMsg()+"."+undefineName+":在平台里有没");
-						   dto.setOpFlg("4");
-					   }
+				
+				
+				if(StringUtils.isNullOrEmpty(orderNo)){
+					dto.setOpFlg("-1");
+					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行订单号不能为空");
+				}
+				
+				if(StringUtils.isNullOrEmpty(venCode)){
+					dto.setOpFlg("-1");
+					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行供应商代码不能为空");
+				}
+				
+				if(StringUtils.isNullOrEmpty(recLoc)){
+					dto.setOpFlg("-1");
+					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行收货科室不能为空");
+				}
+				if(StringUtils.isNullOrEmpty(purLoc)){
+					dto.setOpFlg("-1");
+					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行请求科室不能为空");
+				}
+				if(StringUtils.isNullOrEmpty(incCode)){
+					dto.setOpFlg("-1");
+					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行供his药品代码不能为空");
+				}
+				
+				if(qty==0f){
+					dto.setOpFlg("-1");
+					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行供订单数量不能为0");
+				}
+				
+				if(!dto.getOpFlg().equals("1")){
 					continue;
 				}
-				orderItm.setUom(hopInc.getIncUomname());
-				orderItm.setIncId(hopInc.getIncId());
-				orderItm.setRp((float)hopInc.getIncRp());
 				
-				for (int numCells = 0; numCells <= row.getLastCellNum(); numCells++) {
-					cell = row.getCell(numCells);
-					
-					String colNameString=modelMap.get(numCells);
-					if(StringUtils.isNullOrEmpty(colNameString)) {colNameString=" ";};
-					
-					
-					switch (colNameString) {
-//						case "HIS药品标示":
-//							orderItm.setIncId(hopInc.getIncId());
-//							break;
-						case "单位":
-							if(cell!=null){
-								orderItm.setUom(cell.getStringCellValue());
-							}
-							break;
-						case "数量":
-							if(cell!=null){
-								orderItm.setReqqty((float)cell.getNumericCellValue());
-							}
-							break;
-						case "进价":
-							if(cell!=null){
-								orderItm.setRp((float)cell.getNumericCellValue());
-							}
-							break;
-					}
+				OrderItm orderItm=new OrderItm();
+				
+				if(incCode.contains("'")){
+					incCode=incCode.substring(incCode.indexOf("'")+1);
 				}
 				
-				orderItms.add(orderItm);
+				Long incId=hopIncService.getHopIncByCode(incCode,hopID);
+				if(incId==null){
+					dto.setOpFlg("-1");
+					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+incCode+"，医院药品代码错误");
+					continue;
+				}
+				orderItm.setIncId(incId);
+				orderItm.setReqqty(qty);
+				orderItm.setRp(rp);
+				
+				if(orderMap.containsKey(orderNo)){
+					orderMap.get(orderNo).getItms().add(orderItm);
+					continue;
+				}else{
+					
+					HopVendor hopVendor=hopVendorService.findVendorByCode(venCode,hopID);
+					if(hopVendor==null){
+						dto.setOpFlg("-1");
+						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+venCode+"，供应商代码错误");
+						continue;
+					}
+					
+					Long recLocId=hopCtlocService.getLocIdByName(recLoc);
+					if(recLocId==null){
+						dto.setOpFlg("-1");
+						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+recLoc+"，收货科室错误");
+						continue;
+					}
+					
+					Long purLocId=hopCtlocService.getLocIdByName(purLoc);
+					if(purLocId==null){
+						dto.setOpFlg("-1");
+						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+purLoc+"，请求科室错误");
+						continue;
+					}
+					
+					
+					Order order=new Order();
+					if(StringUtils.isNullOrEmpty(destion)){
+						HopCtloc hopCtloc=commonService.get(HopCtloc.class, recLocId);
+						if(hopCtloc.getCtlocDest()!=null){
+							order.setRecDestination(hopCtloc.getCtlocDest());
+						}
+					}else{
+						
+					}
+					order.setEmFlag(emflag);
+					order.setCreateUser(userID);
+					order.setOrderNo(orderNo);
+					order.setHopId(hopID);
+					order.setPlanDate(new Date());
+					order.setVendorId(hopVendor.getHopVenId());
+					order.setPlanArrDate(requireDate);
+					order.setPurLoc(purLocId);
+					order.setRecLoc(recLocId);
+					List<OrderItm> itms=new ArrayList<OrderItm>();
+					itms.add(orderItm);
+					order.setItms(itms);
+					orderMap.put(orderNo, order);
+				}
+			}		
+			if(!dto.getOpFlg().equals("1")){
+				WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
+				return;
 			}
-			dto.setOrderItms(orderItms);
+			orderService.importOrderByExcel(orderMap);
 			
+			SysLog log=new SysLog();
+			log.setOpArg(JsonUtils.toJson(orderMap));
+			log.setOpName("webservice医院入库审核入库单");
+			log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr().toString());
+			log.setOpDate(new Date());
+			log.setOpResult(JsonUtils.toJson(dto));
+			log.setOpType("webservice");
+			log.setOpUser(userID.toString());
+			commonService.saveOrUpdate(log);
 			
-			orderService.impOrder(dto);
-			
-			
-
-			dto.setOrderItms(null);
-			WebContextHolder
-			.getContext()
-			.getResponse()
-			.getWriter()
-			.write(JsonUtils.toJson(dto));
-
-		
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		} catch (Exception e) {
 			e.printStackTrace();
-			//throw new DataBaseException(e.getMessage(), e);
 			dto.setOpFlg("-11");
 			dto.setMsg(dto.getMsg()+"<br>程序异常:"+e.getMessage());
-			WebContextHolder
-			.getContext()
-			.getResponse()
-			.getWriter()
-			.write(JsonUtils.toJson(dto));
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		}finally{
 			FileUtils.forceDelete(dstFile);
 		}

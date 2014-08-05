@@ -1,8 +1,11 @@
 package com.dhcc.pms.entity.ord;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -70,9 +73,14 @@ public class Order implements Serializable {
 	//1,webservice发送,
 	@Column(name="SENDFLAG")
 	private Long sendFlag;
-		
 	
-
+	//订单流水号，多个医院订单同时上传，同一个流水号
+	@Column(name="ORDER_SERIAL")
+	private String orderSerial;
+	
+	@Transient
+	private List<OrderItm> itms;
+	
 	public Order() {
 	}
 	
@@ -355,6 +363,70 @@ public class Order implements Serializable {
 	 */
 	public void setVendorId(Long vendorId) {
 		this.vendorId = vendorId;
+	}
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * @return the orderSerial
+	 */
+	public String getOrderSerial() {
+		return orderSerial;
+	}
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * @param orderSerial the orderSerial to set
+	 */
+	public void setOrderSerial(String orderSerial) {
+		this.orderSerial = orderSerial;
+	}
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * @return the itms
+	 */
+	public List<OrderItm> getItms() {
+		return itms;
+	}
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * @param itms the itms to set
+	 */
+	public void setItms(List<OrderItm> itms) {
+		this.itms = itms;
 	}
 
 	
