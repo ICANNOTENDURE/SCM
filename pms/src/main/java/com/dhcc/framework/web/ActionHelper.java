@@ -39,7 +39,9 @@ public abstract class ActionHelper {
 
 	protected static final String doExecute(BaseAction actionRef)throws Exception {
 		BusinessRequest reqEvent = new BusinessRequest();
-		String page = WebContextHolder.getContext().getRequest().getParameter("page");		
+		String page = WebContextHolder.getContext().getRequest().getParameter("page");
+		String sort=WebContextHolder.getContext().getRequest().getParameter("sort");
+		String order=WebContextHolder.getContext().getRequest().getParameter("order");
 		if(actionRef.getBaseDto()!=null){
 			actionRef.getBaseDto().initTradeAccount();
 			WebContextHolder.getContext().setTradeAccount(actionRef.getBaseDto().getTradeAccount());
@@ -50,6 +52,8 @@ public abstract class ActionHelper {
 		
 		if (page != null&&actionRef.getBaseDto()!=null) {
 			actionRef.getBaseDto().setPageModel(new PagerModel());
+			actionRef.getBaseDto().setSort(sort);
+			actionRef.getBaseDto().setSortOrder(order);
 			actionRef.getBaseDto().getPageModel().setPageNo(Integer.valueOf(page));
 			String rows = WebContextHolder.getContext().getRequest().getParameter("rows");
 			actionRef.getBaseDto().getPageModel().setPageSize(Integer.valueOf(rows == null ? "10" : rows));

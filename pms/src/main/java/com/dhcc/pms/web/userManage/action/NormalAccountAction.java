@@ -31,7 +31,7 @@ import com.dhcc.pms.service.ven.VendorService;
 @Namespace(value="/normalAccount")
 @Scope("prototype")
 @Action(value="normalAccountCtrl",results={
-		@Result(name="normalAccountMain",location="/WEB-INF/jsp/ven/update.jsp"),
+		@Result(name="normalAccountMain",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
 		@Result(name="editInfo",location="/WEB-INF/jsp/userManage/editAccount.jsp"),
 		@Result(name="editInfoVen",location="/WEB-INF/jsp/ven/update.jsp"),
 		@Result(name="normalAccountList",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),

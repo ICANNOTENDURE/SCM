@@ -50,6 +50,11 @@ public class BaseDto implements Serializable {
 	
 	private String filterStr;
 	
+	private String sortOrder;
+	
+	private String sort;
+	
+	
 	public BaseDto() {
 
 	}
@@ -204,4 +209,35 @@ public class BaseDto implements Serializable {
 		this.filterStr = filterStr;
 	}
 
+
+
+	/**
+	 * @return the sort
+	 */
+	public String getSort() {
+		return sort;
+	}
+
+	/**
+	 * @param sort the sort to set
+	 */
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	/**
+	 * @return the sortOrder
+	 */
+	public String getSortOrder() {
+		return sortOrder;
+	}
+
+	/**
+	 * @param sortOrder the sortOrder to set
+	 */
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+	
+	
 }

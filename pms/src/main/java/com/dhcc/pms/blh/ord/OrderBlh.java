@@ -559,9 +559,15 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @date 2014年7月28日 下午5:52:24
 	* @version V1.0
 	 */
-	@SuppressWarnings("unchecked")
+	
 	public void importOrderByWS(HisOrderWebVo hisOrderWebVo,OperateResult operateResult){
 
+		
+		this.importOrderByWSSub(hisOrderWebVo,operateResult);
+
+	}
+	@SuppressWarnings("unchecked")
+	public void importOrderByWSSub(HisOrderWebVo hisOrderWebVo,OperateResult operateResult){
 		if(hisOrderWebVo.getHisOrderItmWebVos().size()==0){
 			operateResult.setResultCode("-1");
 			operateResult.setResultContent("订单明细不能为空");
