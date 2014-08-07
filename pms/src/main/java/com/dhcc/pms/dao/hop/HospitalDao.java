@@ -127,4 +127,5 @@ public class HospitalDao extends HibernatePersistentObjectDAO<Hospital> {
 		}
 		return hospitals.get(0);
 	}
+
 }

@@ -54,7 +54,9 @@ $(function (){
 	        {field:'hopCode',title:'代码',width:100},  
 	        {field:'hopName',title:'名称',width:100},
 	        {field:'hopType',title:'分类',width:100} 
-	    ]]	 
+	    ]],
+	    pageSize:20,
+	    pageList:[20,40,60],
 	});
 	
 	//新增或更新成功的回调函数

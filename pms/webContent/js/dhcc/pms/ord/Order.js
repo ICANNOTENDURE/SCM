@@ -318,7 +318,7 @@ function searchOrder(){
 	    loadMsg:'加载数据中.....',
 	    pagination:true,
 	    fitColumns:true,
-	    rownumbers:true,
+	    //rownumbers:true,
 	    queryParams:{
 	    	'dto.state':0
 	    },
@@ -347,15 +347,15 @@ function searchOrder(){
 	    	$("#remark").val(rowData.remark);
 	    },
 	    columns:[[  
-	  	        {field:'orderid',title:'ID',width:100},
+	  	        {field:'orderid',title:'ID',hidden:true},
 	  	        {field:'hisno',title:'HIS单号',width:100},
-	  	        {field:'statedesc',title:'状态',width:100,sortable:true},
-	  	        {field:'emflag',title:'加急',width:100,sortable:true},
+	  	        {field:'statedesc',title:'状态',width:40,sortable:true},
+	  	        {field:'emflag',title:'加急',width:40,sortable:true},
 	  	        {field:'purloc',title:'入库科室',width:150,sortable:true},  
 	  	        {field:'recloc',title:'收货科室',width:150,sortable:true},
 	  	        {field:'destination',title:'收货地址',width:200,sortable:true},
 	  	        {field:'vendor',title:'供应商',width:150,sortable:true},
-	  	        {field:'deliverydate',title:'要求送达日期',width:100,sortable:true}
+	  	        {field:'deliverydate',title:'要求送达日期',width:50,sortable:true}
 	  	 ]]
 	});
 	

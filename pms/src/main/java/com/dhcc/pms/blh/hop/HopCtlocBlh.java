@@ -7,16 +7,20 @@ package com.dhcc.pms.blh.hop;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
+import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
@@ -24,8 +28,13 @@ import com.dhcc.framework.web.context.WebContext;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.hop.HopCtlocDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
+import com.dhcc.pms.entity.hop.Hospital;
+import com.dhcc.pms.entity.sys.SysLog;
 import com.dhcc.pms.entity.vo.hop.HopCtlocVo;
 import com.dhcc.pms.service.hop.HopCtlocService;
+import com.dhcc.pms.ws.his.client.HisCtlocList;
+import com.dhcc.pms.ws.his.client.HisLocItm;
+import com.dhcc.pms.ws.his.client.SCM;
 
 
 @Component
@@ -206,4 +215,61 @@ public class HopCtlocBlh extends AbstractBaseBlh {
 		commonService.saveOrUpdate(hopCtloc);
 		dto.setOpFlg("1");
 	}
+	
+	
+	
+	/**
+	 * 
+	* @Title: HopCtlocBlh.java
+	* @Description: TODO(任务调用医院webservice同步更新科室信息)
+	* @param hisCtlocList
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年8月7日 上午9:18:29
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public void GetHisLocXHWS(){
+		
+		SysLog log=new SysLog();
+		log.setOpDate(new Date());
+		log.setOpType("webservice client");
+		log.setOpName("同步his科室信息列表");
+		log.setOpUser(BaseConstants.BJXH_CODE);
+		try {
+			SCM scm=new SCM();
+			HisCtlocList hisCtlocList=scm.getSCMSoap().getLoc();
+			log.setOpArg(JsonUtils.toJson(hisCtlocList));
+			DetachedCriteria criteria = DetachedCriteria.forClass(Hospital.class);
+			criteria.add(Restrictions.eq("hospitalCode", BaseConstants.BJXH_CODE));
+			List<Hospital> hospitals=commonService.findByDetachedCriteria(criteria);
+			for(HisLocItm hisLocItm:hisCtlocList.getHisLocItms()){
+				DetachedCriteria criteriaLoc = DetachedCriteria.forClass(HopCtloc.class);
+				criteriaLoc.add(Restrictions.eq("code", hisLocItm.getLocCode()));
+				criteriaLoc.add(Restrictions.eq("hospid", hospitals.get(0).getHospitalId()));
+				List<HopCtloc> hopCtlocs=commonService.findByDetachedCriteria(criteriaLoc);
+				HopCtloc hopLocCtloc=new HopCtloc();
+				if(hopCtlocs.size()>0){
+					hopLocCtloc=hopCtlocs.get(0);
+				}else{
+					hopLocCtloc.setCode(hisLocItm.getLocCode());
+					hopLocCtloc.setHospid(hospitals.get(0).getHospitalId());
+				}
+				hopLocCtloc.setName(hisLocItm.getLocDesc());
+				commonService.saveOrUpdate(hopLocCtloc);
+			}
+			
+			
+			
+			log.setOpResult("success");
+
+		} catch (Exception e) {
+			log.setOpResult(e.getMessage());
+			e.printStackTrace();
+		}finally{
+			commonService.saveOrUpdate(log);
+		}
+
+	}
+
 }	

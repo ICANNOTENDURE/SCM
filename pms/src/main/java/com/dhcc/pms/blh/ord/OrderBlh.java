@@ -45,6 +45,7 @@ import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.ImpModel;
 import com.dhcc.pms.entity.sys.SysLog;
+import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
 import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.ws.HisCmpRecWeb;
@@ -308,6 +309,7 @@ public class OrderBlh extends AbstractBaseBlh {
 			sheet = workbook.getSheetAt(0);
 			
 			dto.setOpFlg("1");
+			dto.setMsg("操作成功");
 			for (int numRows = 1; numRows <= sheet.getLastRowNum(); numRows++) {
 				
 				row = sheet.getRow(numRows);
@@ -488,13 +490,17 @@ public class OrderBlh extends AbstractBaseBlh {
 			orderService.importOrderByExcel(orderMap);
 			
 			SysLog log=new SysLog();
-			log.setOpArg(JsonUtils.toJson(orderMap));
-			log.setOpName("webservice医院入库审核入库单");
+			for(Map.Entry<String, Order> entry: orderMap.entrySet()) {
+				   Order order=entry.getValue();
+				   log.setOpArg(log.getOpArg()+"."+ JsonUtils.toJson(order));
+			}	   
+		
+			log.setOpName("webservice医院订单excel导入");
 			log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr().toString());
 			log.setOpDate(new Date());
-			log.setOpResult(JsonUtils.toJson(dto));
-			log.setOpType("webservice");
-			log.setOpUser(userID.toString());
+			log.setOpResult(dto.getMsg());
+			log.setOpType("excel上传");
+			log.setOpUser(commonService.get(NormalAccount.class, userID).getAccountAlias());
 			commonService.saveOrUpdate(log);
 			
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));

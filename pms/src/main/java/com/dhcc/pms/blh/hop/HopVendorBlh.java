@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
@@ -34,9 +37,15 @@ import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.hop.HopVendorDto;
 import com.dhcc.pms.dto.sys.SysImpModelDto;
 import com.dhcc.pms.entity.hop.HopVendor;
+import com.dhcc.pms.entity.hop.Hospital;
 import com.dhcc.pms.entity.sys.ImpModel;
+import com.dhcc.pms.entity.sys.SysLog;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.service.hop.HopVendorService;
 import com.dhcc.pms.service.sys.SysImpModelService;
+import com.dhcc.pms.ws.his.client.HisVendor;
+import com.dhcc.pms.ws.his.client.HisVendorItm;
+import com.dhcc.pms.ws.his.client.SCM;
 
 
 @Component
@@ -313,5 +322,88 @@ public class HopVendorBlh extends AbstractBaseBlh {
 	public void findHopVenComboxVos(BusinessRequest res) throws IOException{
 		HopVendorDto dto = super.getDto(HopVendorDto.class, res);
 		WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(hopVendorService.findHopVenComboxVos(dto.getComgridparam())));
+	}
+	
+	
+	/**
+	 * 
+	* @Title: HopVendorBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年8月7日 上午11:01:12
+	* @version V1.0
+	 */
+	@SuppressWarnings({ "unchecked" })
+	public void GetHisVendorXHWS(){
+		
+		SysLog log=new SysLog();
+		log.setOpDate(new Date());
+		log.setOpType("webservice client");
+		log.setOpName("同步his供应商信息列表");
+		log.setOpUser(BaseConstants.BJXH_CODE);
+		try {
+			SCM scm=new SCM();
+			HisVendor  HisVendor=scm.getSCMSoap().getVendor("1");
+			log.setOpArg(JsonUtils.toJson(HisVendor));
+			DetachedCriteria criteria = DetachedCriteria.forClass(Hospital.class);
+			criteria.add(Restrictions.eq("hospitalCode", BaseConstants.BJXH_CODE));
+			List<Hospital> hospitals=commonService.findByDetachedCriteria(criteria);
+			
+			
+			
+			
+			
+			for(HisVendorItm hisVendorItm:HisVendor.getHisVendorItms()){
+				DetachedCriteria criteriaLoc = DetachedCriteria.forClass(HopVendor.class);
+				criteriaLoc.add(Restrictions.eq("hopCode", hisVendorItm.getVenCode()));
+				criteriaLoc.add(Restrictions.eq("hopHopId", hospitals.get(0).getHospitalId()));
+				List<HopVendor> hopVendors=commonService.findByDetachedCriteria(criteriaLoc);
+				HopVendor hopVendor=new HopVendor();
+				if(hopVendors.size()>0){
+					hopVendor=hopVendors.get(0);
+				}else{
+					hopVendor.setHopCode(hisVendorItm.getVenCode());
+					hopVendor.setHopHopId(hospitals.get(0).getHospitalId());
+					if(!StringUtils.isNullOrEmpty(hisVendorItm.getVenDesc())){
+						hopVendor.setHopAlias(PingYinUtil.getFirstSpell(hisVendorItm.getVenDesc()));
+					}
+				}
+				hopVendor.setHopName(hisVendorItm.getVenDesc());
+				hopVendor.setHopType(hisVendorItm.getVenType());
+				commonService.saveOrUpdate(hopVendor);
+				if(hopVendor.getHopVenId()==null){
+					
+					DetachedCriteria criteria1 = DetachedCriteria.forClass(Vendor.class);
+					criteria1.add(Restrictions.eq("code", hisVendorItm.getVenCode()));
+					List<Vendor> vendors=commonService.findByDetachedCriteria(criteria1);
+					if(vendors.size()>0){
+						hopVendor.setHopVenId(vendors.get(0).getVendorId());
+						commonService.saveOrUpdate(hopVendor);
+					}else{
+						Vendor vendor=new Vendor();
+						if(!StringUtils.isNullOrEmpty(hisVendorItm.getVenDesc())){
+							vendor.setAlias(PingYinUtil.getFirstSpell(hisVendorItm.getVenDesc()));
+						}
+						
+						vendor.setName(hisVendorItm.getVenDesc());
+						vendor.setCode(hisVendorItm.getVenCode());
+						commonService.saveOrUpdate(vendor);
+						hopVendor.setHopVenId(vendor.getVendorId());
+						commonService.saveOrUpdate(hopVendor);
+					}
+					
+				}
+			}
+
+			log.setOpResult("success");
+
+		} catch (Exception e) {
+			log.setOpResult(e.getMessage());
+			e.printStackTrace();
+		}finally{
+			commonService.saveOrUpdate(log);
+		}
+
 	}
 }

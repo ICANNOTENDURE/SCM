@@ -73,4 +73,7 @@ public abstract class BaseConstants {
 	 */
 	
 	public static final int COMBOX_PAGE_SIZE = 20;
+	
+	
+	public static final String BJXH_CODE="bjxh";
 }
