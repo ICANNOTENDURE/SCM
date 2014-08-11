@@ -304,6 +304,8 @@ $(document).ready(function () {
 	$("#hid").on('click',function(){
 		//$("#leftPanel").css('width',478);
 	});
+	$("#mainPanel iframe").attr("src","http://tympanus.net/Blueprints/VerticalTimeline/");
+	
 });
 
 </script>

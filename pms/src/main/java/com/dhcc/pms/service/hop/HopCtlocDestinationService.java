@@ -24,5 +24,6 @@ public interface HopCtlocDestinationService {
 
 	public void getListInfo(HopCtlocDestinationDto dto);
 	
+	public HopCtlocDestination getDesctionByCode(String code,Long hopId);
 
 }

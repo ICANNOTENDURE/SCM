@@ -5,10 +5,13 @@
 package com.dhcc.pms.dao.hop;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.dhcc.framework.common.PagerModel;
@@ -57,7 +60,7 @@ public class HopCtlocDestinationDao extends HibernatePersistentObjectDAO<HopCtlo
 		//拼接查询条件		
 		if (hopCtlocDestination!=null) {
 			hqlStr.append(" where 1=1 ");
-			String ctlocId =hopCtlocDestination.getCtlocDr();
+			Long ctlocId =hopCtlocDestination.getCtlocDr();
 			String destinatonStr =hopCtlocDestination.getDestination();	
 			//String contactStr=hopCtlocDestination.getContact();
 			if(!StringUtils.isNullOrEmpty(destinatonStr)){
@@ -123,22 +126,22 @@ public class HopCtlocDestinationDao extends HibernatePersistentObjectDAO<HopCtlo
 		hqlBuffer.append(" select ");
 		hqlBuffer.append(" h.CTLOCDES_ID as hopctlocdestinationid, ");
 		hqlBuffer.append(" h.CTLOCDES_DESTINATION as destination, ");
-		hqlBuffer.append(" hh.realName as descontact, ");
+		hqlBuffer.append(" h.CTLOCDES_CONTACT2 as descontact, ");
 		hqlBuffer.append(" h.CTLOCDES_TEL as destel, ");
 		hqlBuffer.append(" h.CTLOCDES_CTLOCDR as desctlocdr, ");
 		hqlBuffer.append(" h.CTLOCDES_MAIL as mail, ");
 		hqlBuffer.append(" hc.CTLOC_DEST as defaultdestion, ");
+		hqlBuffer.append(" h.CTLOCDES_CODE as desccode, ");
 		hqlBuffer.append(" hc.CTLOC_NAME as desctlocname ");
 		hqlBuffer.append(" from T_SYS_CTLOC_DESTINATION h ");
 		hqlBuffer.append(" left join T_SYS_CTLOC hc on h.CTLOCDES_CTLOCDR=hc.CTLOC_ID ");
-		hqlBuffer.append(" left join T_SYS_NORMAL_USER hh on hh.USER_ID=h.CTLOCDES_CONTACT ");
 		hqlBuffer.append(" where 1=1 ");
 		if (dto.getHopCtlocDestination()!=null) {			
 			if(!StringUtils.isNullOrEmpty(dto.getHopCtlocDestination().getDestination())){
 				hqlBuffer.append(" AND h.CTLOCDES_DESTINATION like:destinatonStr ");
 				hqlParamMap.put("destinatonStr","%"+dto.getHopCtlocDestination().getDestination()+"%");
 			}
-			if(!StringUtils.isNullOrEmpty(dto.getHopCtlocDestination().getCtlocDr())){
+			if(dto.getHopCtlocDestination().getCtlocDr()!=null){
 				hqlBuffer.append(" AND h.CTLOCDES_CTLOCDR =:ctlocId ");
 				hqlParamMap.put("ctlocId",dto.getHopCtlocDestination().getCtlocDr());
 			}
@@ -151,6 +154,32 @@ public class HopCtlocDestinationDao extends HibernatePersistentObjectDAO<HopCtlo
 		dto.getPageModel().setQueryHql(hqlBuffer.toString());
 		dto.getPageModel().setHqlParamMap(hqlParamMap);
 		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), HopDestinationVo.class, "CTLOCDES_ID");
+	}
+	
+	
+	/**
+	 * 
+	* @Title: HopCtlocDestinationDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param code
+	* @param hopId
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年8月11日 上午10:48:58
+	* @version V1.0
+	 */
+	@SuppressWarnings("unchecked")
+	public HopCtlocDestination getDesctionByCode(String code,Long hopId){
+		DetachedCriteria criteriaOrderNo = DetachedCriteria.forClass(HopCtlocDestination.class);
+		criteriaOrderNo.add(Restrictions.eq("code",code));
+		List<HopCtlocDestination> orders=super.findByDetachedCriteria(criteriaOrderNo);
+		for(HopCtlocDestination HopCtlocDestination:orders){
+			HopCtloc HopCtloc=super.get(HopCtloc.class, HopCtlocDestination.getCtlocDr());
+			if(HopCtloc.getHospid().toString().equals(hopId.toString())){
+				return HopCtlocDestination;
+			}		
+		}
+		return null;
 	}
 		
 }

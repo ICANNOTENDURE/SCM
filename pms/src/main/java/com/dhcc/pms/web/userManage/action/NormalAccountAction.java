@@ -33,7 +33,7 @@ import com.dhcc.pms.service.ven.VendorService;
 @Action(value="normalAccountCtrl",results={
 		@Result(name="normalAccountMain",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
 		@Result(name="editInfo",location="/WEB-INF/jsp/userManage/editAccount.jsp"),
-		@Result(name="editInfoVen",location="/WEB-INF/jsp/ven/update.jsp"),
+		@Result(name="editInfoVen",location="/WEB-INF/jsp/userManage/editVen.jsp"),
 		@Result(name="normalAccountList",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
 		@Result(name="deleteNormalAccount",location="/WEB-INF/jsp/userManage/normalAccount.jsp"),
 		@Result(name="editPassword",location="/WEB-INF/jsp/userManage/password.jsp")
@@ -111,13 +111,6 @@ public class NormalAccountAction extends BaseAction{
 				return "editInfo";
 			}
 			if(type.toString().equals("2")){
-				Long vendorLong=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
-
-				Vendor vendor=new Vendor();
-				vendor.setVendorId(vendorLong);
-				dto.setVendor(vendor);
-				dto.setVendor(commonService.get(Vendor.class, vendorLong));
-				dto.setVenQualifTypeVOList(vendorService.queryQualifyType(dto));
 				return "editInfoVen";
 			}
 			

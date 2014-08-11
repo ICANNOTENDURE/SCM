@@ -38,12 +38,13 @@
 					<td class="textLabel">科室:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="combobox" type="text" name="dto.hopCtlocDestination.ctlocDr"
-						 id="comboCtloc" /></td>					
+						 id="comboCtloc" required="true"/></td>					
 				</tr>
+				
 				<tr>
 					<td class="textLabel">联系人员:</td>
 					<td class="textParent"><input style="width: 250px;"
-						class="combobox" type="text" name="dto.hopCtlocDestination.contact"
+						 type="text" name="dto.hopCtlocDestination.contact"
 						 id="contact" /></td>					
 				</tr>
 				<tr>
@@ -59,10 +60,16 @@
 						 id="mail" /></td>					
 				</tr>
 				<tr>
+					<td class="textLabel">代码:</td>
+					<td class="textParent"><input style="width: 250px;"
+						 type="text" name="dto.hopCtlocDestination.code"
+						 id="code" class="validatebox" required="true"/></td>					
+				</tr>
+				<tr>
 					<td class="textLabel">地址:</td>
 					<td class="textParent"><input style="width: 250px;"
 						class="validatebox" type="text" name="dto.hopCtlocDestination.destination"
-						data-options="required:true" id="destination" /></td>					
+						data-options="required:true" id="destination" class="validatebox" required="true"/></td>					
 				</tr>
 				<tr>
 					<td class="textLabel">默认收货地址:</td>

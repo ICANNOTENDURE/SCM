@@ -118,6 +118,7 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 		hqlBuffer.append("t1.H_VENID as hopvenid, ");
 		hqlBuffer.append("t1.H_NAME as hopvenname, ");
 		hqlBuffer.append("t3.hospital_name as hopname, ");
+		hqlBuffer.append("t1.H_code as hopvencode, ");
 		hqlBuffer.append("t2.name as venname, ");
 		hqlBuffer.append("t1.h_vendorid as venid ");
 		

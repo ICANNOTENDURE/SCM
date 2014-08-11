@@ -126,13 +126,7 @@ public class OrderStateWService implements OrderStateWServiceInterface{
         dto.setUserName(userName);
         BusinessRequest request = new BusinessRequest();
         request.setDto(dto);
-
-        try {
-            blh.listOrderWS(request);
-        } catch(Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        
+        blh.listOrderWS(request); 
         return (List<OrderWebVo>)dto.getOrderWSVos();
 
     }

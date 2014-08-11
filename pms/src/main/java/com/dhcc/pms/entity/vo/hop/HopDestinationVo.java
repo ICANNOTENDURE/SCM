@@ -26,7 +26,7 @@ public class HopDestinationVo {
 	
 	private Long defaultdestion;
 	
-	
+	private String desccode;
 	
 	/**
 	 * @return the defaultDestion
@@ -139,9 +139,23 @@ public class HopDestinationVo {
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
-	
-	
 
+	/**
+	 * @return the desccode
+	 */
+	public String getDesccode() {
+		return desccode;
+	}
+
+	/**
+	 * @param desccode the desccode to set
+	 */
+	public void setDesccode(String desccode) {
+		this.desccode = desccode;
+	}
+	
+	
+	
 	
 	
 }

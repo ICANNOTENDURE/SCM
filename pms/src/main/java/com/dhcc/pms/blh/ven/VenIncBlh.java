@@ -43,6 +43,7 @@ import com.dhcc.pms.entity.ven.VenInc;
 import com.dhcc.pms.entity.ven.VenIncPic;
 import com.dhcc.pms.entity.vo.ws.VenIncItmWeb;
 import com.dhcc.pms.service.hop.HopIncService;
+import com.dhcc.pms.service.hop.HopVendorService;
 import com.dhcc.pms.service.manf.HopManfService;
 import com.dhcc.pms.service.sys.SysImpModelService;
 import com.dhcc.pms.service.userManage.NormalAccountService;
@@ -75,6 +76,8 @@ public class VenIncBlh extends AbstractBaseBlh {
 	@Resource
 	private HopIncService hopIncService;
 
+	@Resource
+	private HopVendorService hopVendorService;
 	
 	public VenIncBlh() {
 		
@@ -652,7 +655,7 @@ public class VenIncBlh extends AbstractBaseBlh {
 					dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行供应商名称为空.");
 					continue;
 				}else{
-					vendorId=vendorService.findVendorIdByName(venName);
+					vendorId=hopVendorService.findVendorByCode(venName, hopId).getHopVenId();
 					if(vendorId==null){
 						dto.setOpFlg("-2");
 						dto.setMsg(dto.getMsg()+"<BR>第"+numRows+"行供应商:"+venName+"在平台中没有。");

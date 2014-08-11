@@ -18,7 +18,9 @@ public class HopVendorVo implements java.io.Serializable{
 	private String hopname;
 
 	private String venname;
-
+	
+	private String hopvencode;
+	
 	private Long venid;
 
 	/**
@@ -89,6 +91,20 @@ public class HopVendorVo implements java.io.Serializable{
 	 */
 	public void setVenid(Long venid) {
 		this.venid = venid;
+	}
+
+	/**
+	 * @return the hopvencode
+	 */
+	public String getHopvencode() {
+		return hopvencode;
+	}
+
+	/**
+	 * @param hopvencode the hopvencode to set
+	 */
+	public void setHopvencode(String hopvencode) {
+		this.hopvencode = hopvencode;
 	}
 	
 	

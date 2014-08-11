@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.stereotype.Component;
 
@@ -164,23 +165,17 @@ public class VendorBlh extends AbstractBaseBlh {
 	* 方法功能描述:      删除文件
 	* @param:         
 	* @return:        
+	 * @throws IOException 
 	* @Author:        周鑫
 	* @Create Date:   2014年04月30日
 	 */
-	public void deleteUpload(BusinessRequest res) {
+	public void deleteUpload(BusinessRequest res) throws IOException {
 		VendorDto dto = super.getDto(VendorDto.class, res);
 		//删除upload文件夹下的所有文件
 		VenQualifPic venQualifPic=commonService.get(VenQualifPic.class,Long.valueOf(dto.getVenQualifPicId()));
 		String storePathString=ServletActionContext.getServletContext().getRealPath("/uploads")+"\\"+venQualifPic.getPath();
 		File tempFile = new File(storePathString);
-		if(tempFile.isFile() || tempFile.list().length ==0)  {  
-			tempFile.delete();       
-		}else{      
-			File[] tempFiles = tempFile.listFiles();  
-			for (int i = 0; i < tempFiles.length; i++) {  
-				tempFiles[i].delete();      
-			}
-		}
+		FileUtils.forceDelete(tempFile);
 		VenQualifPic VenQualifPic=new VenQualifPic();
 		VenQualifPic.setId(Long.valueOf(dto.getVenQualifPicId()));
 		commonService.delete(VenQualifPic);

@@ -242,4 +242,5 @@ public class VendorDao extends HibernatePersistentObjectDAO<Vendor> {
 		}
 		return null;
 	}
+
 }

@@ -451,4 +451,22 @@ public class NormalAccountBlh extends AbstractBaseBlh{
 		String locid=WebContextHolder.getContext().getRequest().getParameter("locId");
 		//WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(normalAccountService.getUserByLoc(Long.valueOf(locid))));
 	}
+	
+	
+	/**
+	 * 
+	* @Title: NormalAccountBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param req
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年8月7日 下午3:29:54
+	* @version V1.0
+	 * @throws IOException 
+	 */
+	public void getLoginVendorId(BusinessRequest req) throws IOException{
+		String vendorId=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong().toString();
+		WebContextHolder.getContext().getResponse().getWriter().write(vendorId);
+	
+	}
 }

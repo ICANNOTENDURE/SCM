@@ -27,6 +27,11 @@
    		 	});
    		
    	    });
+    	$("#save").on('click', function() {
+    		
+   		   	window.location.href="downLoadLogCtrl!downLoadLog.htm?stDate="+$("#StDate").datetimebox('getValue')+"&edDate="+$("#EdDate").datetimebox('getValue');
+   		
+   	    });
     	
     });
 	
@@ -42,6 +47,8 @@
 		<input type="text"/>
 		 <a class="linkbutton"
 			data-options="iconCls:'icon-search'" id="search">查询</a>
+		 <a class="linkbutton"
+			data-options="iconCls:'icon-save'" id="save" >另存为</a>	
 	</div>
 
 

@@ -51,6 +51,7 @@
       <xs:element minOccurs="0" name="deliveritmOrderitmid" type="xs:long"/>
       <xs:element minOccurs="0" name="deliveritmParentid" type="xs:long"/>
       <xs:element minOccurs="0" name="deliveritmQty" type="xs:float"/>
+      <xs:element minOccurs="0" name="deliveritmRecFlag" type="xs:string"/>
       <xs:element minOccurs="0" name="deliveritmRp" type="xs:float"/>
       <xs:element minOccurs="0" name="deliveritmRpamt" type="xs:float"/>
       <xs:element minOccurs="0" name="deliveritmUom" type="xs:string"/>
@@ -65,6 +66,8 @@
       <xs:element minOccurs="0" name="desction" type="xs:string"/>
       <xs:element minOccurs="0" name="emflag" type="xs:string"/>
       <xs:element minOccurs="0" name="hopname" type="xs:string"/>
+      <xs:element minOccurs="0" name="operateContent" type="xs:string"/>
+      <xs:element minOccurs="0" name="operateresuslt" type="xs:string"/>
       <xs:element maxOccurs="unbounded" minOccurs="0" name="orderItmWSVos" nillable="true" type="tns:orderItmWebVo"/>
       <xs:element minOccurs="0" name="orderid" type="xs:long"/>
       <xs:element minOccurs="0" name="orderno" type="xs:string"/>

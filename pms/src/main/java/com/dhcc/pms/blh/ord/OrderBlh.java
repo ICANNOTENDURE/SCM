@@ -55,6 +55,7 @@ import com.dhcc.pms.entity.vo.ws.HisInvInfoWeb;
 import com.dhcc.pms.entity.vo.ws.HisOrderItmWebVo;
 import com.dhcc.pms.entity.vo.ws.HisOrderWebVo;
 import com.dhcc.pms.entity.vo.ws.OperateResult;
+import com.dhcc.pms.service.hop.HopCtlocDestinationService;
 import com.dhcc.pms.service.hop.HopCtlocService;
 import com.dhcc.pms.service.hop.HopIncService;
 import com.dhcc.pms.service.hop.HopVendorService;
@@ -99,7 +100,9 @@ public class OrderBlh extends AbstractBaseBlh {
 	
 	@Resource
 	private HopManfService hopManfService;
-
+	
+	@Resource
+	private HopCtlocDestinationService hopCtlocDestinationService;
 	
 	public OrderBlh() {
 		
@@ -265,9 +268,12 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @version V1.0
 	 * @throws IOException 
 	 */
+	@SuppressWarnings("unchecked")
 	public void upload(BusinessRequest res) throws IOException{
 		
 		OrderDto dto = super.getDto(OrderDto.class, res);
+		Long hopID=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+    	Long userID=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId());
 		
 		dto.setMsg("<BR>");
 		//生成随机文件名
@@ -294,12 +300,20 @@ public class OrderBlh extends AbstractBaseBlh {
         }
         
         Map<String, Order> orderMap=new HashMap<String,Order>();
+        
+        SysLog log=new SysLog();
+        log.setOpName("医院订单excel导入");
+		log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr().toString());
+		log.setOpDate(new Date());
+		log.setOpResult(dto.getMsg());
+		log.setOpType("excel上传");
+		log.setOpUser(commonService.get(NormalAccount.class, userID).getAccountAlias());
+
+        
         //读取excel
         try {
 
-        	Long hopID=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
-        	Long userID=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId());
-			//读取Excel文件
+        	//读取Excel文件
 			HSSFWorkbook workbook = null;
 			HSSFSheet sheet = null;
 			HSSFRow row = null;
@@ -315,7 +329,6 @@ public class OrderBlh extends AbstractBaseBlh {
 				row = sheet.getRow(numRows);
 				String orderNo="";
 				String purLoc="";
-				String recLoc="";
 				String emflag="";
 				String destion="";
 				Date requireDate=null;
@@ -331,26 +344,25 @@ public class OrderBlh extends AbstractBaseBlh {
 					switch (colNameString) {
 							case "订单号":
 								if(cell!=null){
+									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 									orderNo=cell.getStringCellValue();
-								}
-								break;
-							case "收货科室":
-								if(cell!=null){
-									purLoc=cell.getStringCellValue();
 								}
 								break;
 							case "入库科室":
 								if(cell!=null){
-									recLoc=cell.getStringCellValue();	
+									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+									purLoc=cell.getStringCellValue();	
 								}
 								break;	
 							case "是否加急":
 								if(cell!=null){
+									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 									emflag=cell.getStringCellValue();
 								}
 								break;
 							case "收货地址":
 								if(cell!=null){
+									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 									destion=cell.getStringCellValue();
 								}
 								break;
@@ -367,16 +379,19 @@ public class OrderBlh extends AbstractBaseBlh {
 								break;
 							case "HIS药品代码":
 								if(cell!=null){
+									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 									incCode=cell.getStringCellValue();
 								}
 								break;	
 							case "数量":
 								if(cell!=null){
+									cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
 									qty=(float)cell.getNumericCellValue();
 								}
 								break;	
 							case "进价":
 								if(cell!=null){
+									cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
 									rp=(float)cell.getNumericCellValue();
 								}
 								break;		
@@ -387,6 +402,15 @@ public class OrderBlh extends AbstractBaseBlh {
 				if(StringUtils.isNullOrEmpty(orderNo)){
 					dto.setOpFlg("-1");
 					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行订单号不能为空");
+				}else{
+					DetachedCriteria criteriaOrderNo = DetachedCriteria.forClass(Order.class);
+					criteriaOrderNo.add(Restrictions.eq("orderNo",orderNo));
+					criteriaOrderNo.add(Restrictions.eq("hopId", hopID));
+					List<Order> orders=commonService.findByDetachedCriteria(criteriaOrderNo);
+					if(orders.size()>0){
+						dto.setOpFlg("-1");
+						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行订单号已经上传");
+					}
 				}
 				
 				if(StringUtils.isNullOrEmpty(venCode)){
@@ -394,9 +418,9 @@ public class OrderBlh extends AbstractBaseBlh {
 					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行供应商代码不能为空");
 				}
 				
-				if(StringUtils.isNullOrEmpty(recLoc)){
+				if(StringUtils.isNullOrEmpty(destion)){
 					dto.setOpFlg("-1");
-					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行收货科室不能为空");
+					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行收货地址不能为空");
 				}
 				if(StringUtils.isNullOrEmpty(purLoc)){
 					dto.setOpFlg("-1");
@@ -444,12 +468,20 @@ public class OrderBlh extends AbstractBaseBlh {
 						continue;
 					}
 					
-					Long recLocId=hopCtlocService.getLocIdByName(recLoc);
-					if(recLocId==null){
+					
+					HopCtlocDestination ctlocDestination=hopCtlocDestinationService.getDesctionByCode(destion, hopID);
+					Long recLocId=null;
+					Long desctId=null;
+					if(ctlocDestination==null){
 						dto.setOpFlg("-1");
-						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+recLoc+"，收货科室错误");
+						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+destion+"，收货地址错误");
 						continue;
+					}else{
+						recLocId=ctlocDestination.getCtlocDr();
+						desctId=ctlocDestination.getHopCtlocDestinationId();
 					}
+					
+
 					
 					Long purLocId=hopCtlocService.getLocIdByName(purLoc);
 					if(purLocId==null){
@@ -460,23 +492,17 @@ public class OrderBlh extends AbstractBaseBlh {
 					
 					
 					Order order=new Order();
-					if(StringUtils.isNullOrEmpty(destion)){
-						HopCtloc hopCtloc=commonService.get(HopCtloc.class, recLocId);
-						if(hopCtloc.getCtlocDest()!=null){
-							order.setRecDestination(hopCtloc.getCtlocDest());
-						}
-					}else{
-						
-					}
+					
 					order.setEmFlag(emflag);
 					order.setCreateUser(userID);
 					order.setOrderNo(orderNo);
 					order.setHopId(hopID);
 					order.setPlanDate(new Date());
-					order.setVendorId(hopVendor.getHopVenId());
+					order.setVendorId(hopVendor.getHopVendorId());
 					order.setPlanArrDate(requireDate);
 					order.setPurLoc(purLocId);
 					order.setRecLoc(recLocId);
+					order.setRecDestination(desctId);
 					List<OrderItm> itms=new ArrayList<OrderItm>();
 					itms.add(orderItm);
 					order.setItms(itms);
@@ -489,27 +515,23 @@ public class OrderBlh extends AbstractBaseBlh {
 			}
 			orderService.importOrderByExcel(orderMap);
 			
-			SysLog log=new SysLog();
+			
 			for(Map.Entry<String, Order> entry: orderMap.entrySet()) {
 				   Order order=entry.getValue();
 				   log.setOpArg(log.getOpArg()+"."+ JsonUtils.toJson(order));
 			}	   
 		
-			log.setOpName("webservice医院订单excel导入");
-			log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr().toString());
-			log.setOpDate(new Date());
-			log.setOpResult(dto.getMsg());
-			log.setOpType("excel上传");
-			log.setOpUser(commonService.get(NormalAccount.class, userID).getAccountAlias());
-			commonService.saveOrUpdate(log);
+			
 			
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		} catch (Exception e) {
 			e.printStackTrace();
 			dto.setOpFlg("-11");
 			dto.setMsg(dto.getMsg()+"<br>程序异常:"+e.getMessage());
+			log.setOpResult("falie:exception:"+e.getMessage());
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		}finally{
+			commonService.saveOrUpdate(log);
 			FileUtils.forceDelete(dstFile);
 		}
 	}

@@ -28,8 +28,8 @@ public class HopCtlocDestination implements Serializable {
 	@Column(name="CTLOCDES_ID")	
 	private Long hopCtlocDestinationId;
 
-	@Column(name="CTLOCDES_CONTACT")
-	private Long contact;
+	@Column(name="CTLOCDES_CONTACT2")
+	private String contact;
 
 	@Column(name="CTLOCDES_DESTINATION")
 	private String destination;
@@ -38,10 +38,13 @@ public class HopCtlocDestination implements Serializable {
 	private String tel;
 	
 	@Column(name="CTLOCDES_CTLOCDR")
-	private String ctlocDr;
+	private Long ctlocDr;
 
 	@Column(name="CTLOCDES_MAIL")
 	private String mail;
+	
+	@Column(name="CTLOCDES_CODE")
+	private String code;
 
 	public HopCtlocDestination() {
 	}
@@ -100,12 +103,12 @@ public class HopCtlocDestination implements Serializable {
 	}
 
 
-	public Long getContact() {
+	public String getContact() {
 		return contact;
 	}
 
 
-	public void setContact(Long contact) {
+	public void setContact(String contact) {
 		this.contact = contact;
 	}
 
@@ -129,13 +132,37 @@ public class HopCtlocDestination implements Serializable {
 		this.tel = tel;
 	}
 
-	public String getCtlocDr() {
+	public Long getCtlocDr() {
 		return ctlocDr;
 	}
 
 
-	public void setCtlocDr(String ctlocDr) {
+	public void setCtlocDr(Long ctlocDr) {
 		this.ctlocDr = ctlocDr;
+	}
+
+
+
+
+
+
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
+
+
+
+
+
+
+	/**
+	 * @param code the code to set
+	 */
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	

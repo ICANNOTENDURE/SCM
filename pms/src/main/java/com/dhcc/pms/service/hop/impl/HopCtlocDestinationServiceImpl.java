@@ -62,6 +62,15 @@ public class HopCtlocDestinationServiceImpl implements HopCtlocDestinationServic
 		hopCtlocDestinationDao.getListInfo(dto);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopCtlocDestinationService#getDesctionByCode(java.lang.String, java.lang.Long)
+	 */
+	@Override
+	public HopCtlocDestination getDesctionByCode(String code, Long hopId) {
+		// TODO Auto-generated method stub
+		return hopCtlocDestinationDao.getDesctionByCode(code, hopId);
+	}
+
 	
 
 }

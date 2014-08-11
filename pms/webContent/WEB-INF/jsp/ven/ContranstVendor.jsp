@@ -155,6 +155,7 @@
 						<tr>
 							<th data-options="field:'hopvenid',hidden:true">IncId ID</th>
 							<th data-options="field:'hopvenname',width:100,sortable:true">供应商</th>
+							<th data-options="field:'hopvencode',width:100,sortable:true">医院供应商代码</th>
 							<th data-options="field:'hopname',width:50,sortable:true">医院</th>
 							<th data-options="field:'venname',width:50,sortable:true">对照供应商</th>
 							<th data-options="field:'venid',hidden:true">xx</th>
@@ -180,6 +181,7 @@
 					<thead>
 						<tr>
 							<th data-options="field:'vendorId',hidden:true">IncId ID</th>
+							<th data-options="field:'code',width:100,sortable:true">代码</th>
 							<th data-options="field:'name',width:100,sortable:true">供应商</th>
 						</tr>
 					</thead>

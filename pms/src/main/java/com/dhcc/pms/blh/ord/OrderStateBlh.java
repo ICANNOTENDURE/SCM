@@ -30,6 +30,7 @@ import com.dhcc.pms.entity.sys.SysLog;
 import com.dhcc.pms.entity.userManage.NormalAccount;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
 import com.dhcc.pms.entity.vo.ws.OperateResult;
+import com.dhcc.pms.entity.vo.ws.OrderWebVo;
 import com.dhcc.pms.service.ord.OrderStateService;
 import com.dhcc.pms.service.userManage.NormalAccountService;
 import com.dhcc.pms.service.ven.VenDeliverService;
@@ -195,35 +196,71 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	*/
 	public void listOrderWS(BusinessRequest res) {
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
-		this.listOrderWSSub(res);
-		
 		SysLog log=new SysLog();
-		log.setOpArg(JsonUtils.toJson(dto));
-		log.setOpName("webservice供应商查询订单");
-		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
+		log.setOpName("供应商查询医院订单信息订单");
 		log.setOpDate(new Date());
-		log.setOpResult(JsonUtils.toJson(dto.getOperateResult()));
 		log.setOpType("webservice");
-		log.setOpUser(dto.getUserName());
-		commonService.saveOrUpdate(log);
+
+		try{
+			this.listOrderWSSub(res);
+			log.setOpUser(dto.getUserName());
+			log.setOpArg("userName:"+dto.getUserName()+";passWord:"+dto.getPassWord());
+			log.setOpResult(JsonUtils.toJson(dto.getOrderWSVos()));
+		}catch(Exception e){
+			log.setOpResult("falie:exception_"+JsonUtils.toJson(e.getLocalizedMessage()));
+		}finally{
+			commonService.saveOrUpdate(log);
+		}
+		
+		
 	}
 	public void listOrderWSSub(BusinessRequest res) {
 		
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
 		if(StringUtils.isNullOrEmpty(dto.getUserName())){
+			OrderWebVo orderWebVo=new OrderWebVo();
+	        orderWebVo.setOperateresuslt("-1");
+	        orderWebVo.setOperateContent("用户名不能为空");
+	        List<OrderWebVo> orderWebVos=new ArrayList<OrderWebVo>();
+	        orderWebVos.add(orderWebVo);
+	        dto.setOrderWSVos(orderWebVos);
 			return;
 		}
 		if(StringUtils.isNullOrEmpty(dto.getPassWord())){
+			OrderWebVo orderWebVo=new OrderWebVo();
+	        orderWebVo.setOperateresuslt("-1");
+	        orderWebVo.setOperateContent("密码不能为空");
+	        List<OrderWebVo> orderWebVos=new ArrayList<OrderWebVo>();
+	        orderWebVos.add(orderWebVo);
+	        dto.setOrderWSVos(orderWebVos);
 			return;
 		}
 		NormalAccount normalAccount=normalAccountService.getNormalAccountByAccount(dto.getUserName());
 		if(normalAccount==null){
+			OrderWebVo orderWebVo=new OrderWebVo();
+	        orderWebVo.setOperateresuslt("-1");
+	        orderWebVo.setOperateContent("用户名不存在");
+	        List<OrderWebVo> orderWebVos=new ArrayList<OrderWebVo>();
+	        orderWebVos.add(orderWebVo);
+	        dto.setOrderWSVos(orderWebVos);
 			return;
 		}
 		if(!normalAccount.getPassword().equals(dto.getPassWord())){
+			OrderWebVo orderWebVo=new OrderWebVo();
+	        orderWebVo.setOperateresuslt("-1");
+	        orderWebVo.setOperateContent("密码不对");
+	        List<OrderWebVo> orderWebVos=new ArrayList<OrderWebVo>();
+	        orderWebVos.add(orderWebVo);
+	        dto.setOrderWSVos(orderWebVos);
 			return;
 		}
 		if(!normalAccount.getNormalUser().getType().toString().equals("2")){
+			OrderWebVo orderWebVo=new OrderWebVo();
+	        orderWebVo.setOperateresuslt("-1");
+	        orderWebVo.setOperateContent("用户名类型不对");
+	        List<OrderWebVo> orderWebVos=new ArrayList<OrderWebVo>();
+	        orderWebVos.add(orderWebVo);
+	        dto.setOrderWSVos(orderWebVos);
 			return;
 		}
 		dto.setVendor(normalAccount.getNormalUser().getVendorId());
