@@ -26,6 +26,7 @@ import com.dhcc.pms.dto.hop.HopVendorDto;
 @Action(value = "hopVendorCtrl", results = {
 		@Result(name = "list", location = "/WEB-INF/jsp/hop/HopVendor.jsp"),
 		@Result(name = "listMain", location = "/WEB-INF/jsp/hop/HopVendor.jsp"),
+		@Result(name = "listDetail", location = "/WEB-INF/jsp/hop/HopVendorDetail.jsp"),
 		@Result(name = "ContranstVendor", location = "/WEB-INF/jsp/hop/ContranstVendor.jsp")})
 @Blh("hopVendorBlh")
 @InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
@@ -42,6 +43,10 @@ public class HopVendorAction extends BaseAction {
 		//直接返回jsp
 		if("listMain".equals(super.getBusinessFlow())){
 			return "listMain";
+		}
+		//直接返回jsp
+		if("listDetail".equals(super.getBusinessFlow())){
+			return "listDetail";
 		}
 		//直接返回jsp
 		if("ContranstVendor".equals(super.getBusinessFlow())){

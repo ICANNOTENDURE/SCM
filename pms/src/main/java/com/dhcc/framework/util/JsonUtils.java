@@ -28,9 +28,10 @@ public class JsonUtils {
 	static {
 		
 		
-		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
+		//mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+		//mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		
 	}
 
 	public static String toJson(Object obj) {

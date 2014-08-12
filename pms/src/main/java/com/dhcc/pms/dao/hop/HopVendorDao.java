@@ -26,6 +26,7 @@ import com.dhcc.pms.dto.hop.HopVendorDto;
 import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.combo.ComboxVo;
+import com.dhcc.pms.entity.vo.hop.HopVendorDetailVo;
 import com.dhcc.pms.entity.vo.hop.HopVendorVo;
 
 @Repository
@@ -307,5 +308,76 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 		return hopVendors.get(0);
 	}
 	
+	
+	/**
+	 * 
+	* @Title: HopVendorDao.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年8月12日 下午2:24:28
+	* @version V1.0
+	 */
+	public void listVenDetail(HopVendorDto dto){
+		StringBuffer hqlBuffer = new StringBuffer();
+		hqlBuffer.append("select ");
+		hqlBuffer.append("t1.H_VENID as hopvenid, ");
+		hqlBuffer.append("t1.H_NAME as name, ");
+		hqlBuffer.append("t1.H_code as code, ");
+		hqlBuffer.append("t2.address as address, ");
+		hqlBuffer.append("t5.name as type, ");
+		hqlBuffer.append("t4.expdate as expdate, ");
+		hqlBuffer.append("t6.path as path, ");
+		hqlBuffer.append("t1.h_vendorid as vendorid ");
+		
+		hqlBuffer.append("from t_hop_vendor t1 ");
+		hqlBuffer.append("left join t_ven_vendor t2 on t1.h_vendorid=t2.ven_id ");
+		hqlBuffer.append("left join t_ven_qualification t4 on t4.vendor_id=t1.h_vendorid ");
+		hqlBuffer.append("left join t_ven_qualif_type t5 on t5.VENQUALIFTYPE_ID=t4.QUALIFY_TYPE_ID ");
+		hqlBuffer.append("left join t_ven_qualif_pic t6 on t6.qualify_id=t4.qualification_id ");
+		hqlBuffer.append("where 1=1 ");
+		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
+
+		if(dto.getHopVendor()!=null){
+			if (!StringUtils.isNullOrEmpty(dto.getHopVendor().getHopAlias())){
+				hqlBuffer.append("and t1.h_alias like :hvalias ");
+				hqlParamMap.put("hvalias", "%"+dto.getHopVendor().getHopAlias()+"%");
+			}
+			if (!StringUtils.isNullOrEmpty(dto.getHopVendor().getHopCode())){
+				hqlBuffer.append("and t1.h_code like :hvcode ");
+				hqlParamMap.put("hvcode", "%"+dto.getHopVendor().getHopCode()+"%");
+			}
+			if (!StringUtils.isNullOrEmpty(dto.getHopVendor().getHopName())){
+				hqlBuffer.append("and t1.h_name like :hvname ");
+				hqlParamMap.put("hvname", "%"+dto.getHopVendor().getHopName()+"%");
+			}
+		}
+		Long type=WebContextHolder.getContext().getVisit().getUserInfo().getUserType();
+		Long hopId=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+		Long vendorId=WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong();
+		if(type.toString().equals("1")){
+			hqlBuffer.append("and t1.h_hopid = :hopid ");
+			hqlParamMap.put("hopid", hopId);
+		}
+		if(type.toString().equals("2")){
+			hqlBuffer.append("and t1.h_venid = :venid ");
+			hqlParamMap.put("venid", vendorId);
+		}
+		if(!StringUtils.isNullOrEmpty(dto.getSort())){
+			if(dto.getSort().equals("name")){
+				hqlBuffer.append(" order by  t1.H_VENID,t1.h_code "+dto.getSortOrder());
+			}
+			if(dto.getSort().equals("code")){
+				hqlBuffer.append(" order by  t1.H_VENID,t1.h_name "+dto.getSortOrder());
+			}
+			
+		}else{
+			hqlBuffer.append(" order by  t1.H_VENID desc ");
+		}
+		dto.getPageModel().setQueryHql(hqlBuffer.toString());
+		dto.getPageModel().setHqlParamMap(hqlParamMap);
+		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), HopVendorDetailVo.class, "h_venid");
+	}
 	
 }

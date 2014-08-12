@@ -101,4 +101,13 @@ public class HopVendorServiceImpl implements HopVendorService {
 		return hopVendorDao.findVendorByCode(code, hopId);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.dhcc.pms.service.hop.HopVendorService#listVenDetail(com.dhcc.pms.dto.hop.HopVendorDto)
+	 */
+	@Override
+	public void listVenDetail(HopVendorDto dto) {
+		// TODO Auto-generated method stub
+		hopVendorDao.listVenDetail(dto);
+	}
+
 }

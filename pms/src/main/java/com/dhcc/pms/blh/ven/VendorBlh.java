@@ -89,7 +89,7 @@ public class VendorBlh extends AbstractBaseBlh {
 	
 		VendorDto dto = super.getDto(VendorDto.class, res);
 		
-
+		
 		List<VenQualification> venQualificationList=JsonUtils.toObject(dto.getVenQualificationList(), new TypeReference<List<VenQualification>>() { });
 
 		dto.getVendor().setVenQualificationList(venQualificationList);

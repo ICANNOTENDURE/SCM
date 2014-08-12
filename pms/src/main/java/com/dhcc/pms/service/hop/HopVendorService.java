@@ -87,4 +87,16 @@ public interface HopVendorService {
 	 */
 	public HopVendor findVendorByCode(String code,Long hopId);
 	
+	/**
+	 * 
+	* @Title: HopVendorService.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param dto
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年8月12日 下午2:38:12
+	* @version V1.0
+	 */
+	public void listVenDetail(HopVendorDto dto);
+	
 }

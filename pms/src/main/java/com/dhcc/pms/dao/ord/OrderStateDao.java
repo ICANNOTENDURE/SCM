@@ -395,6 +395,8 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		StringBuffer hqlBuffer = new StringBuffer();
 		hqlBuffer.append("select ");
 		hqlBuffer.append("t1.ord_id as orderid, ");
+		hqlBuffer.append("t2.INC_SPEC as spec, ");
+		hqlBuffer.append("t7.NAME as manf, ");
 		hqlBuffer.append("t1.orderitm_id as orderitmid, ");
 		hqlBuffer.append("t1.inc_id as hopincid, ");
 		hqlBuffer.append("t3.VEN_INC_NAME as venincname, ");
@@ -411,11 +413,12 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("left join t_hop_inc t2 on t2.inc_id=t1.inc_id ");
 		hqlBuffer.append("left join t_ven_hop_inc t6 on t1.inc_id=t6.hop_inc_id ");
 		hqlBuffer.append("left join t_ven_inc t3 on t3.ven_inc_rowid=t6.ven_inc_id ");
+		hqlBuffer.append("left join T_HOP_MANF t7 on t7.ID=t2.INC_MANFID ");
 		hqlBuffer.append("where 1=1 ");
 		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
 
-		hqlBuffer.append("and t1.ord_id=:ord ");
-		hqlParamMap.put("ord", wsVo.getOrderid());
+		hqlBuffer.append("and t1.ord_id=:ordrowid ");
+		hqlParamMap.put("ordrowid", wsVo.getOrderid());
 
 		wsVo.setOrderItmWSVos(jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), OrderItmWebVo.class, hqlParamMap));
 	}

@@ -38,7 +38,7 @@ $(function() {
                 'debug' : false,
                 'fileObjName':'dto.upload',
                 'auto': true,
-                'removeCompleted':false,
+                'removeCompleted':true,
                 //开始上传时传递参数
                 'onUploadStart': function(file) {
                 	$("#"+uploadid).uploadify("settings", 'formData', {'dto.vendor.vendorId':$("#detail input[name='dto.vendor.vendorId']").val(),'dto.uploadFileName': file.name,'dto.venQualifTypeVO.qualif' : venQualificationId,'dto.venQualifTypeVO.type' : venQualifyTypeId});
@@ -94,7 +94,7 @@ $(function() {
 
                 jsonObj = new Object();
                 jsonObj.venQualificationId = venQualificationId;
-                jsonObj.expdate = exp;
+                jsonObj.expdate = exp+" 00:00:00";
                 jsonObj.venQualifTypeId = venQualifTypeId;
                 jsonObj.vendorid = $("#detail input[name='dto.vendor.vendorId']").val();
                 if ((exp != "") || (venQualificationId != "")) {

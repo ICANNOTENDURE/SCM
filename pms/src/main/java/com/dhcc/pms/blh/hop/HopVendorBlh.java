@@ -406,4 +406,21 @@ public class HopVendorBlh extends AbstractBaseBlh {
 		}
 
 	}
+	
+	
+	
+	/**
+	 * 		
+	* @Title: HopVendorBlh.java
+	* @Description: TODO(用一句话描述该文件做什么)
+	* @param res
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年8月12日 下午2:39:29
+	* @version V1.0
+	 */
+	public void listVendorDetail(BusinessRequest res) {
+		HopVendorDto dto = super.getDto(HopVendorDto.class, res);
+		hopVendorService.listVenDetail(dto);
+	}
 }

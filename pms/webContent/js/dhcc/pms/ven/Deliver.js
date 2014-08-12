@@ -190,17 +190,12 @@ function endEditing(){
         return false;
     }
 }
-function onClickRow(index, field, value){
-//	if($("#deliveryState").val()!="接收"){
-//		return;
-//	}
+function onClickRow(index){
+
 	if(checkDelState()==4){
 		$CommonUI.alert("改订单医院以收货，不能修改!");
 		return
 	};
-	if(field=="delte"){
-		return;
-	}
     if (editIndex != index){
         if (endEditing()){
             $('#datagrid').datagrid('selectRow', index).datagrid('beginEdit', index);
@@ -321,6 +316,8 @@ function onAfterEdit(rowIndex, rowData, changes){
 					 
 					 $CommonUI.autoCloseRightBottomMessage("药品修改成功","消息",2500,'slide');
 					 $CommonUI.getDataGrid('#datagrid').datagrid('acceptChanges');
+
+					 editIndex = undefined;
 				 }	 
 	        },
 			 'json'
@@ -576,7 +573,7 @@ function addrow(index){
 		          	 "dto.venDeliveritm.deliveritmOrderitmid":$('#datagrid').datagrid('getRows')[index]['orderitmid'],
 				 },
 				 function(data){
-					 alert("orderitmid="+orderitmid);
+					 //alert("orderitmid="+orderitmid);
 					 if(data.dto.opFlg=="1"){
 						 
 						 $('#datagrid').datagrid('appendRow', {
