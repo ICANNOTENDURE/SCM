@@ -24,6 +24,7 @@ import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderStateDto;
 import com.dhcc.pms.dto.ven.VenDeliverDto;
+import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
 import com.dhcc.pms.entity.sys.SysLog;
@@ -293,9 +294,8 @@ public class OrderStateBlh extends AbstractBaseBlh {
 		this.recievedMsgSub(res);
 		
 		SysLog log=new SysLog();
-		log.setOpArg("orderIdStr:"+dto.getOrderIdStr());
+		log.setOpArg(JsonUtils.toJson(StringUtils.convertList(dto.getOrderIdStr(), BaseConstants.COMMA))+"userNmae:"+dto.getUserName()+"password："+dto.getPassWord());
 		log.setOpName("webservice供应商确认收到订单");
-		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
 		log.setOpDate(new Date());
 		log.setOpResult(JsonUtils.toJson(dto.getOperateResult()));
 		log.setOpType("webservice");
@@ -305,9 +305,38 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	public void recievedMsgSub(BusinessRequest res){
 		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
         OperateResult operateResult=new OperateResult();
-        operateResult.setResultCode("-1");
+        operateResult.setResultCode("-11");
         operateResult.setResultContent("falie");
         dto.setOperateResult(operateResult);
+        
+        if(StringUtils.isNullOrEmpty(dto.getUserName())){
+	        dto.getOperateResult().setResultCode("-1");
+	        dto.getOperateResult().setResultContent("用户名不能为空");
+			return;
+		}
+		if(StringUtils.isNullOrEmpty(dto.getPassWord())){
+			dto.getOperateResult().setResultCode("-1");
+	        dto.getOperateResult().setResultContent("密码不能为空");
+			return;
+		}
+		NormalAccount normalAccount=normalAccountService.getNormalAccountByAccount(dto.getUserName());
+		if(normalAccount==null){
+			dto.getOperateResult().setResultCode("-1");
+	        dto.getOperateResult().setResultContent("用户名或密码错误");
+			return;
+		}
+		if(!normalAccount.getPassword().equals(dto.getPassWord())){
+			dto.getOperateResult().setResultCode("-1");
+	        dto.getOperateResult().setResultContent("用户名或密码错误");
+			return;
+		}
+		if(!normalAccount.getNormalUser().getType().toString().equals("2")){
+			dto.getOperateResult().setResultCode("-1");
+	        dto.getOperateResult().setResultContent("用户名或密码错误");
+			return;
+		}
+		//dto.setVendor(normalAccount.getNormalUser().getVendorId());
+        
 		if (StringUtils.isNullOrEmpty(dto.getOrderIdStr())){
 			dto.getOperateResult().setResultCode("-1");
 			dto.getOperateResult().setResultContent("入参为空");
@@ -319,12 +348,20 @@ public class OrderStateBlh extends AbstractBaseBlh {
 			if (order==null){
 				dto.getOperateResult().setResultCode("-2");
 				dto.getOperateResult().setResultContent("入参无效");
-				return;
+				continue;
+			}
+			HopVendor hopVendor=commonService.get(HopVendor.class, order.getVendorId());
+			if(!hopVendor.getHopVenId().toString().equals(normalAccount.getNormalUser().getVendorId().toString())){
+				dto.getOperateResult().setResultCode("-2");
+				dto.getOperateResult().setResultContent("入参无效");
+				continue;
 			}
 			order.setSendFlag(1l);
 			commonService.saveOrUpdate(order);
 		}
-		
+		if(dto.getOperateResult().getResultCode().equals("-11")){
+			return;
+		}
 		dto.getOperateResult().setResultCode("0");
 		dto.getOperateResult().setResultContent("success");
 	}

@@ -274,7 +274,8 @@ public class OrderBlh extends AbstractBaseBlh {
 		OrderDto dto = super.getDto(OrderDto.class, res);
 		Long hopID=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
     	Long userID=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId());
-		
+		Long locId=WebContextHolder.getContext().getVisit().getUserInfo().getLocId();
+    	
 		dto.setMsg("<BR>");
 		//生成随机文件名
 		String newFileName =UUID.randomUUID().toString();
@@ -328,7 +329,7 @@ public class OrderBlh extends AbstractBaseBlh {
 				
 				row = sheet.getRow(numRows);
 				String orderNo="";
-				String purLoc="";
+				//String purLoc="";
 				String emflag="";
 				String destion="";
 				Date requireDate=null;
@@ -348,12 +349,12 @@ public class OrderBlh extends AbstractBaseBlh {
 									orderNo=cell.getStringCellValue();
 								}
 								break;
-							case "入库科室":
-								if(cell!=null){
-									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-									purLoc=cell.getStringCellValue();	
-								}
-								break;	
+//							case "入库科室":
+//								if(cell!=null){
+//									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+//									purLoc=cell.getStringCellValue();	
+//								}
+//								break;	
 							case "是否加急":
 								if(cell!=null){
 									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -422,10 +423,10 @@ public class OrderBlh extends AbstractBaseBlh {
 					dto.setOpFlg("-1");
 					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行收货地址不能为空");
 				}
-				if(StringUtils.isNullOrEmpty(purLoc)){
-					dto.setOpFlg("-1");
-					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行请求科室不能为空");
-				}
+//				if(StringUtils.isNullOrEmpty(purLoc)){
+//					dto.setOpFlg("-1");
+//					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行请求科室不能为空");
+//				}
 				if(StringUtils.isNullOrEmpty(incCode)){
 					dto.setOpFlg("-1");
 					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行供his药品代码不能为空");
@@ -483,12 +484,12 @@ public class OrderBlh extends AbstractBaseBlh {
 					
 
 					
-					Long purLocId=hopCtlocService.getLocIdByName(purLoc);
-					if(purLocId==null){
-						dto.setOpFlg("-1");
-						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+purLoc+"，请求科室错误");
-						continue;
-					}
+//					Long purLocId=hopCtlocService.getLocIdByName(purLoc);
+//					if(purLocId==null){
+//						dto.setOpFlg("-1");
+//						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+purLoc+"，请求科室错误");
+//						continue;
+//					}
 					
 					
 					Order order=new Order();
@@ -500,7 +501,7 @@ public class OrderBlh extends AbstractBaseBlh {
 					order.setPlanDate(new Date());
 					order.setVendorId(hopVendor.getHopVendorId());
 					order.setPlanArrDate(requireDate);
-					order.setPurLoc(purLocId);
+					order.setPurLoc(locId);
 					order.setRecLoc(recLocId);
 					order.setRecDestination(desctId);
 					List<OrderItm> itms=new ArrayList<OrderItm>();

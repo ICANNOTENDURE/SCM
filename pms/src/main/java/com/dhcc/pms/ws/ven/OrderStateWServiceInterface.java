@@ -29,7 +29,7 @@ public interface OrderStateWServiceInterface {
     * @Create Date:        2014-07-10 09:36:34.205
     */
     @WebMethod
-    public com.dhcc.pms.entity.vo.ws.OperateResult recievedMsg(@WebParam(name="orderId")String orderId) ;
+    public com.dhcc.pms.entity.vo.ws.OperateResult recievedMsg(@WebParam(name="orderId")String orderId,@WebParam(name="passWord")String passWord, @WebParam(name="userName")String userName) ;
 
 
    /**

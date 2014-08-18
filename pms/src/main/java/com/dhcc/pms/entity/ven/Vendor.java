@@ -75,6 +75,9 @@ public class Vendor implements java.io.Serializable {
 	 * @return the email
 	 */
 	public String getEmail() {
+		if(this.email==null){
+			email="";
+		}
 		return email;
 	}
 	/**
@@ -126,21 +129,31 @@ public class Vendor implements java.io.Serializable {
 		this.vendorId = vendorId;
 	}
 	public String getCode() {
+		if(this.code==null){
+			code="";
+		}
 		return code;
 	}
 	public void setCode(String code) {
 		this.code = code;
 	}
 	public String getName() {
+		if(this.name==null){
+			name="";
+		}
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
 	public String getAddress() {
+		if(this.address==null){
+			address="";
+		}
 		return address;
 	}
 	public void setAddress(String address) {
+		
 		this.address = address;
 	}
 	public String getFax() {
@@ -153,6 +166,9 @@ public class Vendor implements java.io.Serializable {
 		return tel;
 	}
 	public void setTel(String tel) {
+		if(this.tel==null){
+			tel="";
+		}
 		this.tel = tel;
 	}
 	public String getAccount() {
@@ -162,6 +178,9 @@ public class Vendor implements java.io.Serializable {
 		this.account = account;
 	}
 	public String getContact() {
+		if(this.contact==null){
+			contact="";
+		}
 		return contact;
 	}
 	public void setContact(String contact) {

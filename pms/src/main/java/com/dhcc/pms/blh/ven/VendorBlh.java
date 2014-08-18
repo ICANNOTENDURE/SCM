@@ -28,13 +28,17 @@ import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.exception.DataBaseException;
 import com.dhcc.framework.transmission.event.BusinessRequest;
+import com.dhcc.framework.util.IpUtil;
 import com.dhcc.framework.util.JsonUtils;
+import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContext;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ven.VendorDto;
+import com.dhcc.pms.entity.hop.HopVendorLog;
 import com.dhcc.pms.entity.ven.VenQualifPic;
 import com.dhcc.pms.entity.ven.VenQualifType;
 import com.dhcc.pms.entity.ven.VenQualification;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.ven.VenQualifTypeVO;
 import com.dhcc.pms.service.ven.VendorService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -88,14 +92,78 @@ public class VendorBlh extends AbstractBaseBlh {
 	public void save(BusinessRequest res) {
 	
 		VendorDto dto = super.getDto(VendorDto.class, res);
-		
-		
+		HopVendorLog log=new HopVendorLog();
+		StringBuilder logContent=new StringBuilder();
+		try{
 		List<VenQualification> venQualificationList=JsonUtils.toObject(dto.getVenQualificationList(), new TypeReference<List<VenQualification>>() { });
-
+		if(dto.getVendor().getVendorId()==null){
+			log.setOperateType("增加");
+			if(StringUtils.isNullOrEmpty(dto.getVendor().getName())){
+				logContent.append(" 名称:"+dto.getVendor().getName());
+			}
+			if(StringUtils.isNullOrEmpty(dto.getVendor().getEmail())){
+				logContent.append(" 邮箱:"+dto.getVendor().getEmail());
+			}
+			if(StringUtils.isNullOrEmpty(dto.getVendor().getAddress())){
+				logContent.append(" 地址:"+dto.getVendor().getAddress());
+			}
+			if(StringUtils.isNullOrEmpty(dto.getVendor().getContact())){
+				logContent.append(" 联系人:"+dto.getVendor().getContact());
+			}
+			for(VenQualification venQualification:venQualificationList){
+				if(venQualification.getExpdate()!=null){
+					VenQualifType venQualifType=commonService.get(VenQualifType.class, venQualification.getVenQualifTypeId());
+					logContent.append(" "+venQualifType.getName()+"效期:"+StringUtils.formatShortDate(venQualification.getExpdate()));
+				}
+			}
+		}else{
+			log.setOperateType("修改");
+			Vendor vendor=commonService.get(Vendor.class, dto.getVendor().getVendorId());
+			if(!vendor.getName().equals(dto.getVendor().getName())){
+				logContent.append(" 名称:"+dto.getVendor().getName());
+			}
+			if(!vendor.getEmail().equals(dto.getVendor().getEmail())){
+				logContent.append(" 邮箱:"+dto.getVendor().getEmail());
+			}
+			if(!vendor.getAddress().equals(dto.getVendor().getAddress())){
+				logContent.append(" 地址:"+dto.getVendor().getAddress());
+			}
+			if(!vendor.getContact().equals(dto.getVendor().getContact())){
+				logContent.append(" 联系人:"+dto.getVendor().getContact());
+			}
+			for(VenQualification venQualification:venQualificationList){
+				
+				if(venQualification.getVenQualificationId()==null){
+					if(venQualification.getExpdate()!=null){
+						VenQualifType venQualifType=commonService.get(VenQualifType.class, venQualification.getVenQualifTypeId());
+						logContent.append(" "+venQualifType.getName()+"效期:"+StringUtils.formatShortDate(venQualification.getExpdate()));
+					}
+				}else{
+					VenQualification venQualificationTmp=commonService.get(VenQualification.class, venQualification.getVenQualificationId());
+					if(!StringUtils.formatShortDate(venQualificationTmp.getExpdate()).equals(StringUtils.formatShortDate(venQualification.getExpdate()))){
+						VenQualifType venQualifType=commonService.get(VenQualifType.class, venQualification.getVenQualifTypeId());
+						logContent.append(" "+venQualifType.getName()+"效期:"+StringUtils.formatShortDate(venQualification.getExpdate()));
+					}
+				}		
+			}
+		}
 		dto.getVendor().setVenQualificationList(venQualificationList);
 		vendorService.saveOrUpdate(dto);
+		log.setVendorId(dto.getVendor().getVendorId());
 		dto.setMessage("保存成功");
 		dto.setSuccess(true);
+		
+		
+		log.setOpContent(logContent.toString());
+		log.setOperateIp(IpUtil.getIpAddrByRequest(WebContextHolder.getContext().getRequest()));
+		log.setOperateDate(new Date());
+		log.setOpUserName(WebContextHolder.getContext().getVisit().getUserInfo().getName());
+		commonService.saveOrUpdate(log);
+		}catch(Exception e){
+			e.printStackTrace();
+			dto.setSuccess(false);
+			dto.setMsg(e.getMessage());
+		}
 	}
 	
 	
@@ -175,12 +243,15 @@ public class VendorBlh extends AbstractBaseBlh {
 		VenQualifPic venQualifPic=commonService.get(VenQualifPic.class,Long.valueOf(dto.getVenQualifPicId()));
 		String storePathString=ServletActionContext.getServletContext().getRealPath("/uploads")+"\\"+venQualifPic.getPath();
 		File tempFile = new File(storePathString);
-		FileUtils.forceDelete(tempFile);
-		VenQualifPic VenQualifPic=new VenQualifPic();
-		VenQualifPic.setId(Long.valueOf(dto.getVenQualifPicId()));
-		commonService.delete(VenQualifPic);
-		dto.setMessage("保存成功");
-		dto.setSuccess(true);
+		try{
+			VenQualifPic VenQualifPic=new VenQualifPic();
+			VenQualifPic.setId(Long.valueOf(dto.getVenQualifPicId()));
+			commonService.delete(VenQualifPic);
+			dto.setSuccess(true);
+		}catch(Exception e){
+			dto.setSuccess(false);
+			FileUtils.forceDelete(tempFile);
+		}
 	}
 	/**
 	 * 
@@ -213,6 +284,21 @@ public class VendorBlh extends AbstractBaseBlh {
         WebContext context=WebContextHolder.getContext();
         
         context.getResponse().getWriter().write(dto.getVendor().getVendorId().toString());
+        
+        VenQualifType venQualifType=commonService.get(VenQualifType.class, dto.getVenQualifTypeVO().getType());
+		
+        
+        HopVendorLog log=new HopVendorLog();
+        log.setOperateType("增加");
+        //log.setOpContent();
+        log.setOperateType("P");
+        log.setOptitle(venQualifType.getName());
+        log.setVendorId(dto.getVendor().getVendorId());
+        log.setOpContent(newFileName);
+		log.setOperateIp(IpUtil.getIpAddrByRequest(WebContextHolder.getContext().getRequest()));
+		log.setOperateDate(new Date());
+		log.setOpUserName(WebContextHolder.getContext().getVisit().getUserInfo().getName());
+		commonService.saveOrUpdate(log);
 	}
 	/**
 	 * 

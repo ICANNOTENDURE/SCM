@@ -78,7 +78,9 @@ function mergeCellsByField(tableID,colList){
     }
 }
 
-
+function showHistory(rowIndex, rowData){
+	window.location.href=$WEB_ROOT_PATH+'/hop/hopVendorCtrl!HistoryDetail.htm?venodrId='+rowData.vendorid;
+}
 </script> 
 </head>
 <body>
@@ -105,7 +107,9 @@ function mergeCellsByField(tableID,colList){
 			 															   striped:true,
 			 															   pageSize: 18,
     																	   pageList: [18, 36, 72],
-    																	   onLoadSuccess: onLoadSuccess,	
+    																	   onLoadSuccess: onLoadSuccess,
+    																	   singleSelect:true,
+    																	   onDblClickRow:showHistory,	
 		 ">
 		 <thead>
             <tr>

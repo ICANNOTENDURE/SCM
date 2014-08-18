@@ -94,7 +94,9 @@ $(function() {
 
                 jsonObj = new Object();
                 jsonObj.venQualificationId = venQualificationId;
-                jsonObj.expdate = exp+" 00:00:00";
+                if((jQuery.trim(exp)!="")){
+                	jsonObj.expdate = exp+" 00:00:00";
+                }
                 jsonObj.venQualifTypeId = venQualifTypeId;
                 jsonObj.vendorid = $("#detail input[name='dto.vendor.vendorId']").val();
                 if ((exp != "") || (venQualificationId != "")) {

@@ -83,6 +83,9 @@ public class OrderStateServiceImpl implements OrderStateService {
 		// TODO Auto-generated method stub
 		orderStateDao.listOrderWS(dto);
 		for(OrderWebVo orderWSVo:(List<OrderWebVo>)dto.getOrderWSVos()){
+			if(orderWSVo.getRecloc().contains("西院")){
+				orderWSVo.setHopname(orderWSVo.getHopname()+"(西院)");
+			}
 			orderStateDao.listOrderItmWS(orderWSVo);
 			List<OrderItmWebVo> orderItmWebVos=orderWSVo.getOrderItmWSVos();
 			Map<String, OrderItmWebVo> map=new HashMap<String,OrderItmWebVo>();

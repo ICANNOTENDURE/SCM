@@ -53,9 +53,11 @@ public class OrderStateWService implements OrderStateWServiceInterface{
     */
     @Override
     @WebMethod
-    public OperateResult recievedMsg(String orderId) {
+    public OperateResult recievedMsg(String orderId,String passWord,String userName) {
 
         OrderStateDto dto = new OrderStateDto();
+        dto.setUserName(userName);
+        dto.setPassWord(passWord);
         dto.setOrderIdStr(orderId);
         BusinessRequest request = new BusinessRequest();
         request.setDto(dto);

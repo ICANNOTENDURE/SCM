@@ -111,6 +111,10 @@
   <wsdl:message name="recievedMsg">
     <wsdl:part name="orderId" type="xsd:string">
     </wsdl:part>
+    <wsdl:part name="passWord" type="xsd:string">
+    </wsdl:part>
+    <wsdl:part name="userName" type="xsd:string">
+    </wsdl:part>
   </wsdl:message>
   <wsdl:message name="listOrderWSResponse">
     <wsdl:part name="orderWebVos" type="tns:orderWebVoArray">
