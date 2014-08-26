@@ -5,18 +5,31 @@
 package com.dhcc.pms.blh.hop;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
 import com.dhcc.framework.app.service.CommonService;
@@ -256,6 +269,7 @@ public class HopCtlocBlh extends AbstractBaseBlh {
 					hopLocCtloc.setHospid(hospitals.get(0).getHospitalId());
 				}
 				hopLocCtloc.setName(hisLocItm.getLocDesc());
+				hopLocCtloc.setType("3");
 				commonService.saveOrUpdate(hopLocCtloc);
 			}
 			
@@ -271,5 +285,57 @@ public class HopCtlocBlh extends AbstractBaseBlh {
 		}
 
 	}
+	
+	
+	public void getLoc2(){
+		try {
+			URL url = new URL("http://10.160.17.11:57772/dthealth/web/web.DHCST.SoapService.SCMDataExchange.cls?soap_method=GetLoc2");//要调用的url
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(5000);
+			conn.setRequestMethod("GET");//设置get方式获取数据
+			
+			if (conn.getResponseCode() == 200) {//如果连接成功
+				
+				
+				String newFileName =UUID.randomUUID().toString()+".xml";
+				File document = new File("d:/wsXML/");
+				if (!document.exists()) {
+					document.mkdir();
+				}
 
+				File xmlFIle = new File("d:/wsXML/",newFileName);
+				OutputStream outStream=new FileOutputStream(xmlFIle);
+				byte[] buffer = new byte[BaseConstants.BUFFER_SIZE];
+				int len = 0;
+			    while( (len = conn.getInputStream().read(buffer)) !=-1 ){
+			            outStream.write(buffer, 0, len);
+			    }
+			    outStream.close();
+			    
+			    DocumentBuilderFactory      dbf=DocumentBuilderFactory.newInstance(); 
+			    DocumentBuilder builder=dbf.newDocumentBuilder();
+			    Document doc=builder.parse("d:/wsXML/"+newFileName);
+			    Element root = doc.getDocumentElement();
+			    NodeList nl=doc.getElementsByTagName("GetLoc2Result");
+			    
+			    for (int i=0;i<nl.getLength();i++)     {      
+			    	Element node=(Element)nl.item(i);
+			    	//󱕫󰟫󳸼󰐁󲱘󲆣󰏔󰏾Node󱇍󴈵󰇄      System.out.println(node.getElementsByTagName("userid").item(0).getFirstChild().getNodeValue()); 
+			    }
+			}
+			conn.disconnect();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }	

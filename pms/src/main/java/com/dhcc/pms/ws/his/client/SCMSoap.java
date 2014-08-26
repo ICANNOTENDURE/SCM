@@ -43,7 +43,7 @@ public interface SCMSoap {
     public com.dhcc.pms.ws.his.client.HisCtlocList getLoc();
 
     @WebResult(name = "GetLoc2Result", targetNamespace = "")
-    @RequestWrapper(localName = "GetLoc2", targetNamespace = "http://www.dhcc.com", className = "com.dhcc.pms.ws.his.client.GetLoc2")
+    @RequestWrapper(localName = "GetLoc2", targetNamespace = "", className = "com.dhcc.pms.ws.his.client.GetLoc2")
     @WebMethod(operationName = "GetLoc2", action = "http://www.dhcc.com/web.DHCST.SoapService.SCMDataExchange.GetLoc2")
     @ResponseWrapper(localName = "GetLoc2Response", targetNamespace = "http://www.dhcc.com", className = "com.dhcc.pms.ws.his.client.GetLoc2Response")
     public java.lang.String getLoc2();

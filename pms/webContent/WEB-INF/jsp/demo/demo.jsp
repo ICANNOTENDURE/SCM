@@ -5,86 +5,44 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Demo</title>
-<%@include file="/WEB-INF/jsp/common/scriptInc.jsp"%>
-<script type="text/javascript"
-	src="<%=request.getContextPath()%>/js/dhcc/pms/appLog/appLog.js"></script>
-<script type="text/javascript"
-	src="<%=request.getContextPath()%>/js/demo/demo.js"></script>
+	<link href="<%=request.getContextPath()%>/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<script src="<%=request.getContextPath()%>/js/jquery/jquery-1.8.3.min.js"></script>
+    <script src="<%=request.getContextPath()%>/bootstrap/js/bootstrap.min.js"></script>
+    
+	
 </head>
 <body>
-	<div id="toolbar" class="toolbar">
-		<a id="addBt" class="linkbutton" onclick="javascript:addClick()"
-			data-options="iconCls:'icon-add',plain:true">增加</a> <a
-			class="linkbutton" data-options="iconCls:'icon-edit',plain:true"
-			onclick="javascript:editRow()">修改</a> <a class="linkbutton"
-			data-options="iconCls:'icon-remove',plain:true"
-			onclick="javascript:delRow()">删除</a> <a class="linkbutton"
-			data-options="iconCls:'icon-remove',plain:true"
-			onclick="javascript:selectClick()">查询</a>
-	</div>
-
-
-	<table id="datagrid" style="height: 250px"
-		data-options="toolbar:'#toolbar',fitColumns:true,singleSelect:true,pagination:true">
-	</table>
-
-	<div id="detailWin" class="dialog" title="新增demo"
-		data-options="modal:true,width:300,height:200,closed:true,buttons:'#btnDiv'"
-		style="vertical-align: middle;">
-		<form id="detail" method="post">
-			<div align="center">
-				<input type="hidden" name="dto.demo.demoId" />
-			</div>
-			<br>
-			<div align="center">
-				<label>姓名:</label> <input type="text" id="demoName"
-					name="dto.demo.demoName" />
-			</div>
-			<br />
-			<div align="center">
-				<label>年龄:</label> <input type="text" id="demoAge"
-					name="dto.demo.demoAge" />
-			</div>
-			<br>
-			<div align="center">
-				<label>性别:</label> <input id="personName" class="combobox"
-					name="dto.demo.demoGender"
-					data-options="
-                dict:'gender',
-                dictType:'custom',
-                valueField:'value',
-                textField:'desc',
-                multiple:false,
-                required:true,
-                panelHeight:'auto'" />
-
-			</div>
-			<div id="btnDiv">
-				<a id="submitBtn" class="linkbutton"
-					data-options="iconCls:'icon-save'">提交</a> <a id="cancelBtn"
-					class="linkbutton" data-options="iconCls:'icon-cancel'"
-					onclick="javascript:cancelClick()">取消</a>
-			</div>
-		</form>
-	</div>
-
-	<div id="selectWin" class="dialog" title="条件查询"
-		data-options="modal:true,width:300,height:200,closed:true,buttons:'#searchBtnDiv'"
-		style="vertical-align: middle;">
-		<br>
-		<div align="center">
-			<label>姓名：</label> <input type="text" name="dto.demo.demoName" />
+       	<!-- Single button -->
+		<div class="btn-group">
+		  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		    XXXX <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" >
+		    <li><a href="#">Action</a></li>
+		    <li><a href="#">Another action</a></li>
+		    <li><a href="#">Something else here</a></li>
+		    <li class="divider"></li>
+		    <li><a href="#">Separated link</a></li>
+		  </ul>
 		</div>
-		<div align="center">
-			<label>年龄：</label> <input type="text" name="dto.demo.demoAge" />
+		
+		
+		<div class="panel panel-primary">
+		  <div class="panel-heading">
+		    <h3 class="panel-title">叫我煞笔</h3>
+		  </div>
+		  <div class="panel-body">
+		    Panel content
+		  </div>
+		  
+		  <table class="table">
+    		<tr>
+    			<td>
+    				XXXXs
+    			</td>
+    		</tr>
+  		 </table>
 		</div>
-		<br>
-		<div id="searchBtnDiv">
-			<a id="selectBt" class="linkbutton"
-				data-options="iconCls:'icon-save'">提交</a> <a id="selectCanBt"
-				class="linkbutton" data-options="iconCls:'icon-cancel'"
-				onclick="javascript:selectCanBtClick()">取消</a>
-		</div>
-	</div>
+
 </body>
 </html>

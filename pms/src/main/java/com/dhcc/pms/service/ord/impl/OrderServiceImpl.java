@@ -200,6 +200,9 @@ public class OrderServiceImpl implements OrderService {
 		List<ExportOrderVo> exportOrderVos=new ArrayList<ExportOrderVo>();
 		Map<String, ExportOrderVo> map=new HashMap<String,ExportOrderVo>();
 		for(ExportOrderVo exportOrderVo:orderDao.ExportOrder(dto)){
+			if(exportOrderVo.getRecloc().contains("西院")){
+				exportOrderVo.setHopname(exportOrderVo.getHopname()+"(西院)");
+			}
 			if(map.containsKey(exportOrderVo.getOrderitmid().toString())){
 				ExportOrderVo exportOrderVo2=map.get(exportOrderVo.getOrderitmid().toString());
 				map.get(exportOrderVo.getOrderitmid().toString()).setVeninccode(exportOrderVo2.getVeninccode()+","+exportOrderVo.getVeninccode());

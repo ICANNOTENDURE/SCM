@@ -44,7 +44,8 @@ public class HopCtloc implements Serializable {
 	
 	@Column(name="CTLOC_TYPE")
 	private String type;
-
+	//1:入库科室，2:收货科室,3:全部
+	
 	@Column(name="CTLOC_DEST")		
 	private Long ctlocDest;
 	

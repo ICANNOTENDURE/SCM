@@ -891,6 +891,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		Map<String,List<VenDeliveritm>> map=dto.getOrderMap();
 		Iterator<String> it = map.keySet().iterator();
 		dto.setMsg("<br>");
+		dto.setOpFlg("0");
 		while(it.hasNext()){
 			String key = (String) it.next();
 			Order order=super.get(Order.class, Long.valueOf(key));
@@ -935,10 +936,13 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			List<VenDeliveritm> deliveritms=map.get(key);
 			for(VenDeliveritm tmpVenDeliveritm:deliveritms){
 				tmpVenDeliveritm.setDeliveritmParentid(venDeliver.getDeliverId());
-//				float fac=venIncDao.getFacByhopInc(tmpVenDeliveritm.getDeliveritmHopincid(), venDeliver.getDeliverVendorid());
-//				tmpVenDeliveritm.setDeliveritmHisQty(tmpVenDeliveritm.getDeliveritmQty().floatValue()*fac);	
-//				tmpVenDeliveritm.setDeliveritmHisRp(tmpVenDeliveritm.getDeliveritmRp().floatValue()*fac);
-//				tmpVenDeliveritm.setDeliveritmFac(fac);
+				if(tmpVenDeliveritm.getDeliveritmFac()==null){
+					float fac=venIncDao.getFacByhopInc(tmpVenDeliveritm.getDeliveritmHopincid(), venDeliver.getDeliverVendorid());
+					tmpVenDeliveritm.setDeliveritmFac(fac);
+					tmpVenDeliveritm.setDeliveritmHisQty(tmpVenDeliveritm.getDeliveritmQty().floatValue()*fac);	
+					tmpVenDeliveritm.setDeliveritmHisRp(tmpVenDeliveritm.getDeliveritmRp().floatValue()*fac);
+					tmpVenDeliveritm.setDeliveritmFac(fac);
+				}
 				super.saveOrUpdate(tmpVenDeliveritm);
 				if(delQtyMap.containsKey(tmpVenDeliveritm.getDeliveritmOrderitmid().toString())){
 					Float delQty=delQtyMap.get(tmpVenDeliveritm.getDeliveritmOrderitmid().toString());
@@ -1001,6 +1005,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		DetachedCriteria criteria = DetachedCriteria.forClass(VenDeliveritm.class);
 		criteria.add(Restrictions.eq("deliveritmInvnoe", inv));
 		criteria.add(Restrictions.eq("deliveritmOrderitmid", orditmId));
+		criteria.add(Restrictions.isNull("deliveritmRecFlag"));
 		@SuppressWarnings("unchecked")
 		List<VenDeliveritm> deliveritms=super.findByCriteria(criteria);
 		if(deliveritms.size()>0){

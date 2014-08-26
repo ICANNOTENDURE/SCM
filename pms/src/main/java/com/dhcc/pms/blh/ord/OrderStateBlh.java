@@ -13,6 +13,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import com.dhcc.framework.app.blh.AbstractBaseBlh;
@@ -39,7 +41,8 @@ import com.dhcc.pms.service.ven.VenDeliverService;
 
 @Component
 public class OrderStateBlh extends AbstractBaseBlh {
-
+	
+	private static Log logger = LogFactory.getLog(OrderStateBlh.class);
 
 	@Resource
 	private OrderStateService ordertateService;
@@ -359,7 +362,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 			order.setSendFlag(1l);
 			commonService.saveOrUpdate(order);
 		}
-		if(dto.getOperateResult().getResultCode().equals("-11")){
+		if(!dto.getOperateResult().getResultCode().equals("-11")){
 			return;
 		}
 		dto.getOperateResult().setResultCode("0");
@@ -384,22 +387,33 @@ public class OrderStateBlh extends AbstractBaseBlh {
 	@Descript("供应商确认收到订单")
 	@OutPut(ognlExpress="dto.operateResult")
 	*/
-	public void deliver(BusinessRequest res) throws IOException{
-		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
-		this.deliverSub(res);
-		
+	public void deliver(OrderStateDto dto) {
+
 		SysLog log=new SysLog();
-		log.setOpArg(JsonUtils.toJson(dto));
-		log.setOpName("webservice供应商长传发票");
-		//log.setOpIp(WebContextHolder.getContext().getRequest().getRemoteAddr());
+		log.setOpArg(JsonUtils.toJson(dto.getDeliveritms()));
+		log.setOpName("供应商回传发票");
 		log.setOpDate(new Date());
-		log.setOpResult(JsonUtils.toJson(dto.getOperateResult()));
 		log.setOpType("webservice");
-		commonService.saveOrUpdate(log);
+		dto.getOperateResult().setResultCode("0");
+		dto.getOperateResult().setResultContent("success");
+		try{
+			this.deliverSub(dto);
+			log.setOpResult(JsonUtils.toJson(dto.getOperateResult()));
+		} catch(Exception e) {
+	        	dto.getOperateResult().setResultCode("-111");
+	        	dto.getOperateResult().setResultContent(e.getMessage());
+	        	logger.info(e.getMessage(), e);
+	        	log.setOpResult("exception:"+e.getMessage());
+	    }finally{
+	    	commonService.saveOrUpdate(log);
+	    }
+		
+		
+		
 		
 	}
-	public void deliverSub(BusinessRequest res) throws IOException{
-		OrderStateDto dto = super.getDto(OrderStateDto.class, res);
+	public void deliverSub(OrderStateDto dto) throws IOException{
+		
 		if(dto.getDeliveritms()==null){
 			dto.getOperateResult().setResultCode("-1");
 			dto.getOperateResult().setResultContent("入参为空");
@@ -412,24 +426,41 @@ public class OrderStateBlh extends AbstractBaseBlh {
 		}
 		
 		Map<String, List<VenDeliveritm>> DelMap=new HashMap<String,List<VenDeliveritm>>();
+		int num=0;
 		//按订单拆分发货单 
 		for(VenDeliveritm tmpVenDeliveritm:dto.getDeliveritms()){
-			if(tmpVenDeliveritm.getDeliveritmOrderitmid()==null){
+			num++;
+			if(StringUtils.isNullOrEmpty(tmpVenDeliveritm.getDeliveritmInvnoe())){
 				dto.getOperateResult().setResultCode("-2");
-				dto.getOperateResult().setResultContent(tmpVenDeliveritm.getDeliveritmInvnoe()+",没有订单明细ID");
-				break;
+				dto.getOperateResult().setResultContent("第"+num+"行发票号不能为空");
+				continue;
+			}
+			if(tmpVenDeliveritm.getDeliveritmQty()==null){
+				dto.getOperateResult().setResultCode("-3");
+				dto.getOperateResult().setResultContent(tmpVenDeliveritm.getDeliveritmInvnoe()+"发票号,发货数量不能为空");
+				continue;
+			}
+			if(tmpVenDeliveritm.getDeliveritmRp()==null){
+				dto.getOperateResult().setResultCode("-4");
+				dto.getOperateResult().setResultContent(tmpVenDeliveritm.getDeliveritmInvnoe()+"发票号,进价不能为空");
+				continue;
+			}
+			if(tmpVenDeliveritm.getDeliveritmOrderitmid()==null){
+				dto.getOperateResult().setResultCode("-5");
+				dto.getOperateResult().setResultContent(tmpVenDeliveritm.getDeliveritmInvnoe()+"发票号,没有订单明细ID");
+				continue;
 			}
 			
 			OrderItm orderItm=commonService.get(OrderItm.class, tmpVenDeliveritm.getDeliveritmOrderitmid());
 			if(orderItm==null){
-				dto.getOperateResult().setResultCode("-3");
-				dto.getOperateResult().setResultContent(tmpVenDeliveritm.getDeliveritmInvnoe()+",订单明细ID错误");
-				break;
+				dto.getOperateResult().setResultCode("-6");
+				dto.getOperateResult().setResultContent(tmpVenDeliveritm.getDeliveritmInvnoe()+"发票号,订单明细ID错误");
+				continue;
 			}
 			if(orderItm.getOrdId()==null){
-				dto.getOperateResult().setResultCode("-3");
+				dto.getOperateResult().setResultCode("-7");
 				dto.getOperateResult().setResultContent(tmpVenDeliveritm.getDeliveritmInvnoe()+",订单明细ID错误");
-				break;
+				continue;
 			}
 			String orderId=orderItm.getOrdId().toString();
 			
@@ -444,17 +475,21 @@ public class OrderStateBlh extends AbstractBaseBlh {
 			}
 		}
 		
+		//明细有错吴
+		if(!dto.getOperateResult().getResultCode().equals("0")){
+			return;
+		}
+		
 		VenDeliverDto vendto =new VenDeliverDto();
 		vendto.setOrderMap(DelMap);
 		vendto.setOperateType("webservice 导入");
-		try{
-			//venDeliverService.deliver(DelMap);
-			venDeliverService.impByOrderItm(vendto);
+		venDeliverService.impByOrderItm(vendto);
+		if(!vendto.getOpFlg().equals("0")){
+			dto.getOperateResult().setResultCode("-99");
+			dto.getOperateResult().setResultContent("falie:"+vendto.getMsg());
+		}else{
 			dto.getOperateResult().setResultCode("0");
 			dto.getOperateResult().setResultContent("success");
-		}catch(Exception e){
-			dto.getOperateResult().setResultCode("-2");
-			dto.getOperateResult().setResultContent(vendto.getMsg());
 		}
 		
 		

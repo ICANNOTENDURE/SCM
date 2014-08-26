@@ -396,6 +396,7 @@ function fillValue(rowIndex, rowData){
 					 		rp:rowData.rp,
 					 		manf:rowData.manf,
 					 		hopincid:rowData.hopincid,
+					 		orderitmid:data.dto.orderItm.orderitmId,
 						}
 				 });
 				 

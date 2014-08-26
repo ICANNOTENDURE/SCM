@@ -7,6 +7,7 @@ package com.dhcc.pms.blh.ord;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.mail.EmailException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -31,6 +33,7 @@ import com.dhcc.framework.app.service.CommonService;
 import com.dhcc.framework.common.BaseConstants;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.util.JsonUtils;
+import com.dhcc.framework.util.SendMailUtil;
 import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderDto;
@@ -453,9 +456,11 @@ public class OrderBlh extends AbstractBaseBlh {
 					dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+incCode+"，医院药品代码错误");
 					continue;
 				}
+				HopInc hopInc=commonService.get(HopInc.class, incId);
 				orderItm.setIncId(incId);
 				orderItm.setReqqty(qty);
 				orderItm.setRp(rp);
+				orderItm.setUom(hopInc.getIncUomname());
 				
 				if(orderMap.containsKey(orderNo)){
 					orderMap.get(orderNo).getItms().add(orderItm);
@@ -521,11 +526,11 @@ public class OrderBlh extends AbstractBaseBlh {
 				   Order order=entry.getValue();
 				   log.setOpArg(log.getOpArg()+"."+ JsonUtils.toJson(order));
 			}	   
-		
-			
-			
+
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
-		} catch (Exception e) {
+			
+			
+        } catch (Exception e) {
 			e.printStackTrace();
 			dto.setOpFlg("-11");
 			dto.setMsg(dto.getMsg()+"<br>程序异常:"+e.getMessage());
@@ -581,8 +586,50 @@ public class OrderBlh extends AbstractBaseBlh {
 	public void complete(BusinessRequest res){
 		OrderDto dto = super.getDto(OrderDto.class, res);
 		orderService.complete(dto);
+		this.sendMailByOrder(dto.getOrder().getOrderId());
+		
 	}
 	
+	/**
+	 * 
+	* @Title: OrderBlh.java
+	* @Description: TODO(发送邮件)
+	* @param orderId
+	* @return:void 
+	* @author zhouxin  
+	* @date 2014年8月18日 下午3:08:59
+	* @version V1.0
+	 */
+	public void sendMailByOrder(Long orderId){
+		Order order=commonService.get(Order.class, orderId);
+		//发送邮件
+		String sub="订单通知";
+		StringBuffer msg = new StringBuffer();
+		String address="";
+		HopCtlocDestination ctlocDestination=commonService.get(HopCtlocDestination.class,order.getRecDestination());
+		HopVendor hopVendor=commonService.get(HopVendor.class, order.getVendorId());
+		Vendor vendor=commonService.get(Vendor.class, hopVendor.getHopVenId());
+		Hospital hospital=commonService.get(Hospital.class, order.getHopId());
+		address=vendor.getEmail();
+		if(address.equals("")){
+			return;
+		}
+		msg.append(hospital.getHospitalName()+" 新的订单:<h1>"+order.getOrderNo()+"</h1>。");
+		if(order.getPlanArrDate()!=null){
+			msg.append("<br>要求送达时间:"+new SimpleDateFormat("yyyy-mm-dd").format(order.getPlanArrDate()));
+		}
+		msg.append("<br>收货地址:"+ctlocDestination.getDestination());
+		msg.append("<br>请发货.");
+		msg.append("<br><br><br><br><br><div 'float:right'>联系人:"+ctlocDestination.getContact()+"</div>");
+		msg.append("<br>电话:"+ctlocDestination.getTel());
+		try {
+			if(!StringUtils.isNullOrEmpty(address)){
+				SendMailUtil.sendEmail(sub, msg.toString(),address,60 * 1000);
+			}
+		} catch (EmailException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * 
 	* @Title: OrderBlh.java

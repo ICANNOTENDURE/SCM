@@ -4,6 +4,7 @@
  */
 package com.dhcc.pms.dao.ord;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,21 +12,27 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.mail.EmailException;
 import org.springframework.stereotype.Repository;
 
 import com.dhcc.framework.common.PagerModel;
 import com.dhcc.framework.hibernate.dao.HibernatePersistentObjectDAO;
 import com.dhcc.framework.jdbc.JdbcTemplateWrapper;
 import com.dhcc.framework.transmission.dto.BaseDto;
+import com.dhcc.framework.util.SendMailUtil;
+import com.dhcc.framework.util.StringUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.dto.ord.OrderDto;
 import com.dhcc.pms.entity.hop.HopCtloc;
 import com.dhcc.pms.entity.hop.HopCtlocDestination;
 import com.dhcc.pms.entity.hop.HopInc;
+import com.dhcc.pms.entity.hop.HopVendor;
+import com.dhcc.pms.entity.hop.Hospital;
 import com.dhcc.pms.entity.ord.ExeState;
 import com.dhcc.pms.entity.ord.OrdShopping;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
+import com.dhcc.pms.entity.ven.Vendor;
 import com.dhcc.pms.entity.vo.ord.ExportOrderVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartPicVo;
 import com.dhcc.pms.entity.vo.ord.ShopCartVo;
@@ -245,7 +252,7 @@ public class OrderDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append(" from HopCtlocDestination t ");
 		if(dto.getLoc()!=null){
 			hqlBuffer.append(" where t.ctlocDr = :ctlocDr");
-			hqlParamMap.put("ctlocDr", dto.getLoc().toString());
+			hqlParamMap.put("ctlocDr", dto.getLoc());
 		}
 		return (List<HopCtlocDestination>)super.findByHqlWithValuesMap(hqlBuffer.toString(),1,20,hqlParamMap,true);
 		
@@ -421,6 +428,8 @@ public void impOrder(OrderDto dto){
 	   
 	   
 	   order.setExeStateId(exeState.getExestateId());
+	   order.setPlanDate(new Date());
+	   order.setCreateUser(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
 	   super.saveOrUpdate(order);
 	   dto.setOrder(order);
 	   dto.setOpFlg("1");
@@ -509,6 +518,8 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
 	   StringBuffer hqlBuffer = new StringBuffer();
 		hqlBuffer.append("select ");
 		hqlBuffer.append("t2.order_no as no, ");
+		hqlBuffer.append("t8.HOSPITAL_NAME as hopname, ");
+		hqlBuffer.append("t9.CTLOCDES_DESTINATION as CTLOCDES_DESTINATION, ");
 		hqlBuffer.append("t4.ctloc_name as purloc, ");
 		hqlBuffer.append("t3.ctloc_name as recloc, ");
 		hqlBuffer.append("t7.ven_inc_code as veninccode, ");
@@ -530,6 +541,9 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
 		hqlBuffer.append("left join t_hop_inc t5 on t5.inc_id=t1.inc_id ");
 		hqlBuffer.append("left join t_ven_hop_inc t6 on t6.hop_inc_id=t1.inc_id ");
 		hqlBuffer.append("left join t_ven_inc t7 on t7.ven_inc_rowid=t6.ven_inc_id ");
+		
+		hqlBuffer.append("left join T_SYS_HOSPITAL t8 on t8.HOSPITAL_ID=t2.HOP_ID ");
+		hqlBuffer.append("left join T_SYS_CTLOC_DESTINATION t9 on t9.CTLOCDES_ID=t2.RECDESTINATION ");
 		hqlBuffer.append("where 1=1 ");
 		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
 		
@@ -600,6 +614,49 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
 		   super.save(exeState1);
 		   order.setExeStateId(exeState1.getExestateId());
 		   super.saveOrUpdate(order);
+		   this.sendMail(order);
 		}
+   }
+   
+   
+   /**
+    * 发送邮件
+   * @Title: OrderDao.java
+   * @Description: TODO(用一句话描述该文件做什么)
+   * @param order
+   * @return:void 
+   * @author zhouxin  
+   * @date 2014年8月18日 下午3:27:13
+   * @version V1.0
+    */
+   public void sendMail(Order order){
+
+	 //发送邮件
+	String sub="订单通知";
+	StringBuffer msg = new StringBuffer();
+	String address="";
+	HopCtlocDestination ctlocDestination=super.get(HopCtlocDestination.class,order.getRecDestination());
+	HopVendor hopVendor=super.get(HopVendor.class, order.getVendorId());
+	Vendor vendor=super.get(Vendor.class, hopVendor.getHopVenId());
+	Hospital hospital=super.get(Hospital.class, order.getHopId());
+	address=vendor.getEmail();
+	if(address.equals("")){
+		return;
+	}
+	msg.append(hospital.getHospitalName()+" 新的订单:<h1>"+order.getOrderNo()+"</h1>。");
+	if(order.getPlanArrDate()!=null){
+		msg.append("<br>要求送达时间:"+new SimpleDateFormat("yyyy-mm-dd").format(order.getPlanArrDate()));
+	}
+	msg.append("<br>收货地址:"+ctlocDestination.getDestination());
+	msg.append("<br>请发货.");
+	msg.append("<br><br><br><br><br><div 'float:right'>联系人:"+ctlocDestination.getContact()+"</div>");
+	msg.append("<br>电话:"+ctlocDestination.getTel());
+	try {
+		if(!StringUtils.isNullOrEmpty(address)){
+			SendMailUtil.sendEmail(sub, msg.toString(),address,60 * 1000);
+		}
+	} catch (EmailException e) {
+		e.printStackTrace();
+	}
    }
 }

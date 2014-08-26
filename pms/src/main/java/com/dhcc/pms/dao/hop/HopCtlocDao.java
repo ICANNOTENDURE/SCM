@@ -221,7 +221,7 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 				hqlBuffer.append("and (t3.ctloc_type =3 or t3.ctloc_type =1) ");
 			}
 		}
-		return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_role_loc_id");
+		return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_MAX_PAGE_SIZE, "sys_role_loc_id");
 	
 	}
 
@@ -258,7 +258,7 @@ public class HopCtlocDao extends HibernatePersistentObjectDAO<HopCtloc> {
 				hqlBuffer.append("and (t3.ctloc_type =3 or t3.ctloc_type =1) ");
 			}
 		}
-		return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_role_loc_id");
+		return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_MAX_PAGE_SIZE, "sys_role_loc_id");
 		
 	}
 

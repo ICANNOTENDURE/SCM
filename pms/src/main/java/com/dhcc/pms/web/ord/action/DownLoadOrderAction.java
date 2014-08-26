@@ -27,7 +27,6 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
 
-import com.dhcc.framework.util.FileUtils;
 import com.dhcc.framework.web.context.WebContextHolder;
 import com.dhcc.pms.entity.vo.ord.ExportOrderVo;
 import com.dhcc.pms.service.ord.OrderService;
@@ -162,6 +161,12 @@ public class DownLoadOrderAction extends ActionSupport {
 		cell = row.createCell(14, HSSFCell.CELL_TYPE_NUMERIC);
 		cell.setCellValue("订单明细ID");
 		
+		cell = row.createCell(15, HSSFCell.CELL_TYPE_STRING);
+		cell.setCellValue("医院名称");
+		
+		cell = row.createCell(16, HSSFCell.CELL_TYPE_STRING);
+		cell.setCellValue("收货地址 ");
+		
 		List<ExportOrderVo> exportOrderVos=orderService.ExportOrder(Long.valueOf(WebContextHolder.getContext().getRequest().getParameter("orderId")));
 		int i=1;
 		for(ExportOrderVo tmpExportOrderVo:exportOrderVos){
@@ -209,6 +214,13 @@ public class DownLoadOrderAction extends ActionSupport {
 			
 			cell = row.createCell(14, HSSFCell.CELL_TYPE_STRING);
 			cell.setCellValue(tmpExportOrderVo.getOrderitmid());
+			
+			cell = row.createCell(15, HSSFCell.CELL_TYPE_STRING);
+			cell.setCellValue(tmpExportOrderVo.getHopname());
+			
+			cell = row.createCell(16, HSSFCell.CELL_TYPE_STRING);
+			cell.setCellValue(tmpExportOrderVo.getDesction());
+			
 			++i;
 		}
 		

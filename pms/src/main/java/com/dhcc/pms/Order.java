@@ -14,17 +14,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.UUID;
 
-import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.apache.struts2.ServletActionContext;
 
-import com.dhcc.pms.ws.ven.client.OrderStateWServiceInterface;
-import com.dhcc.pms.ws.ven.client.VenIncWeb;
+import com.dhcc.framework.common.BaseConstants;
+import com.dhcc.framework.web.context.WebContextHolder;
 
 
 
@@ -33,19 +40,19 @@ import com.dhcc.pms.ws.ven.client.VenIncWeb;
 public class Order {
 	
 	
-	public static void beaut(){  
+	public static void beaut() {  
 	     
 		
-		JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
-        factory.setServiceClass(OrderStateWServiceInterface.class);
-        factory.setAddress("http://127.0.0.1:8080/pms/ws/orderStateWService?wsdl");
-        OrderStateWServiceInterface service = (OrderStateWServiceInterface) factory.create();
-        VenIncWeb venIncWeb=new VenIncWeb();
-        venIncWeb.setPassWord("1");
-        venIncWeb.setUserName("vendor2");
+//		JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+//        factory.setServiceClass(OrderStateWServiceInterface.class);
+//        factory.setAddress("http://127.0.0.1:8080/pms/ws/orderStateWService?wsdl");
+//        OrderStateWServiceInterface service = (OrderStateWServiceInterface) factory.create();
+//        VenIncWeb venIncWeb=new VenIncWeb();
+//        venIncWeb.setPassWord("1");
+//        venIncWeb.setUserName("vendor2");
 //        VenIncItmWeb VenIncItmWeb1=new VenIncItmWeb();
 //        venIncWeb.getIncWebs().add(VenIncItmWeb1);
-		System.out.println(service.getVenInc(venIncWeb).getResultCode());
+//		System.out.println(service.getVenInc(venIncWeb).getResultCode());
 //	    for(OrderWebVo info:gvinfo){  
 //	        System.out.println(info.getHopname()+"\t"+info.getPurloc()+  
 //	                "\t"+info.getRecloc()+"\t"); 
@@ -56,12 +63,12 @@ public class Order {
 //	        
 //	    } 
 //		JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();  
-//		Client client = dcf.createClient("http://127.0.0.1:8080/pms/ws/orderStateWService?wsdl"); 
+//		Client client = dcf.createClient("http://10.160.17.11:57772/dthealth/web/web.DHCST.SoapService.SCMDataExchange.CLS?WSDL=1"); 
 //		//QName q = new QName("http://ord.ws.pms.dhcc.com/", "getVenInc");
 //		try {
 //			//Object[] objects = client.invoke("recievedMsg", 2400l);
-//			VenIncWeb venIncs=new VenIncWeb();
-//			Object[] objects = client.invoke("getVenInc",venIncs);
+//			//VenIncWeb venIncs=new VenIncWeb();
+//			Object[] objects = client.invoke("GetLoc2");
 //			System.out.print(objects[0].getClass()+"\t");
 //			
 //		} catch (Exception e) {
@@ -97,7 +104,39 @@ public class Order {
           
 
 		
+		  	try {
+				URL url = new URL("http://10.160.17.11:57772/dthealth/web/web.DHCST.SoapService.SCMDataExchange.cls?soap_method=GetLoc2");//要调用的url
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setConnectTimeout(5000);
+				conn.setRequestMethod("GET");//设置get方式获取数据
+				
+				if (conn.getResponseCode() == 200) {//如果连接成功
 
+					File xmlFIle=new File("123.xml");
+					OutputStream outStream=new FileOutputStream(xmlFIle);
+					byte[] buffer = new byte[BaseConstants.BUFFER_SIZE];
+					int len = 0;
+				    while( (len = conn.getInputStream().read(buffer)) !=-1 ){
+				            outStream.write(buffer, 0, len);
+				    }
+					
+
+				    outStream.close();
+				}
+				conn.disconnect();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 	}
 	

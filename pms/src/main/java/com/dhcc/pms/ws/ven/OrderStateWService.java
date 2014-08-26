@@ -89,19 +89,9 @@ public class OrderStateWService implements OrderStateWServiceInterface{
 
         OrderStateDto dto = new OrderStateDto();
         dto.setDeliveritms(deliverWeb.getDeliveritms());
-        BusinessRequest request = new BusinessRequest();
-        request.setDto(dto);
         OperateResult operateResult=new OperateResult();
-        operateResult.setResultCode("-1");
         dto.setOperateResult(operateResult);
-        try {
-            blh.deliver(request);
-        } catch(Exception e) {
-        	dto.getOperateResult().setResultCode("-111");
-        	dto.getOperateResult().setResultContent(e.getLocalizedMessage());
-            logger.error(e.getMessage(), e);
-        }
-        
+        blh.deliver(dto);
         return dto.getOperateResult();
 
     }

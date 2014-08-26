@@ -74,6 +74,11 @@ public abstract class BaseConstants {
 	
 	public static final int COMBOX_PAGE_SIZE = 20;
 	
+	/**
+	 * combox一页查出的条数
+	 */
+	
+	public static final int COMBOX_MAX_PAGE_SIZE = 200;
 	
 	public static final String BJXH_CODE="bjxh";
 }

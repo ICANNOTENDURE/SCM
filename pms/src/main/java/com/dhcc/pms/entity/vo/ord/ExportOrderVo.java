@@ -43,8 +43,40 @@ public class ExportOrderVo implements java.io.Serializable{
 	
 	private float fac;
 	
+	private String hopname;
+	
+	private String desction;
 	
 	
+	
+	/**
+	 * @return the hopname
+	 */
+	public String getHopname() {
+		return hopname;
+	}
+
+	/**
+	 * @param hopname the hopname to set
+	 */
+	public void setHopname(String hopname) {
+		this.hopname = hopname;
+	}
+
+	/**
+	 * @return the desction
+	 */
+	public String getDesction() {
+		return desction;
+	}
+
+	/**
+	 * @param desction the desction to set
+	 */
+	public void setDesction(String desction) {
+		this.desction = desction;
+	}
+
 	/**
 	 * @return the fac
 	 */

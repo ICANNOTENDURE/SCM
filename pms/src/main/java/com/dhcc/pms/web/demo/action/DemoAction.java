@@ -28,7 +28,7 @@ import com.dhcc.pms.dto.demo.DemoDto;
 @Action(value="demoCtrl",results={
 		@Result(name="list" ,location="/WEB-INF/jsp/demo/demo.jsp"),
 //		@Result(name="delete" ,location="/WEB-INF/jsp/demo/demo.jsp"),
-		@Result(name="index" ,location="/index.jsp")
+		@Result(name="index" ,location="/WEB-INF/jsp/demo/demo.jsp")
 })
 @Blh("demoBlh")
 @JsonResult("findById:dto.demo")
