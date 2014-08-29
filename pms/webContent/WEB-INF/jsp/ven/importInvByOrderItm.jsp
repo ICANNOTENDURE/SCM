@@ -67,30 +67,278 @@
  	        }
  	    });
  		
- 		$('#impModel').html("");
- 		$('#impModel').append("<td class='time'>模版 </td>");
- 		$.post(
- 			$WEB_ROOT_PATH+"/sys/sysImpModelCtrl!listImpModel.htm",
- 			{
- 				'dto.impModel.type':'IMPBYORDERITEM'
- 			},
- 			function(data){
- 				$.each(data,function(i,dd){
- 						$('#impModel').append("<td class='drop'><div class='item'>"+dd.name+"</div></td>");
- 				});
- 			},
- 			"json"
- 		);
+
+ 		
+ 		//导入订单
+ 		$("#import").on('click', function() {
+ 			$('#importDialog').dialog('open');
+ 			$('#impModel').html("");
+ 			$('#impModel').append("<td class='time'>模版 </td>");
+ 			$.post(
+ 				$WEB_ROOT_PATH+"/sys/sysImpModelCtrl!listImpModel.htm",
+ 				{
+ 					'dto.impModel.type':'IMPBYORDERITEM'
+ 				},
+ 				function(data){
+ 					$.each(data,function(i,dd){
+ 							$('#impModel').append("<td class='drop'><div class='item'>"+dd.name+"</div></td>");
+ 					});
+ 				},
+ 				"json"
+ 			);
+ 		});
+ 		
+ 		$.extend($.fn.datagrid.methods, {
+ 			 editCell: function(jq,param){
+ 				 return jq.each(function(){
+ 				 opts = $(this).datagrid('options');
+ 				 var fields = $(this).datagrid('getColumnFields',true).concat($(this).datagrid('getColumnFields'));
+ 				 for(var i=0; i<fields.length; i++){
+ 					 var col = $(this).datagrid('getColumnOption', fields[i]);
+ 					 col.editor1 = col.editor;
+ 					 if (fields[i] != param.field){
+ 						 col.editor = null;
+ 					 }
+ 				 }
+ 				 $(this).datagrid('beginEdit', param.index);
+ 				 	for(var i=0; i<fields.length; i++){
+ 				 		var col = $(this).datagrid('getColumnOption', fields[i]);
+ 				 		col.editor = col.editor1;
+ 				 	}
+ 				 });
+ 			 }
+ 		 });
+ 		
+ 		
+ 		
+ 		 
+ 		 
+ 		$('#stdate').datebox('setValue',new Date().format("yyyy-MM-dd"));
+ 		$('#eddate').datebox('setValue',new Date().format("yyyy-MM-dd"));
+ 		
+ 		
+ 		$("#search").on('click', function() {
+ 			$CommonUI.getDataGrid('#datagrid').datagrid({  
+ 			    url:$WEB_ROOT_PATH+'/ord/ordCtrl!listDelV.htm',
+ 			    queryParams: {
+ 			    	"dto.stdate":$("#stdate").datebox('getValue'),
+ 			   	    "dto.eddate":$("#eddate").datebox('getValue'),
+ 				},
+ 				onDblClickRow:function(rowIndex, rowData){
+ 					$CommonUI.getDataGrid('#datagrid2').datagrid({  
+ 					    url:$WEB_ROOT_PATH+'/ord/ordCtrl!listDelVItm.htm',
+ 					    queryParams: {
+ 					    	"dto.ordSerial":rowData.delvId,
+ 						}
+ 					});
+ 				}
+ 			});
+ 		});
  		
     });
  	 $(document).ready(function () {
-     	$CommonUI.getDialog("#importDialog").dialog("center");
-     	$CommonUI.getDialog("#importDialog").dialog("open");	
+     	//$CommonUI.getDialog("#importDialog").dialog("center");
+     	//$CommonUI.getDialog("#importDialog").dialog("open");	
      	
      });
+ 	 
+
+ 	function deleteR(value,row,index){
+		if(parseInt(row.state)==1){
+			return "";
+		}else{
+			return '<a id="addBt" class="dhc-linkbutton l-btn l-btn-plain" onclick="javascript:deleterow('+index+')" data-options="iconCls:"icon-save"><span class="l-btn-left"><span class="l-btn-text icon-cancel l-btn-icon-left">删除</span></span></a>';
+		}
+}
+function deleterow(index){
+	deliveritmid=$('#datagrid2').datagrid('getRows')[index]['deliveritmid'];
+	if(deliveritmid==undefined){
+		$('#datagrid2').datagrid('deleteRow',index);
+		return;
+	}
+	$CommonUI.loadUIM('messager');
+	$.messager.confirm('确认对话框', '确认要删除吗？', function(r){
+		if (r){
+			
+			$.post(
+					 $WEB_ROOT_PATH+'/ord/ordCtrl!deleteDelVItm.htm',
+					 {
+						 "dto.deliverItmid":deliveritmid,
+					 },
+					 function(data){
+						 $('#datagrid2').datagrid('deleteRow',index);
+			        },
+					 'json'
+			);
+		}
+	});
+	
+	
+	
+	
+}
+
+var editIndex = undefined;
+function endEditing(){
+	if (editIndex == undefined){return true;};
+	if ($('#datagrid2').datagrid('validateRow', editIndex)){
+		$('#datagrid2').datagrid('endEdit', editIndex);
+		editIndex = undefined;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+function onClickCell(index, field){
+	
+	if (endEditing()){
+		$('#datagrid2').datagrid('selectRow', index).datagrid('editCell', {index:index,field:field});
+		editIndex = index;
+	}
+}
+
+function onAfterEdit(rowIndex, rowData, changes){
+	 var changes=$CommonUI.getDataGrid('#datagrid2').datagrid('getChanges');
+	 if(changes.length==0){
+		 return
+	 }
+	 $.post(
+			 $WEB_ROOT_PATH+'/ord/ordCtrl!saveDelVItm.htm',
+			 {
+				 "dto.deliverItmid":rowData.deliveritmid,
+	          	 "dto.qty":rowData.deliverqty,
+	          	 "dto.rp":rowData.rp,
+	          	 "dto.invno":rowData.invno,
+	          	 "dto.batno":rowData.batno,
+	          	 "dto.expdate":rowData.expdate,
+			 },
+			 function(data){
+				 if(data.opFlg=="1"){					 
+					 $CommonUI.autoCloseRightBottomMessage("("+rowData.venincname+")"+"药品修改成功","消息",2500,'slide');
+					 $CommonUI.getDataGrid('#datagrid2').datagrid('acceptChanges');
+				 }else{
+					 $CommonUI.autoCloseRightBottomMessage("("+rowData.venincname+")"+"药品修改失败","消息",2500,'slide');
+				 }	 
+	        },
+			 'json'
+		 );
+}
+
+
  	</script>
 </head>
 <body>
+	
+	
+	<div id="toolbar" class="toolbar">
+			开始日期: <input class="datebox" style="width:100px" id="stdate">
+			结束日期: <input class="datebox" style="width:100px" id="eddate">
+			<a
+				class="linkbutton" id="search"
+				data-options="iconCls:'icon-search'">查询</a>
+			<a class="linkbutton" id="import"
+				data-options="iconCls:'icon-add',plain:true">导入订单</a>
+
+	</div>
+
+
+	<div class="layout" data-options="fit:'true',border:true">
+		<div data-options="region:'north',title:'上传发票流水(双击查看明细)',iconCls:'icon-ok'"
+			style="height: 200px">
+			<table id="datagrid"  class="datagrid"
+				data-options="toolbar:'#toolbar',
+					 			 fit:true,
+								 fitColumns:true,
+								 singleSelect:true,
+								 pagination:true,
+				    			 method:'post',
+				    			 rownumbers:true,
+				    			 striped:true,
+				    			 singleselect:true,
+				    			 pageSize:3,
+				    			 pageList:[3,6,9],
+								 ">
+
+				<thead>
+					<tr>
+						<th data-options="field:'delvId',width:100">流水号</th>
+						<th data-options="field:'delvDate',width:100">时间</th>
+					</tr>
+				</thead>
+			</table>
+
+		</div>
+		<div
+			data-options="region:'center',title:'发票明细',iconCls:'icon-ok'">
+			<table id="datagrid2"  class="datagrid"
+				data-options="
+					 			 fit:true,
+								 fitColumns:true,
+								 singleSelect:true,
+				    			 method:'post',
+				    			 rownumbers:true,
+				    			 striped:true,
+				    			 singleselect:true,
+				    			 remoteSort:true,
+				    			 onClickCell: onClickCell,
+				    			 onAfterEdit:onAfterEdit,
+								 ">
+
+				<thead>
+					<tr>
+						<th data-options="field:'deliveritmid',hidden:true">IncId ID</th>
+						<th data-options="field:'venincncode',width:30,sortable:true">代码</th>
+						<th data-options="field:'venincname',width:70,sortable:true">名称</th>
+						<th data-options="field:'deliverqty',width:20,editor : {
+							type : 'numberbox',
+                            options : {
+                                required : true
+                            }
+                        },sortable:true
+					   ">数量</th>
+						<th data-options="field:'uom',width:20,sortable:true">单位</th>
+						<th data-options="field:'rp',width:20,sortable:true,editor : {
+							type : 'numberbox',
+                            options : {
+                                required : true
+                            }
+                        }
+					   ">进价</th>
+					    <th data-options="field:'batno',width:30,sortable:true,editor : {
+							type : 'text',
+                            options : {
+                                required : true
+                            }
+                        }">批号</th>
+					    <th data-options="field:'invno',width:30,sortable:true,editor : {
+							type : 'text',
+                            options : {
+                                required : true
+                            }
+                        }">发票号</th>
+					    <th data-options="field:'expdate',width:40,sortable:true,editor : {
+							type : 'datebox',
+                            options : {
+                                required : true
+                            }
+                        }">效期</th>
+						<th data-options="field:'manf',width:70,sortable:true">产地</th>
+						<th data-options="field:'spec',width:30,sortable:true">规格</th>
+						<th data-options="field:'hopname',width:30,sortable:true">医院</th>
+						<th data-options="field:'state',width:20,formatter:deleteR">编辑</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	
+	
+	
+	
+	
+	
 	<div id="importDialog" class="dialog" title="导入发票"
 		style="width:800px;height: 400px; background-color: #F5FAFD;"
 		data-options="

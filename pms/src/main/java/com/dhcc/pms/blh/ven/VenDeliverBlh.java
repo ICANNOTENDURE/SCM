@@ -749,17 +749,17 @@ public void upload(BusinessRequest res) throws IOException{
 			
 			workbook=null;
 			if(!dto.getOpFlg().equals("1")){
-				WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
+				WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 				return;
 			}
 			dto.setOperateType("Excel 导入");
 	        venDeliverService.impByOrderItm(dto);
-			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		} catch (Exception e) {
 			dto.setOpFlg("-2");
 			dto.setMsg(dto.getMsg()+"<BR>"+e.getLocalizedMessage());
-			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));;
-			//e.printStackTrace();
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
+			e.printStackTrace();
 			//throw new DataBaseException(e.getMessage(), e);
 			
 		}finally{

@@ -31,6 +31,7 @@ import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.ord.ExeState;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
+import com.dhcc.pms.entity.ven.VenDel;
 import com.dhcc.pms.entity.ven.VenDeliver;
 import com.dhcc.pms.entity.ven.VenDeliveritm;
 import com.dhcc.pms.entity.ven.VenHopInc;
@@ -887,7 +888,13 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	 */
 	@SuppressWarnings("unchecked")
 	public void impByOrderItm(VenDeliverDto dto){
-		String no=UUID.randomUUID().toString();
+		
+		VenDel venDel=new VenDel();
+		venDel.setDelvVendorid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
+		venDel.setDelvDate(new Date());
+		super.save(venDel);
+		
+		String no=venDel.getDelvId();
 		Map<String,List<VenDeliveritm>> map=dto.getOrderMap();
 		Iterator<String> it = map.keySet().iterator();
 		dto.setMsg("<br>");
