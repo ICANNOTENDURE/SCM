@@ -21,6 +21,8 @@ $(function (){
 	    url:$WEB_ROOT_PATH+'/hop/hopCtlocDestinationCtrl!listInfo.htm',	   
 	    method:'post',
 	    fit:true,
+	    pageSize:20,
+		pageList:[20,40,100],
 	    columns:[[ 
 	        {field:'hopctlocdestinationid',title:'表ID',width:100,hidden:true}, 
 	        {field:'desctlocdr',title:'科室表ID', hidden:true},

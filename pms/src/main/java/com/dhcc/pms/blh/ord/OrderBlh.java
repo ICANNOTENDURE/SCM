@@ -19,10 +19,12 @@ import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.mail.EmailException;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
@@ -271,14 +273,23 @@ public class OrderBlh extends AbstractBaseBlh {
 	* @version V1.0
 	 * @throws IOException 
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked" })
 	public void upload(BusinessRequest res) throws IOException{
-		
 		OrderDto dto = super.getDto(OrderDto.class, res);
-		Long hopID=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
-    	Long userID=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId());
-		Long locId=WebContextHolder.getContext().getVisit().getUserInfo().getLocId();
-    	
+		
+		Long hopID=null;
+		Long userID=null;
+		Long locId=null;
+		try{
+			hopID=WebContextHolder.getContext().getVisit().getUserInfo().getHopId();
+			userID=Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId());
+			locId=WebContextHolder.getContext().getVisit().getUserInfo().getLocId();
+		}catch(Exception e){
+			dto.setOpFlg("-11");
+			dto.setMsg("<br>登录超时,请重新登录:");
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
+			return;
+		}
 		dto.setMsg("<BR>");
 		//生成随机文件名
 		String newFileName =UUID.randomUUID().toString();
@@ -294,14 +305,21 @@ public class OrderBlh extends AbstractBaseBlh {
         com.dhcc.framework.util.FileUtils.copyFile(dto.getUpload(), dstFile,BaseConstants.BUFFER_SIZE);
         
         //
+        Map<Integer,String> modelMap=new HashMap<Integer,String>();
         SysImpModelDto SysImpModelDto=new SysImpModelDto();
         SysImpModelDto.setImpModel(new ImpModel());
         SysImpModelDto.getImpModel().setType("ORDER");
-        List<ImpModel> listImpModels=sysImpModelService.getModelList(SysImpModelDto);
-        Map<Integer,String> modelMap=new HashMap<Integer,String>();
-        for(int i=0;i<listImpModels.size();i++){
-        	modelMap.put(Integer.valueOf(listImpModels.get(i).getSeq().toString()), listImpModels.get(i).getName());
-        }
+        try {
+        	List<ImpModel> listImpModels=sysImpModelService.getModelList(SysImpModelDto);
+        	for(int i=0;i<listImpModels.size();i++){
+            	modelMap.put(Integer.valueOf(listImpModels.get(i).getSeq().toString()), listImpModels.get(i).getName());
+            }
+        }catch (Exception e) {
+        	dto.setOpFlg("-11");
+			dto.setMsg("<br>Exception:"+e.getMessage());
+			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
+			return;
+		}
         
         Map<String, Order> orderMap=new HashMap<String,Order>();
         
@@ -318,16 +336,27 @@ public class OrderBlh extends AbstractBaseBlh {
         try {
 
         	//读取Excel文件
-			HSSFWorkbook workbook = null;
-			HSSFSheet sheet = null;
-			HSSFRow row = null;
-			HSSFCell cell = null;
+        	Workbook workbook = null;
+			Sheet sheet = null;
+			Row row = null;
+			Cell cell = null;
+			String prefix=dto.getUploadFileName().substring(dto.getUploadFileName().lastIndexOf(".")+1);
+			if(prefix.equals("xls")){
+				workbook = new HSSFWorkbook(new FileInputStream(storageFileName + File.separator + newFileName));
+			}else if(prefix.equals("xlsx"))  {
+				workbook = new XSSFWorkbook(new FileInputStream(storageFileName + File.separator + newFileName));
+			}else{
+				dto.setOpFlg("-11");
+				dto.setMsg("<br>文件类型错误:");
+				WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
+				return;
+			}
 			
-			workbook = new HSSFWorkbook(new FileInputStream(storageFileName + File.separator + newFileName));
+			
+			
 			sheet = workbook.getSheetAt(0);
-			
 			dto.setOpFlg("1");
-			dto.setMsg("操作成功");
+			
 			for (int numRows = 1; numRows <= sheet.getLastRowNum(); numRows++) {
 				
 				row = sheet.getRow(numRows);
@@ -348,7 +377,7 @@ public class OrderBlh extends AbstractBaseBlh {
 					switch (colNameString) {
 							case "订单号":
 								if(cell!=null){
-									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+									cell.setCellType(Cell.CELL_TYPE_STRING);
 									orderNo=cell.getStringCellValue();
 								}
 								break;
@@ -360,13 +389,13 @@ public class OrderBlh extends AbstractBaseBlh {
 //								break;	
 							case "是否加急":
 								if(cell!=null){
-									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+									cell.setCellType(Cell.CELL_TYPE_STRING);
 									emflag=cell.getStringCellValue();
 								}
 								break;
 							case "收货地址":
 								if(cell!=null){
-									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+									cell.setCellType(Cell.CELL_TYPE_STRING);
 									destion=cell.getStringCellValue();
 								}
 								break;
@@ -377,25 +406,25 @@ public class OrderBlh extends AbstractBaseBlh {
 								break;
 							case "供应商代码":
 								if(cell!=null){
-									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+									cell.setCellType(Cell.CELL_TYPE_STRING);
 									venCode=cell.getStringCellValue();
 								}
 								break;
 							case "HIS药品代码":
 								if(cell!=null){
-									cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+									cell.setCellType(Cell.CELL_TYPE_STRING);
 									incCode=cell.getStringCellValue();
 								}
 								break;	
 							case "数量":
 								if(cell!=null){
-									cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+									cell.setCellType(Cell.CELL_TYPE_NUMERIC);
 									qty=(float)cell.getNumericCellValue();
 								}
 								break;	
 							case "进价":
 								if(cell!=null){
-									cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+									cell.setCellType(Cell.CELL_TYPE_NUMERIC);
 									rp=(float)cell.getNumericCellValue();
 								}
 								break;		
@@ -470,7 +499,7 @@ public class OrderBlh extends AbstractBaseBlh {
 					HopVendor hopVendor=hopVendorService.findVendorByCode(venCode,hopID);
 					if(hopVendor==null){
 						dto.setOpFlg("-1");
-						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+venCode+"，供应商代码错误");
+						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行:"+venCode+"，供应商代码错误");
 						continue;
 					}
 					
@@ -480,7 +509,7 @@ public class OrderBlh extends AbstractBaseBlh {
 					Long desctId=null;
 					if(ctlocDestination==null){
 						dto.setOpFlg("-1");
-						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行"+destion+"，收货地址错误");
+						dto.setMsg(dto.getMsg()+"<br>第"+numRows+"行:"+destion+"，收货地址错误");
 						continue;
 					}else{
 						recLocId=ctlocDestination.getCtlocDr();
@@ -498,7 +527,6 @@ public class OrderBlh extends AbstractBaseBlh {
 					
 					
 					Order order=new Order();
-					
 					order.setEmFlag(emflag);
 					order.setCreateUser(userID);
 					order.setOrderNo(orderNo);
@@ -520,7 +548,7 @@ public class OrderBlh extends AbstractBaseBlh {
 				return;
 			}
 			orderService.importOrderByExcel(orderMap);
-			
+			dto.setMsg("操作成功");
 			
 			for(Map.Entry<String, Order> entry: orderMap.entrySet()) {
 				   Order order=entry.getValue();

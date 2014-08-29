@@ -45,6 +45,8 @@ public abstract class ActionHelper {
 		if(actionRef.getBaseDto()!=null){
 			actionRef.getBaseDto().initTradeAccount();
 			WebContextHolder.getContext().setTradeAccount(actionRef.getBaseDto().getTradeAccount());
+			actionRef.getBaseDto().setSort(sort);
+			actionRef.getBaseDto().setSortOrder(order);
 		}else{
 			BaseAction.logger.info(actionRef.getClass() +" getBaseDto()  return null ");
 		}
@@ -52,8 +54,6 @@ public abstract class ActionHelper {
 		
 		if (page != null&&actionRef.getBaseDto()!=null) {
 			actionRef.getBaseDto().setPageModel(new PagerModel());
-			actionRef.getBaseDto().setSort(sort);
-			actionRef.getBaseDto().setSortOrder(order);
 			actionRef.getBaseDto().getPageModel().setPageNo(Integer.valueOf(page));
 			String rows = WebContextHolder.getContext().getRequest().getParameter("rows");
 			actionRef.getBaseDto().getPageModel().setPageSize(Integer.valueOf(rows == null ? "10" : rows));

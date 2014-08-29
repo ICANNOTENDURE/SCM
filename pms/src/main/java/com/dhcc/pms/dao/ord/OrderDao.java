@@ -29,6 +29,7 @@ import com.dhcc.pms.entity.hop.HopInc;
 import com.dhcc.pms.entity.hop.HopVendor;
 import com.dhcc.pms.entity.hop.Hospital;
 import com.dhcc.pms.entity.ord.ExeState;
+import com.dhcc.pms.entity.ord.Ord;
 import com.dhcc.pms.entity.ord.OrdShopping;
 import com.dhcc.pms.entity.ord.Order;
 import com.dhcc.pms.entity.ord.OrderItm;
@@ -597,6 +598,11 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
    * @version V1.0
     */
    public void importOrderByExcel(Map<String, Order> map){
+	   Ord ord=new Ord();
+	   ord.setOrdDate(new java.sql.Timestamp(new Date().getTime()));
+	   ord.setOrdHopId(WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
+	   ord.setOrdLocId(WebContextHolder.getContext().getVisit().getUserInfo().getLocId());
+	   super.save(ord);
 	   for(Map.Entry<String, Order> entry: map.entrySet()) {
 		   Order order=entry.getValue();
 		   List<OrderItm> itms=order.getItms();
@@ -613,6 +619,7 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
 		   exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
 		   super.save(exeState1);
 		   order.setExeStateId(exeState1.getExestateId());
+		   order.setOrderSerial(ord.getOrdId());
 		   super.saveOrUpdate(order);
 		   this.sendMail(order);
 		}

@@ -90,7 +90,7 @@ $(function (){
         //在浏览窗口底部的文件类型下拉菜单中显示的文本
         'buttonText':'Upload',
         'fileTypeDesc': '支持的格式：',
-        'fileTypeExts': '*.xls',
+        'fileTypeExts': '*.xls;*.xlsx',
         'fileSizeLimit': '30MB',
         'width': '60',
         'height': '20',
@@ -98,7 +98,9 @@ $(function (){
         'fileObjName':'dto.upload',
         'auto': true,
         'removeCompleted':true,
-        'checkExisting':false,
+        'onUploadStart': function(file) {
+        	$("#orderUpload").uploadify("settings", 'formData', {'dto.uploadFileName': file.name});
+        },
         'onSelect': function(){  
 	        	$("#gg").dialog("open");
 	        	$("#err").html("");	
@@ -141,28 +143,27 @@ $(function (){
         },
         //检测FLASH失败调用
         'onFallback': function() {
-            alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+        	$CommonUI.alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
         },
         //返回一个错误，选择文件的时候触发
         'onSelectError': function(file, errorCode, errorMsg) {
             switch (errorCode) {
-            case - 100 : alert("上传的文件数量已经超出系统限制的" + $('#file_upload').uploadify('settings', 'queueSizeLimit') + "个文件！");
+            case - 100 : $CommonUI.alert("上传的文件数量已经超出系统限制的" + $('#file_upload').uploadify('settings', 'queueSizeLimit') + "个文件！");
                 break;
-            case - 110 : alert("文件 [" + file.name + "] 大小超出系统限制的" + $('#file_upload').uploadify('settings', 'fileSizeLimit') + "大小！");
+            case - 110 : $CommonUI.alert("文件 [" + file.name + "] 大小超出系统限制的" + $('#file_upload').uploadify('settings', 'fileSizeLimit') + "大小！");
                 break;
-            case - 120 : alert("文件 [" + file.name + "] 大小异常！");
+            case - 120 : $CommonUI.alert("文件 [" + file.name + "] 大小异常！");
                 break;
-            case - 130 : alert("文件 [" + file.name + "] 类型不正确！");
+            case - 130 : $CommonUI.alert("文件 [" + file.name + "] 类型不正确！");
                 break;
             }
         }
     });
 	
-//	$CommonUI.getDataGrid('#datagrid').datagrid({ 
-//		url:'orderStateCtrl!listOrdItm.htm?dto.exeState.ordId=XX',
-//	});
+
 
 	$("#search").on('click', function() {
+		
 		 $("#searchOrderTable").datagrid('load', {
 			 "dto.stdate":$("#stdate").datebox('getValue'),
 			 "dto.eddate":$("#eddate").datebox('getValue'),
@@ -306,7 +307,9 @@ function importOrder(){
 //查询导入订单
 function searchOrder(){
 	
-	 $('#searchOrder').dialog('open');
+	$('#stdate').datebox('setValue',new Date().format("yyyy-MM-dd"));
+	$('#eddate').datebox('setValue',new Date().format("yyyy-MM-dd"));
+	$('#searchOrder').dialog('open');
 	
 
 	

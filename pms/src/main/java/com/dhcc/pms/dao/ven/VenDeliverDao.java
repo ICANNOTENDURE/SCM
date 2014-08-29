@@ -350,7 +350,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			if(venInc.getVenIncVenid().toString().equals(vendorId.toString())){
 				venDeliveritm.setDeliveritmVenincid(venInc.getVenIncId());
 				venDeliveritm.setDeliveritmFac(venHopInc.getVenIncFac());
-				venDeliveritm.setDeliveritmHisQty(dto.getVenDeliveritm().getDeliveritmQty().floatValue()*venHopInc.getVenIncFac().floatValue());
+				venDeliveritm.setDeliveritmHisQty(dto.getVenDeliveritm().getDeliveritmQty()*venHopInc.getVenIncFac().floatValue());
 				venDeliveritm.setDeliveritmHisRp(dto.getVenDeliveritm().getDeliveritmRp().floatValue()*venHopInc.getVenIncFac().floatValue());
 				break;
 			}
@@ -891,7 +891,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		Map<String,List<VenDeliveritm>> map=dto.getOrderMap();
 		Iterator<String> it = map.keySet().iterator();
 		dto.setMsg("<br>");
-		dto.setOpFlg("0");
+		dto.setOpFlg("1");
 		while(it.hasNext()){
 			String key = (String) it.next();
 			Order order=super.get(Order.class, Long.valueOf(key));
@@ -972,7 +972,7 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 					}
 					if((tmpOrderItm.getDeliverqty().floatValue()-tmpOrderItm.getReqqty().floatValue())>0){
 						dto.setOpFlg("-1");
-						dto.setMsg(dto.getMsg()+"订单明细ID:"+tmpOrderItm.getOrderitmId()+"发货数量大于订单数量<br>");
+						dto.setMsg(dto.getMsg()+"订单明细ID:"+tmpOrderItm.getOrderitmId()+"发货数量大于订单数量<br> 订单数量:"+tmpOrderItm.getReqqty().floatValue()+" 发货数量:"+delQtyMap.get(tmpOrderItm.getOrderitmId().toString()).floatValue());
 					}
 					if((tmpOrderItm.getDeliverqty().floatValue()-tmpOrderItm.getReqqty().floatValue())<0){
 						order.setOrdFlag(1l);

@@ -157,7 +157,7 @@
 	</table>
 
 	<div id="importDialog" class="dialog" title="导入订单"
-		style="width:1000px;height: 200px; background-color: #F5FAFD;"
+		style="width:1000px;height: 400px; background-color: #F5FAFD;"
 		data-options="
 				modal:true,
 		        closed:true,

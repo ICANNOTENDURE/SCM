@@ -484,7 +484,7 @@ public class VenIncDao extends HibernatePersistentObjectDAO<VenInc> {
 		}
 		for(VenHopInc venHopInc:venHopIncs){
 			VenInc venInc=super.get(VenInc.class, venHopInc.getVenIncId());
-			if(venInc.getVenIncId().toString().equals(vendorId.toString())){
+			if(venInc.getVenIncVenid().toString().equals(vendorId.toString())){
 				fac=venHopInc.getVenFac().floatValue()/venHopInc.getHopFac().floatValue();
 				break;
 			}

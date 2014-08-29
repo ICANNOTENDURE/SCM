@@ -149,6 +149,12 @@
             <groupId>jp.sourceforge.qrcode</groupId>
             <artifactId>qrcode-core</artifactId>
             <version>1.6</version>
+        </dependency>
+        <!-- poi 解析excel2007-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.9</version>
         </dependency> 
 	</dependencies>
 	<!-- 发布构建管理 

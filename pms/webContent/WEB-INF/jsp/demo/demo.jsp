@@ -12,37 +12,29 @@
 	
 </head>
 <body>
-       	<!-- Single button -->
-		<div class="btn-group">
-		  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-		    XXXX <span class="caret"></span>
-		  </button>
-		  <ul class="dropdown-menu" >
-		    <li><a href="#">Action</a></li>
-		    <li><a href="#">Another action</a></li>
-		    <li><a href="#">Something else here</a></li>
-		    <li class="divider"></li>
-		    <li><a href="#">Separated link</a></li>
-		  </ul>
-		</div>
-		
-		
-		<div class="panel panel-primary">
-		  <div class="panel-heading">
-		    <h3 class="panel-title">叫我煞笔</h3>
-		  </div>
-		  <div class="panel-body">
-		    Panel content
-		  </div>
-		  
-		  <table class="table">
-    		<tr>
-    			<td>
-    				XXXXs
-    			</td>
-    		</tr>
-  		 </table>
-		</div>
+   <!-- Button trigger modal -->
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+   
 </body>
 </html>

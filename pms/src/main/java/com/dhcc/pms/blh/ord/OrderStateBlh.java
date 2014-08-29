@@ -401,9 +401,9 @@ public class OrderStateBlh extends AbstractBaseBlh {
 			log.setOpResult(JsonUtils.toJson(dto.getOperateResult()));
 		} catch(Exception e) {
 	        	dto.getOperateResult().setResultCode("-111");
-	        	dto.getOperateResult().setResultContent(e.getMessage());
+	        	dto.getOperateResult().setResultContent("Exception:"+e.getLocalizedMessage()+" msg:faile");
 	        	logger.info(e.getMessage(), e);
-	        	log.setOpResult("exception:"+e.getMessage());
+	        	log.setOpResult("exception:"+e.getMessage()+" msg:falie");
 	    }finally{
 	    	commonService.saveOrUpdate(log);
 	    }
@@ -412,7 +412,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 		
 		
 	}
-	public void deliverSub(OrderStateDto dto) throws IOException{
+	public void deliverSub(OrderStateDto dto) {
 		
 		if(dto.getDeliveritms()==null){
 			dto.getOperateResult().setResultCode("-1");
@@ -465,7 +465,8 @@ public class OrderStateBlh extends AbstractBaseBlh {
 			String orderId=orderItm.getOrdId().toString();
 			
 			tmpVenDeliveritm.setDeliveritmHopincid(orderItm.getIncId());
-			
+			tmpVenDeliveritm.setDeliveritmId(null);
+			tmpVenDeliveritm.setDeliveritmParentid(null);
 			if(DelMap.containsKey(orderId)){
 				DelMap.get(orderId).add(tmpVenDeliveritm);
 			}else{
@@ -483,16 +484,7 @@ public class OrderStateBlh extends AbstractBaseBlh {
 		VenDeliverDto vendto =new VenDeliverDto();
 		vendto.setOrderMap(DelMap);
 		vendto.setOperateType("webservice 导入");
-		venDeliverService.impByOrderItm(vendto);
-		if(!vendto.getOpFlg().equals("0")){
-			dto.getOperateResult().setResultCode("-99");
-			dto.getOperateResult().setResultContent("falie:"+vendto.getMsg());
-		}else{
-			dto.getOperateResult().setResultCode("0");
-			dto.getOperateResult().setResultContent("success");
-		}
-		
-		
+		venDeliverService.impByOrderItm(vendto);		
 	}
 
 	/**

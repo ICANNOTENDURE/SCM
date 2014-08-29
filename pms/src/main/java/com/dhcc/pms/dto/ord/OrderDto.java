@@ -44,7 +44,27 @@ public class OrderDto extends BaseDto {
 	
 	private Long stateId;
 	
+	private  String uploadFileName;
 	
+	
+	
+	
+	/**
+	 * @return the uploadFileName
+	 */
+	public String getUploadFileName() {
+		return uploadFileName;
+	}
+
+
+	/**
+	 * @param uploadFileName the uploadFileName to set
+	 */
+	public void setUploadFileName(String uploadFileName) {
+		this.uploadFileName = uploadFileName;
+	}
+
+
 	/**
 	 * @return the stateId
 	 */
