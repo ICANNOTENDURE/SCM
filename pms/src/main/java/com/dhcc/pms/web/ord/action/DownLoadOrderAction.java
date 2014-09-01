@@ -167,7 +167,7 @@ public class DownLoadOrderAction extends ActionSupport {
 		cell = row.createCell(16, HSSFCell.CELL_TYPE_STRING);
 		cell.setCellValue("收货地址 ");
 		
-		List<ExportOrderVo> exportOrderVos=orderService.ExportOrder(Long.valueOf(WebContextHolder.getContext().getRequest().getParameter("orderId")));
+		List<ExportOrderVo> exportOrderVos=orderService.ExportOrder(WebContextHolder.getContext().getRequest().getParameter("orderId"));
 		int i=1;
 		for(ExportOrderVo tmpExportOrderVo:exportOrderVos){
 			row = sheet.createRow(i);        //创建第一行

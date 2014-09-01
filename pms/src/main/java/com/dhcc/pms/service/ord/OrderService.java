@@ -176,7 +176,7 @@ public interface OrderService {
 	 * @date 2014年6月18日 下午2:05:50
 	 * @version V1.0
 	  */
-	 public List<ExportOrderVo> ExportOrder(Long dto);
+	 public List<ExportOrderVo> ExportOrder(String dto);
 	 
 	 
 	 /**

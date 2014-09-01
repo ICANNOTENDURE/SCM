@@ -79,6 +79,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("t1.deliverydate as deliverydate, ");
 		hqlBuffer.append("t2.exedate as exedate, ");
 		hqlBuffer.append("t10.HOSPITAL_NAME as hopname, ");
+		hqlBuffer.append("t1.ORDER_SERIAL as serialno, ");
 		hqlBuffer.append("t9.H_NAME as vendor ");
 		hqlBuffer.append("from t_ord_order t1  ");
 		hqlBuffer.append("left join t_ord_exestate t2 on t1.exestate_id=t2.exestate_id  ");
@@ -246,7 +247,8 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 		hqlBuffer.append("t1.DELIVERQTY as delqty, ");
 		hqlBuffer.append("t1.uom as uom, ");
 		hqlBuffer.append("t3.name as manf ");
-		hqlBuffer.append("from t_ord_orderitm t1 ");
+		hqlBuffer.append("from t_ord_order t4 ");
+		hqlBuffer.append("left join t_ord_orderitm t1 on t1.ord_id=t4.ORDER_ID ");
 		hqlBuffer.append("left join t_hop_inc t2 on t2.inc_id=t1.inc_id ");
 		hqlBuffer.append("left join t_hop_manf t3 on t2.inc_manfid=t3.id ");
 		hqlBuffer.append("where 1=1 ");
@@ -267,16 +269,20 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 				hqlParamMap.put("ord", dto.getExeState().getOrdId());
 			}
 		}
-		else{
-			dto.getPageModel().setTotals(0);
-			dto.getPageModel().setPageData(new ArrayList<OrderItmVo>());
-			return;
+		if(dto.getOrder()!=null){
+			if (!StringUtils.isNullOrEmpty(dto.getOrder().getOrderSerial())){
+				hqlBuffer.append("and t4.ORDER_SERIAL=:serial ");
+				hqlParamMap.put("serial", dto.getOrder().getOrderSerial());
+			}
 		}
 
 		dto.getPageModel().setQueryHql(hqlBuffer.toString());
 		dto.getPageModel().setHqlParamMap(hqlParamMap);
 		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), OrderItmVo.class, "orderitm_id");
 	}
+	
+	
+	
 	
 	/**
 	 * 

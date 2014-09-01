@@ -239,7 +239,7 @@ function onAfterEdit(rowIndex, rowData, changes){
 				class="linkbutton" id="search"
 				data-options="iconCls:'icon-search'">查询</a>
 			<a class="linkbutton" id="import"
-				data-options="iconCls:'icon-add',plain:true">导入订单</a>
+				data-options="iconCls:'icon-add',plain:true">上传发票</a>
 
 	</div>
 

@@ -19,6 +19,8 @@ $(function (){
 	    singleSelect:true,
 	    pagination:true,
 	    rownumbers:true,
+	    pageSize:17,
+	    pageList:[17,34,51],
 	    queryParams: {
 	    	"dto.stDate":$("#delStDate").datebox('getValue'),
 			"dto.edDate":$("#delEdDate").datebox('getValue'),
@@ -56,14 +58,14 @@ $(function (){
 		 columns:[[  
 		  	        {field:'deliverid',hidden:true},
 		  	        {field:'hisno',title:'HIS单号',width:100},
-		  	        {field:'statedesc',title:'状态',width:100,sortable:true},
-		  	        {field:'emflag',title:'加急',width:100,sortable:true},
+		  	        {field:'statedesc',title:'状态',width:70,sortable:true},
+		  	        {field:'emflag',title:'加急',width:50,sortable:true},
 		  	        {field:'purloc',title:'入库科室',width:150,sortable:true},  
 		  	        {field:'recloc',title:'收货科室',width:150,sortable:true},
-		  	        {field:'destination',title:'收货地址',width:200,sortable:true},
-		  	        {field:'hopname',title:'医院',width:150,sortable:true},
-		  	        {field:'deliverydate',title:'发货时间',width:100,sortable:true},
-		  	        {field:'deliveraccpectdate',title:'接收时间',width:100,sortable:true}
+		  	        {field:'destination',title:'收货地址',width:150,sortable:true},
+		  	        {field:'hopname',title:'医院',width:100,sortable:true},
+		  	        {field:'deliverydate',title:'发货时间',width:120,sortable:true},
+		  	        {field:'deliveraccpectdate',title:'接收时间',width:120,sortable:true}
 		 ]],
 	    
 	    view: detailview,
@@ -137,7 +139,59 @@ $(function (){
 	
 
 });
+function onLoadSuccess(data){
+	 mergeCellsByField('datagrid','serialno');
+}
+function mergeCellsByField(tableID,colList){
+   var ColArray = colList.split(",");
+   var tTable = $('#'+tableID);
+   var TableRowCnts=tTable.datagrid("getRows").length;
+   var tmpA;
+   var tmpB;
+   var PerTxt = "";
+   var PerVenId="";
+   var CurTxt = "";
+   var CurVendorId="";
+   for (j=ColArray.length-1;j>=0 ;j-- )
+   {
+       //当循环至某新的列时，变量复位。
+       PerTxt="";
+       tmpA=1;
+       tmpB=0;
+       
+       //从第一行（表头为第0行）开始循环，循环至行尾(溢出一位)
+       for (i=0;i<=TableRowCnts ;i++ )
+       {
+           if (i==TableRowCnts)
+           {
+               CurTxt="";
+               CurVendorId="";
+           }
+           else
+           {
+               CurTxt=tTable.datagrid("getRows")[i][ColArray[j]];
+           }
 
+           if (PerTxt==CurTxt)
+           {
+               tmpA+=1;
+           }
+           else
+           {
+               tmpB+=tmpA;
+               tTable.datagrid('mergeCells',{
+                   index:i-tmpA,
+                   field:ColArray[j],
+                   rowspan:tmpA,
+                   colspan:null
+               });
+               tmpA=1;
+           }
+           PerTxt=CurTxt;
+           PerVenId=CurVendorId;
+       }
+   }
+}
 function getContextPath(){
 	var strFullPath=window.document.location.href;
 	var strPath=window.document.location.pathname;

@@ -497,23 +497,27 @@ public void impOrder(OrderDto dto){
    * @version V1.0
     */
    @SuppressWarnings("unchecked")
-public List<ExportOrderVo> ExportOrder(Long orderId){
+public List<ExportOrderVo> ExportOrder(String SerialNO){
 	   
-	   Order order=super.get(Order.class, orderId);
-	   ExeState exeState=super.get(ExeState.class, order.getExeStateId());
-	   if(exeState.getStateId().toString().endsWith("1")){
-		   ExeState exeState1=new ExeState();
+	   
+	   List<Order> orders=super.findByProperty(Order.class, "orderSerial", SerialNO);
+	   for(Order tmporder:orders){
+		   ExeState exeState=super.get(ExeState.class, tmporder.getExeStateId());
+		   if(exeState.getStateId().toString().equals("1")){
+			   ExeState exeState1=new ExeState();
 
-		   exeState1.setStateId(2l);
-		   exeState1.setRemark("下载订单");
-		   exeState1.setUserid(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
-		   exeState1.setOrdId(orderId);
-		   exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
-		   super.save(exeState1);
+			   exeState1.setStateId(2l);
+			   exeState1.setRemark("下载订单");
+			   exeState1.setUserid(Long.valueOf(WebContextHolder.getContext().getVisit().getUserInfo().getId()));
+			   exeState1.setOrdId(tmporder.getOrderId());
+			   exeState1.setExedate(new java.sql.Timestamp(new Date().getTime()));
+			   super.save(exeState1);
+			   
+			   
+			   tmporder.setExeStateId(exeState1.getExestateId());
+			   super.saveOrUpdate(tmporder);
+		   }
 		   
-		   
-		   order.setExeStateId(exeState1.getExestateId());
-		   super.saveOrUpdate(order);
 	   }
 	   
 	   StringBuffer hqlBuffer = new StringBuffer();
@@ -535,8 +539,8 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
 		hqlBuffer.append("t1.rp/t6.VEN_FAC/t6.HOP_FAC as venrp, ");
 		hqlBuffer.append("t1.reqqty/t6.VEN_FAC/t6.HOP_FAC as venqty, ");
 		hqlBuffer.append("t1.uom as uom ");
-		hqlBuffer.append("from t_ord_orderitm t1 ");
-		hqlBuffer.append("left join t_ord_order t2 on t1.ord_id=t2.order_id  ");
+		hqlBuffer.append("from t_ord_order t2 ");
+		hqlBuffer.append("left join t_ord_orderitm t1 on t1.ord_id=t2.order_id  ");
 		hqlBuffer.append("left join t_sys_ctloc t3 on t3.ctloc_id=t2.recloc ");
 		hqlBuffer.append("left join t_sys_ctloc t4 on t4.ctloc_id=t2.purloc ");
 		hqlBuffer.append("left join t_hop_inc t5 on t5.inc_id=t1.inc_id ");
@@ -548,8 +552,8 @@ public List<ExportOrderVo> ExportOrder(Long orderId){
 		hqlBuffer.append("where 1=1 ");
 		Map<String, Object> hqlParamMap = new HashMap<String, Object>();
 		
-		hqlBuffer.append("and t1.ord_id=:ord ");
-		hqlParamMap.put("ord", orderId);
+		hqlBuffer.append("and t2.ORDER_SERIAL=:ord ");
+		hqlParamMap.put("ord", SerialNO);
 
 		return (List<ExportOrderVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ExportOrderVo.class, hqlParamMap);
    }

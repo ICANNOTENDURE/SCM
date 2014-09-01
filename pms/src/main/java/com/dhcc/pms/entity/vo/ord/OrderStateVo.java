@@ -45,9 +45,25 @@ public class OrderStateVo implements java.io.Serializable{
 	
 	private String hopname;
 	
+	private String serialno;
 	
 	
 	
+	
+	/**
+	 * @return the serialno
+	 */
+	public String getSerialno() {
+		return serialno;
+	}
+
+	/**
+	 * @param serialno the serialno to set
+	 */
+	public void setSerialno(String serialno) {
+		this.serialno = serialno;
+	}
+
 	/**
 	 * @return the hopname
 	 */

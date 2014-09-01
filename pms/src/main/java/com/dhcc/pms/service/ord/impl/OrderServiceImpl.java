@@ -195,7 +195,7 @@ public class OrderServiceImpl implements OrderService {
 	 * @see com.dhcc.pms.service.ord.OrderService#ExportOrder(com.dhcc.pms.dto.ord.OrderDto)
 	 */
 	@Override
-	public List<ExportOrderVo> ExportOrder(Long dto) {
+	public List<ExportOrderVo> ExportOrder(String dto) {
 		// TODO Auto-generated method stub
 		List<ExportOrderVo> exportOrderVos=new ArrayList<ExportOrderVo>();
 		Map<String, ExportOrderVo> map=new HashMap<String,ExportOrderVo>();

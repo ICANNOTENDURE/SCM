@@ -35,9 +35,24 @@ public class DeliverVo implements java.io.Serializable{
 	//发货人
 	private String deliveruser;
 	
+	private String serialno;
 	
 	
 	
+	/**
+	 * @return the serialno
+	 */
+	public String getSerialno() {
+		return serialno;
+	}
+
+	/**
+	 * @param serialno the serialno to set
+	 */
+	public void setSerialno(String serialno) {
+		this.serialno = serialno;
+	}
+
 	/**
 	 * @return the deliveraccpectuser
 	 */

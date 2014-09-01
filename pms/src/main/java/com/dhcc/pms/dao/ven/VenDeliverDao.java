@@ -173,7 +173,8 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 		hqlBuffer.append("t9.realname as deliveruser,  ");
 		hqlBuffer.append("t10.ctloc_name as purloc,  ");
 		hqlBuffer.append("t11.ctloc_name as recloc,  ");
-		hqlBuffer.append("t12.ctlocdes_destination as destination  ");
+		hqlBuffer.append("t12.ctlocdes_destination as destination,  ");
+		hqlBuffer.append("t1.DELIVER_NO as serialno  ");
 		hqlBuffer.append("from  t_ven_deliver t1 ");
 		hqlBuffer.append("left join t_ord_exestate t2 on t1.deliver_exestateid=t2.exestate_id ");
 		hqlBuffer.append("left join t_ord_state t3 on t3.state_seq=t2.state_id ");
@@ -771,7 +772,14 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	 */
 	@SuppressWarnings("unchecked")
 	public void Deliver(Map<String, List<VenDeliveritm>> map){
-		String no=UUID.randomUUID().toString();
+		
+		VenDel venDel=new VenDel();
+		venDel.setDelvVendorid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
+		venDel.setDelvDate(new Date());
+		super.save(venDel);
+		
+		String no=venDel.getDelvId();
+		
 		Iterator<String> it = map.keySet().iterator();
 		while(it.hasNext()){
 			String key = (String) it.next();
