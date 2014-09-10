@@ -39,6 +39,7 @@ public class UrlSecurityCheckInterceptor implements Interceptor,
 	public static Pattern pt;
 	
 
+	@SuppressWarnings("static-access")
 	@Override
 	public void setServletContext(ServletContext servletContext) {
 		this.sc = servletContext;
@@ -72,7 +73,7 @@ public class UrlSecurityCheckInterceptor implements Interceptor,
 			}else{
 				BaseException exc = new BaseException("您没有当前操作权限");
 				request.setAttribute("EXP_INFO", exc);
-				return "globalException";	
+				return "loginUrl";	
 			}
 		}
 		return invocation.invoke();
@@ -104,11 +105,12 @@ public class UrlSecurityCheckInterceptor implements Interceptor,
 		if(allCheckUrl.isEmpty()){
 			return true;
 		}
-		if(!pt.matcher(currSecUrl).matches()){
-			return true;
-		}
+//		if(!pt.matcher(currSecUrl).matches()){
+//			return true;
+//		}
 		if(allCheckUrl.contains(currSecUrl)){
 			Visit visit = WebContextHolder.getContext().getVisit();
+		
 			if(visit!=null&&visit.getUserInfo().getPrivilege().contains(currSecUrl)){
 				return true;
 			}else if(visit!=null&&!visit.getUserInfo().getPrivilege().contains(currSecUrl)){
@@ -142,6 +144,7 @@ public class UrlSecurityCheckInterceptor implements Interceptor,
 	private String getUrl(ActionInvocation invocation) {
 		String np = invocation.getProxy().getNamespace();
 		StringBuffer url = new StringBuffer();
+		np=np.replaceAll("/", "");
 		if(np!=null&&!np.equals("/")){
 			url.append(np).append("/").append(invocation.getProxy().getActionName());
 		}else{
@@ -153,6 +156,7 @@ public class UrlSecurityCheckInterceptor implements Interceptor,
 			method="list";
 		}
 		url.append(method);
+		url.append(".htm");
 		return url.toString();
 	}
 }

@@ -401,9 +401,9 @@ public class OrderStateBlh extends AbstractBaseBlh {
 			log.setOpResult(JsonUtils.toJson(dto.getOperateResult()));
 		} catch(Exception e) {
 	        	dto.getOperateResult().setResultCode("-111");
-	        	dto.getOperateResult().setResultContent("Exception:"+e.getLocalizedMessage()+" msg:faile");
+	        	dto.getOperateResult().setResultContent("Exception:"+e.getLocalizedMessage()+" msg:faile "+dto.getMsg());
 	        	logger.info(e.getMessage(), e);
-	        	log.setOpResult("exception:"+e.getMessage()+" msg:falie");
+	        	log.setOpResult("exception:"+e.getMessage()+" msg:falie "+dto.getMsg());
 	    }finally{
 	    	commonService.saveOrUpdate(log);
 	    }

@@ -9,8 +9,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
@@ -37,7 +35,6 @@ import com.dhcc.pms.entity.ven.Vendor;
 		@Result(name = "HistoryDetail", location = "/WEB-INF/jsp/hop/HistoryDetail.jsp"),
 		@Result(name = "ContranstVendor", location = "/WEB-INF/jsp/hop/ContranstVendor.jsp")})
 @Blh("hopVendorBlh")
-@InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.hopVendor"),
 			  @JResult(BlhMethod="contranstVendor",ognlExpress="dto")})
 public class HopVendorAction extends BaseAction {

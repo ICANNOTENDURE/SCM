@@ -18,6 +18,8 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.mail.EmailException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -75,7 +77,8 @@ import com.dhcc.pms.service.ven.VendorService;
 @Component
 public class OrderBlh extends AbstractBaseBlh {
 
-
+	private static Log logger = LogFactory.getLog(OrderBlh.class);
+	
 	@Resource
 	private OrderService orderService;
 	
@@ -559,10 +562,12 @@ public class OrderBlh extends AbstractBaseBlh {
 			
 			
         } catch (Exception e) {
+        	logger.info(e);
 			e.printStackTrace();
 			dto.setOpFlg("-11");
-			dto.setMsg(dto.getMsg()+"<br>程序异常:"+e.getMessage());
-			log.setOpResult("falie:exception:"+e.getMessage());
+			dto.setMsg(dto.getMsg()+"<br>程序异常:"+e.getLocalizedMessage());
+			log.setOpResult("falie:exception:"+e.getMessage()+dto.getMsg());
+		
 			WebContextHolder.getContext().getResponse().getWriter().write(JsonUtils.toJson(dto));
 		}finally{
 			commonService.saveOrUpdate(log);

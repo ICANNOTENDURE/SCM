@@ -166,6 +166,7 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 			hqlParamMap.put("tmpVendor", WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
 		}
 		
+		hqlBuffer.append(" order by order_id desc ");
 		if(dto.getPageModel()==null){
 			PagerModel pageModel=new PagerModel();
 			pageModel.setPageNo(1);
@@ -275,7 +276,9 @@ public class OrderStateDao extends HibernatePersistentObjectDAO<Order> {
 				hqlParamMap.put("serial", dto.getOrder().getOrderSerial());
 			}
 		}
-
+		if((dto.getOrder()==null)&&(dto.getExeState()==null)){
+			return;
+		}
 		dto.getPageModel().setQueryHql(hqlBuffer.toString());
 		dto.getPageModel().setHqlParamMap(hqlParamMap);
 		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), OrderItmVo.class, "orderitm_id");

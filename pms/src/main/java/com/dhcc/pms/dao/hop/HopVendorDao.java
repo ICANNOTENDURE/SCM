@@ -276,7 +276,9 @@ public class HopVendorDao extends HibernatePersistentObjectDAO<HopVendor> {
 				hqlBuffer.append("and t3.H_VENDORID =:yyy ");
 				hqlParamMap.put("yyy", WebContextHolder.getContext().getRequest().getParameter("venid"));
 			}
-			return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "sys_ven_id");
+			
+			hqlBuffer.append(" order by name ");
+			return (List<ComboxVo>)jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ComboxVo.class, hqlParamMap, 1,BaseConstants.COMBOX_PAGE_SIZE, "id");
 		}
 		return null;
 	}

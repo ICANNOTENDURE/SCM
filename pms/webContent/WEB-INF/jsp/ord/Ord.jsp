@@ -14,16 +14,18 @@
 
 <script type="text/javascript">
 $(function (){
+	date=new Date();
+	dateAdd(date,'D',1);
 	$('#stdate').datebox('setValue',new Date().format("yyyy-MM-dd"));
-	$('#eddate').datebox('setValue',new Date().format("yyyy-MM-dd"));
+	$('#eddate').datebox('setValue',date.format("yyyy-MM-dd"));
 	
 	
 	$("#search").on('click', function() {
 		$CommonUI.getDataGrid('#datagrid').datagrid({  
 		    url:$WEB_ROOT_PATH+'/ord/ordCtrl!list.htm',
 		    queryParams: {
-		    	"dto.stdate":$("#stdate").datebox('getValue'),
-		   	    "dto.eddate":$("#eddate").datebox('getValue'),
+		    	"dto.stDate":$("#stdate").datebox('getValue'),
+		   	    "dto.edDate":$("#eddate").datebox('getValue'),
 			},
 			onDblClickRow:function(rowIndex, rowData){
 				$CommonUI.getDataGrid('#datagrid2').datagrid({  
@@ -204,6 +206,10 @@ function endEditing(){
 
 function onClickCell(index, field){
 	
+	
+	if(parseInt($('#datagrid2').datagrid('getRows')[index]['state'])>1){
+		return;
+	}
 	if (endEditing()){
 		$('#datagrid2').datagrid('selectRow', index).datagrid('editCell', {index:index,field:field});
 		editIndex = index;

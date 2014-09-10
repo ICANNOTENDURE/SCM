@@ -52,7 +52,7 @@ public class ChartDao extends HibernatePersistentObjectDAO<Demo> {
 		hqlBuffer.append("t.vendor_id,t1.h_name as name ");
 		hqlBuffer.append(" from t_ord_order t,t_hop_vendor t1   ");
 		hqlBuffer.append(" where  t1.h_venid=t.vendor_id and t.order_serial is not null  group by t.order_serial,t.vendor_id,t1.h_name   ");		
-		dto.setChartVOs(jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ChartVO.class, hqlParamMap, 1, 6, "name"));
+		dto.setChartVOs(jdbcTemplateWrapper.queryAllMatchListWithParaMap(hqlBuffer.toString(), ChartVO.class, hqlParamMap, 1, 5, "name"));
 	}
 	
 	/**

@@ -12,12 +12,12 @@
 	</context-param>
 	<context-param>
 		<param-name>isAuthentication</param-name>
-		<param-value>false</param-value>
+		<param-value>true</param-value>
 	</context-param>
 	<context-param>
 		<param-name>pubUrl</param-name>
-		<param-value>^((authenTicket/authenTicketCtrl!getTicket.htm|dhccApi|authenTicket/authenTicketCtrl!getTicket.htm
-			|authenTicket/authenTicketCtrl!authenUser.htm|login.htm).)*$</param-value>
+		<param-value>^((?!authenTicket/authenTicketCtrl!getTicket.htm|dhccApi|authenTicket/authenTicketCtrl!getTicket.htm
+			|authenTicket/authenTicketCtrl!authenUser.htm|login.htm|index!execute).)*$</param-value>
 	</context-param>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -41,7 +41,7 @@
 		<init-param>
 			<param-name>loginCheck</param-name>
 			<!-- <param-value>true</param-value> -->
-			<param-value>false</param-value>
+			<param-value>true</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
@@ -55,10 +55,6 @@
 	<filter-mapping>
 		<filter-name>webContextFilter</filter-name>
 		<url-pattern>*.htm</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>webContextFilter</filter-name>
-		<url-pattern>/dhccApi/*</url-pattern>
 	</filter-mapping>
 
 	<filter>

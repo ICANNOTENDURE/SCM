@@ -21,8 +21,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
@@ -42,7 +40,7 @@ import com.opensymphony.xwork2.ActionSupport;
 	               "contentDisposition", "attachment;filename=\"${downloadFileName}\""
 	             }
 		)})
-@InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
+
 
 
 public class DownLoadOrderAction extends ActionSupport {

@@ -5,19 +5,17 @@
 package com.dhcc.pms.web.ven.action;
 
 import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
 
+import com.dhcc.framework.annotation.Blh;
+import com.dhcc.framework.annotation.JResult;
+import com.dhcc.framework.annotation.JsonResults;
 import com.dhcc.framework.exception.BaseException;
 import com.dhcc.framework.transmission.dto.BaseDto;
 import com.dhcc.framework.transmission.event.BusinessRequest;
 import com.dhcc.framework.web.BaseAction;
-import com.dhcc.framework.annotation.Blh;
-import com.dhcc.framework.annotation.JResult;
-import com.dhcc.framework.annotation.JsonResults;
 import com.dhcc.pms.dto.ven.VenDeliverDto;
 
 
@@ -30,7 +28,6 @@ import com.dhcc.pms.dto.ven.VenDeliverDto;
 		@Result(name = "printLabel", location = "/WEB-INF/jsp/ven/PrintLabel.jsp"),
 		@Result(name = "importInvByOrderItm", location = "/WEB-INF/jsp/ven/importInvByOrderItm.jsp"),})
 @Blh("venDeliverBlh")
-@InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.venDeliver"),
 			  @JResult(BlhMethod="saveDeliverItm",ognlExpress="dto"),
 			  @JResult(BlhMethod="delDeliverItm",ognlExpress="dto"),

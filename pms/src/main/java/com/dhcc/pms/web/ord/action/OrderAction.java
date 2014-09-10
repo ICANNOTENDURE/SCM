@@ -7,8 +7,6 @@ package com.dhcc.pms.web.ord.action;
 import javax.annotation.Resource;
 
 import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
@@ -32,7 +30,7 @@ import com.dhcc.pms.service.ord.OrderService;
 		@Result(name = "shoppingCart", location = "/WEB-INF/jsp/ord/ShoppingCart.jsp"),
 		@Result(name = "getOrdInfo", location = "/WEB-INF/jsp/ord/GetOrdInfo.jsp"),
 		@Result(name = "listMain", location = "/WEB-INF/jsp/ord/Order.jsp")})
-@InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
+
 @Blh("orderBlh")
 @JsonResults({@JResult(BlhMethod="findById",ognlExpress="dto.order"),
 			  @JResult(BlhMethod="saveShopCart",ognlExpress="dto"),

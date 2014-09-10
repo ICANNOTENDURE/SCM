@@ -236,6 +236,12 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			hqlParamMap.put("hopId2", WebContextHolder.getContext().getVisit().getUserInfo().getHopId());
 		}
 		
+		if(!StringUtils.isNullOrEmpty(dto.getSort())){
+
+			hqlBuffer.append(" order by "+dto.getSort()+"	"+dto.getSortOrder());
+			
+		}
+		
 		dto.getPageModel().setQueryHql(hqlBuffer.toString());
 		dto.getPageModel().setHqlParamMap(hqlParamMap);
 		jdbcTemplateWrapper.fillPagerModelData(dto.getPageModel(), DeliverVo.class, "DELIVER_ROWID");
@@ -898,7 +904,6 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 	public void impByOrderItm(VenDeliverDto dto){
 		
 		VenDel venDel=new VenDel();
-		venDel.setDelvVendorid(WebContextHolder.getContext().getVisit().getUserInfo().getVendorIdLong());
 		venDel.setDelvDate(new Date());
 		super.save(venDel);
 		
@@ -924,6 +929,9 @@ public class VenDeliverDao extends HibernatePersistentObjectDAO<VenDeliver> {
 			venDeliver.setDeliverWpsId(map.get(key).get(0).getDeliveritmWpsId());
 			venDeliver.setDeliverNo(no);
 			super.saveOrUpdate(venDeliver);
+			//更新流水表供应商id
+			venDel.setDelvVendorid(venDeliver.getDeliverVendorid());
+			super.saveOrUpdate(venDel);
 			//执行表(发货表)
 			ExeState exeState=new ExeState();
 			exeState.setDeliverId(venDeliver.getDeliverId());

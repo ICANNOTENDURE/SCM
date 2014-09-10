@@ -131,7 +131,7 @@ ul {
 
 #leftPanel div#childrenMenu ul li div {
 	text-align: center;
-	font-size: 11px;
+	font-size: 14px;
 	color: white;
 }
 

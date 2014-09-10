@@ -524,7 +524,7 @@ public List<ExportOrderVo> ExportOrder(String SerialNO){
 		hqlBuffer.append("select ");
 		hqlBuffer.append("t2.order_no as no, ");
 		hqlBuffer.append("t8.HOSPITAL_NAME as hopname, ");
-		hqlBuffer.append("t9.CTLOCDES_DESTINATION as CTLOCDES_DESTINATION, ");
+		hqlBuffer.append("t9.CTLOCDES_DESTINATION as desction, ");
 		hqlBuffer.append("t4.ctloc_name as purloc, ");
 		hqlBuffer.append("t3.ctloc_name as recloc, ");
 		hqlBuffer.append("t7.ven_inc_code as veninccode, ");
@@ -625,7 +625,7 @@ public List<ExportOrderVo> ExportOrder(String SerialNO){
 		   order.setExeStateId(exeState1.getExestateId());
 		   order.setOrderSerial(ord.getOrdId());
 		   super.saveOrUpdate(order);
-		   this.sendMail(order);
+		   //this.sendMail(order);
 		}
    }
    

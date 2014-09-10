@@ -18,8 +18,9 @@ $(function (){
 	    toolbar:'#toolbar',
 	    singleSelect:true,
 	    pagination:true,
-	    rownumbers:true,
+	    //rownumbers:true,
 	    pageSize:17,
+	    remoteSort:true,
 	    pageList:[17,34,51],
 	    queryParams: {
 	    	"dto.stDate":$("#delStDate").datebox('getValue'),
@@ -39,6 +40,7 @@ $(function (){
 	    	    pagination:true,
 	    	    fitColumns:true,
 	    	    rownumbers:true,
+	    	    
 	    	    columns:[[
 	    	            {field:'venincncode',title:'标识',width:200,},  
 	    	  	        {field:'venincname',title:'名称',width:200,},
@@ -57,7 +59,8 @@ $(function (){
 		},
 		 columns:[[  
 		  	        {field:'deliverid',hidden:true},
-		  	        {field:'hisno',title:'HIS单号',width:100},
+		  	        {field:'serialno',title:'上传流水',width:100,sortable:true},
+		  	        {field:'hisno',title:'HIS单号',width:100,sortable:true},
 		  	        {field:'statedesc',title:'状态',width:70,sortable:true},
 		  	        {field:'emflag',title:'加急',width:50,sortable:true},
 		  	        {field:'purloc',title:'入库科室',width:150,sortable:true},  
@@ -65,9 +68,9 @@ $(function (){
 		  	        {field:'destination',title:'收货地址',width:150,sortable:true},
 		  	        {field:'hopname',title:'医院',width:100,sortable:true},
 		  	        {field:'deliverydate',title:'发货时间',width:120,sortable:true},
-		  	        {field:'deliveraccpectdate',title:'接收时间',width:120,sortable:true}
+		  	        {field:'deliveraccpectdate',title:'接收时间',width:120,sortable:true,hidden:true}
 		 ]],
-	    
+		//onLoadSuccess: onLoadSuccess,
 	    view: detailview,
 	    detailFormatter:function(index,row){
 	    	return '<div style="padding:2px"><table class="ddv"></table></div>';

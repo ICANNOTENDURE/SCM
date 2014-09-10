@@ -76,8 +76,8 @@
                 var myChartSub = ec.init(document.getElementById('sub')); 
                 option = {
                 	    title : {
-                	        text: '医院订单供应商分布',
-                	        subtext: '纯属虚构'
+                	        text: '医院订单发货统计',
+                	        subtext: '按月统计'
                 	    },
                 	    tooltip : {
                 	        trigger: 'axis'

@@ -35,8 +35,14 @@
 		<interceptors>
 			<interceptor name="securityCheck"
 				class="com.dhcc.framework.web.security.UrlSecurityCheckInterceptor"></interceptor>
+			
 			<interceptor-stack name="defaultStack">
+					
 				<interceptor-ref name="securityCheck" />
+				<!--配置fileUpload的拦截器-->
+           		<interceptor-ref name="fileUpload">
+             		<param name="maximumSize">10485760</param>    
+           		</interceptor-ref>
 				<interceptor-ref name="exception" />
 				<interceptor-ref name="actionMappingParams" />
 				<interceptor-ref name="params">

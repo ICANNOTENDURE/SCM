@@ -12,9 +12,9 @@ public class ChartVO {
 	
 	private String name="";
 	
-	private	String value="";
+	private	String value="0";
 	
-	private String value1="";
+	private String value1="0";
 	
 	
 	

@@ -7,8 +7,6 @@ package com.dhcc.pms.web.ven.action;
 import javax.annotation.Resource;
 
 import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.context.annotation.Scope;
@@ -35,7 +33,6 @@ import com.dhcc.pms.service.ven.VendorService;
 		@Result(name = "upload", location = "/WEB-INF/jsp/ven/22.jsp"),
 		@Result(name = "contranstInc", location = "/WEB-INF/jsp/ven/ContranstInc2.jsp"),
 		@Result(name = "listMain", location = "/WEB-INF/jsp/ven/Vendor.jsp") })
-@InterceptorRefs(value = { @InterceptorRef("fileUploadStack") })
 @Blh("vendorBlh")
 @JsonResults({@JResult(BlhMethod="save",ognlExpress="dto"),
 			 @JResult(BlhMethod="deleteUpload",ognlExpress="dto")})
